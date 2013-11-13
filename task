@@ -1,18 +1,33 @@
 Titel Big Data Predictive Analytics Tool on Smart Meter
 
-Programming
--
+-Programming and research task
+mpi base 
+coalesced database
+preprocessing of the dataset
+    Data-cealnup: missing data, outliners etc
+wavelet transformation
+    wavelet selection
+    parralization
+machine learning
+    artificial neural networks (ANN)
+    support vector regression (SVR)
+    random forest (RF)
+ARMAX-Algorithmus
+    implementation
+    parralization
 
-Research
--wavelet transformation
--
+
+-Performance analsys
+validation with compareable open source datasets
+case study
 
 
-Informationen 
+
+-Informationen 
 gegeben:
--mysql
--matlab script
+mysql
+matlab script
 
-benötigt:
--ssh
+-benötigt:
+ssh
 
