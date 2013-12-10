@@ -13,7 +13,7 @@ folder=$(dirname $target)
 
 if [ -d $1 ] ; then
     ssh $host "mkdir -p $folder "
-    rsync -zr --partial --no-W $directory $host:$folder 
+    rsync -zr $directory $host:$folder 
     ssh $host "cd $target && make -B" 
 else 
     echo "$1 is not valid";

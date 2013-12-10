@@ -22,13 +22,17 @@ algorithmus parralization
 validation with compareable open source datasets
 case study
 
-
-
--Informationen 
+-Informationen
 gegeben:
 mysql
 matlab script
 
--Benötigt:
-ssh
-
+-matlabs in methoden umsetzten
+featureMatrixGeneration.m
+powerANN.m
+powerARMAX.m
+powerForest.m
+powerInterpolation.m
+powerSVM.m
+powerWANN.m
+weatherFeatureGeneration.m
