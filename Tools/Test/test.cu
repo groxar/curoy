@@ -13,14 +13,12 @@ __global__ void savePosition(int* x, int* y){
 	x[16*yPos+xPos] =xPos;
 	y[16*yPos+xPos] =yPos;	
 }
-
 int main(){
 	int x[blockS];
 	int y[blockS];
 
 	int* dx;
 	int* dy;
-
 	cudaMalloc((void**)&dx, blockS * sizeof(int));
 	cudaMalloc((void**)&dy, blockS * sizeof(int));
 
@@ -34,6 +32,5 @@ int main(){
 	for(int i = 0; i < blockS; i++){
 		cout<< x[i] <<" "<<  y[i]<< endl;
 	}
-
 	return 0;
 }
