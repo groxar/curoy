@@ -4,7 +4,7 @@ NVCC = nvcc
 LIBDIR = lib/
 OBJDIR = obj/
 
-phony: test $(OBJDIR)
+phony: test $(OBJDIR) run
 
 $(LIBDIR):
 	mkdir -p $@
@@ -16,3 +16,6 @@ test: test.cu
 
 clean:
 	rm -rf $(OBJDIR) $(LIBDIR)	
+
+run:
+	./test
