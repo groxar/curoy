@@ -1,0 +1,3 @@
+#pragma once
+
+void addDev(int* lhs, int* rhs, int* result, size_t numElements);

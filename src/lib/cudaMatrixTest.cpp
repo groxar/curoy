@@ -1,5 +1,5 @@
 #include <iostream>
-#include "cuMatrix.cpp"
+#include "cuMatrix.hpp"
 
 using namespace std;
 
@@ -15,6 +15,16 @@ int main(){
 	cout << result[0][0] << endl;
 	cout << result[2][3] << endl;
 	cout << result[3][4] << endl;
+
+	cuMatrix<int> addResult;
+	addResult = dMatrix+dMatrix;
+	
+	result << addResult;
+
+	cout << result[0][0] << endl;
+	cout << result[2][3] << endl;
+	cout << result[3][4] << endl;
+
 
 	return 0;
 }
