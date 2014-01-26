@@ -10,8 +10,8 @@ using namespace std;
 __global__ void savePosition(int* x, int* y){
 	int xPos = blockDim.x * blockIdx.x +threadIdx.x;
 	int yPos = blockDim.y * blockIdx.y +threadIdx.y;
-	x[16*yPos+xPos] =xPos;
-	y[16*yPos+xPos] =yPos;	
+	x[16*yPos+xPos] = xPos;
+	y[16*yPos+xPos] = yPos;	
 }
 int main(){
 	int x[blockS];

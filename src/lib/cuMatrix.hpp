@@ -132,22 +132,21 @@ class cuMatrix{
 		/**
 		 * ADDITION
 		 */
-		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ // TODO rework
+		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
 			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
 			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
-			addDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
+			addDev<N>(lhs.m_data,rhs.m_data,result.m_data,numElements);	
 			return result;
 		}
 
-				friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ // TODO rework
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ // TODO rework
 			return move(!rhs + lhs); 
 		}
 		
-		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ // TODO rework
+		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
+			addDev<N>(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
 			return move(lhs);
 		}
 		
