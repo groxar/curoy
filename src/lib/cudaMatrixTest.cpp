@@ -17,7 +17,7 @@ int main(){
 	cout << result[3][4] << endl;
 
 	cuMatrix<int> addResult;
-	addResult = dMatrix+dMatrix;
+	addResult = dMatrix+dMatrix+dMatrix;
 	
 	result << addResult;
 
