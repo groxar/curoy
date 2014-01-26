@@ -11,14 +11,17 @@ OPTION = -std=c++0x -g
 
 phony: $(TARGET) run
 
-$(XMATRIX).o: $(XMATRIX).cpp
-	$(CXX) -c $(OPTION) -o $@ $+
+$(XMATRIX).o: $(XMATRIX).hpp
+	$(CXX) $(OPTION) -o $@ -c $+
 
-$(CUMATRIX).o: $(CUMATRIX).cpp
-	$(NVCC) -c $+ -Xcompiler '$(OPTION)' -o $@ 
+cudaMatrix.o: cuMatrix.cu
+	$(NVCC) $(CUDACNFG) -o $@ -c $+
 
-$(TARGET): $(TARGET).cpp $(CUMATRIX).o
-	$(NVCC) $+ -Xcompiler '$(OPTION)' -o $@ 
+$(CUMATRIX).o: $(CUMATRIX).hpp 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ -c -x c++ $+ 
+
+$(TARGET): $(TARGET).cpp $(CUMATRIX).o cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 $(LIBDIR):
 	mkdir -p $@
 $(OBJDIR):

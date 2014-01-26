@@ -9,7 +9,8 @@
 #include <type_traits> 
 #include <cuda_runtime.h>
 #include "matrixException.hpp"
-#include "xMatrix.cpp"
+#include "xMatrix.hpp"
+#include "cuMatrix.hu"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr){};
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(const cuMatrix<N>& matrix){
+		cuMatrix(const cuMatrix<N>& matrix){ // TODO rework
 			if(m_perm == memPermission::owner)
 				m_data = (N*) realloc(matrix.size()*sizeof(N));
 			else{
@@ -40,7 +41,7 @@ class cuMatrix{
 
 		~cuMatrix(){ 
 			if(m_perm == memPermission::owner)
-				free(m_data);
+				cudaFree(m_data);
 		}
 
 		/**
@@ -59,7 +60,7 @@ class cuMatrix{
 		/**
 		 * Access
 		 */
-		cuMatrix<N> operator[](size_t n) const { //access on none const
+		cuMatrix<N> operator[](size_t n) const {// TODO rework
 			size_t memJump = 1;
 
 			auto end = m_vecDim.end();
@@ -68,7 +69,7 @@ class cuMatrix{
 			return cuMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::read);
 		}
 
-		cuMatrix<N> operator[](vector<size_t> nVec) const {
+		cuMatrix<N> operator[](vector<size_t> nVec) const {  // TODO rework
 			if(nVec.size()>m_vecDim.size())
 				throw nullptr;
 			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::read);
@@ -87,7 +88,7 @@ class cuMatrix{
 		/**
 		 * ASSIGNMENT
 		 */
-		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){ // DO WE NEED THE REFERENZE ON RETURN?
+		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){  // TODO rework
 			m_data = rhs.m_data;
 			m_vecDim = move(rhs.m_vecDim);
 			m_perm = rhs.m_perm;
@@ -95,7 +96,7 @@ class cuMatrix{
 			return *this;
 		}
 		
-		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){
+		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){ // TODO rework
 			if(m_perm == memPermission::owner)
 				m_data = (N*) realloc(rhs.size()*sizeof(N));
 			else{
@@ -131,19 +132,19 @@ class cuMatrix{
 		/**
 		 * ADDITION
 		 */
-		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
+		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ // TODO rework
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
+			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
+			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
+			addDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
 			return result;
 		}
 
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
+				friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ // TODO rework
 			return move(!rhs + lhs); 
 		}
 		
-		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){
+		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ // TODO rework
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
@@ -151,7 +152,7 @@ class cuMatrix{
 		}
 		
 		/**
-		 * SUBSTRACTION
+		 * SUBSTRACTION // TODO rework
 		 */
 		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			size_t numElements = lhs.size();
@@ -173,7 +174,7 @@ class cuMatrix{
 		}
 
 		/**
-		 * MULTIPLICATION
+		 * MULTIPLICATION // TODO rework
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> operator* (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
@@ -200,7 +201,7 @@ class cuMatrix{
 		}
 		
 		/**
-		 * MATRIX OPERATION
+		 * MATRIX OPERATION // TODO rework
 		 */
 		friend N sum(const cuMatrix<N>& matrix){
 			N result=0;
@@ -228,12 +229,12 @@ class cuMatrix{
 		}
 
 		/**
-		 * CAST 
+		 * CAST  // TODO rework
 		 */
 		operator N () const{ return *m_data;}//needed ?
 
 		/**
-		 * OUTPUT
+		 * OUTPUT // TODO rework
 		 */
 		friend ostream& operator<< (ostream& os, const cuMatrix<N>& matrix){
 			if (matrix.nDim() == 0)
