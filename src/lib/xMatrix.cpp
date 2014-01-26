@@ -1,0 +1,235 @@
+#pragma once
+#include <vector>
+#include <cstdint>
+#include <numeric>
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <exception>
+#include <type_traits> 
+#include "matrixException.hpp"
+
+using namespace std;
+
+template<typename N>
+class xMatrix{
+	public:
+		/**
+		 * CONSTRUKTOR
+		 */
+		xMatrix():m_data(nullptr){};
+		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
+		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+		xMatrix(const xMatrix<N>& matrix){
+			if(m_perm == memPermission::owner)
+				m_data = (N*) realloc(matrix.size()*sizeof(N));
+			else{
+				m_data = (N*) malloc(matrix.size()*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+
+			if(m_data == nullptr)
+				cout << "reallocation error"<<endl;
+
+			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
+			m_vecDim = matrix.m_vecDim;
+		}
+		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data),m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+
+		~xMatrix(){ 
+			if(m_perm == memPermission::owner)
+				free(m_data);
+		}
+
+		/**
+		 * MISC 
+		 */
+		size_t nDim() const{return m_vecDim.size();}
+		size_t size() const{
+			size_t numElements = 1;
+			auto end = this->m_vecDim.end();
+			for(auto i = this->m_vecDim.begin(); i != end; ++i)
+				numElements*= *i;
+			return numElements;
+		}
+		vector<size_t> dim() const{return m_vecDim;}
+
+		/**
+		 * Access
+		 */
+		xMatrix<N> operator[](size_t n) const { //access on none const
+			size_t memJump = 1;
+
+			auto end = m_vecDim.end();
+			for(auto i = (++m_vecDim.begin()); i != end; ++i)
+				memJump*= *i;
+			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::read);
+		}
+
+		xMatrix<N> operator[](vector<size_t> nVec) const {
+			if(nVec.size()>m_vecDim.size())
+				throw nullptr;
+			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::read);
+			for(auto n: nVec)
+			{
+				result = result[n];
+			}
+
+			return result;
+		}
+
+		friend inline xMatrix<N>&& operator! (xMatrix<N>& matrix){
+			return move(matrix); //handle non ownership
+		}
+
+		/**
+		 * ASSIGNMENT
+		 */
+		xMatrix<N>& operator= (xMatrix<N>&& rhs){ // DO WE NEED THE REFERENZE ON RETURN?
+			m_data = rhs.m_data;
+			m_vecDim = move(rhs.m_vecDim);
+			m_perm = rhs.m_perm;
+			rhs.m_data = nullptr;
+			return *this;
+		}
+		
+		xMatrix<N>& operator= (const xMatrix<N>& rhs){
+			if(m_perm == memPermission::owner)
+				m_data = (N*) realloc(rhs.size()*sizeof(N));
+			else{
+				m_data = (N*) malloc(rhs.size()*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+
+			if(m_data == nullptr)
+				cout << "reallocation error";
+			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
+			m_vecDim = rhs.m_vecDim;
+			return *this;
+		}
+		
+		
+		/**
+		 * ADDITION
+		 */
+		friend xMatrix<N> operator+ (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
+			return result;
+		}
+
+		friend inline xMatrix<N>&& operator+ (xMatrix<N>& lhs, xMatrix<N>&& rhs){
+			return move(!rhs + lhs); 
+		}
+		
+		friend xMatrix<N>&& operator+ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
+			return move(lhs);
+		}
+		
+		/**
+		 * SUBSTRACTION
+		 */
+		friend xMatrix<N> operator- (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
+			return result;
+		}
+
+		friend inline xMatrix<N>&& operator- (xMatrix<N>& lhs, xMatrix<N>&& rhs){
+			return move(!rhs - lhs); 
+		}
+		
+		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
+			return move(lhs);
+		}
+
+		/**
+		 * MULTIPLICATION
+		 */
+		//simple R^2 matrix multiplikation (1,2)
+	 	friend xMatrix<N> operator* (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2)
+				throw "DIMENSIONS DONT FIT";
+
+			size_t numX = lhs.m_vecDim[0];
+			size_t numY = rhs.m_vecDim[1];
+			N* temp = (N*) malloc(numX*numY*sizeof(N));
+			N tempN=0;
+			
+			for(size_t y = 0; y < numY; ++y){
+				for(size_t x = 0; x < numX; ++x){
+					for(size_t i = 0; i < lhs.m_vecDim[1];++i)
+					{
+						tempN+=(N)lhs[x][i] * (N)rhs[i][y];
+					}
+					temp[numX*y+x]=tempN;
+					tempN=0;
+				}
+			}
+			
+			return xMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
+		}
+		
+		/**
+		 * MATRIX OPERATION
+		 */
+		friend N sum(const xMatrix<N>& matrix){
+			N result=0;
+			size_t end = matrix.size();
+			for(size_t i=0; i<end;++i)
+				result+= *(matrix.m_data+i);
+			return result;
+		}
+
+		//simple Transpose only for 2D Matrix tested
+		friend xMatrix<N> T(const xMatrix<N>& matrix){
+			vector<size_t> transVec(matrix.m_vecDim);
+			swap(transVec[0],transVec[1]);
+			
+			size_t numX = matrix.m_vecDim[0];
+			size_t numY = matrix.m_vecDim[1];
+			N* temp = (N*) malloc(matrix.size()*sizeof(N));
+			
+			for(size_t x = 0; x < numX; x++){
+				for(size_t y = 0; y < numY; y++){
+					temp[numX*y+x]=matrix.m_data[numY*x+y];
+				}
+			}
+			return xMatrix<N>(temp,transVec,memPermission::owner);
+		}
+
+		/**
+		 * CAST 
+		 */
+		operator N () const{ return *m_data;}//needed ?
+
+		/**
+		 * OUTPUT
+		 */
+		friend ostream& operator<< (ostream& os, const xMatrix<N>& matrix){
+			if (matrix.nDim() == 0)
+				os <<(N) *matrix.m_data;
+			else{
+				for(size_t i = 0; i < matrix.m_vecDim[0]; ++i)
+					os << matrix[i] << "|";
+			}
+			return os;
+		}
+
+		N* m_data;//-> to private after tests
+		vector<size_t> m_vecDim;
+	private:
+			
+		enum memPermission m_perm;
+
+};
