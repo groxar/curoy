@@ -5,16 +5,27 @@ CUDACNFG= -arch=sm_35
 LIBDIR = lib/
 OBJDIR = obj/
 TARGET = powerANN
-XMATRIXU = xMatrixUnit
+XMATRIX = xMatrixUnit
+CUMATRIX = cuMatrixUnit
 OPTION = -std=c++0x -g
 
-phony: $(XMATRIXU) run
+TARGET = $(CUMATRIX)
 
-$(XMATRIXU): $(XMATRIXU).cpp
+phony: $(TARGET) run
+
+$(XMATRIX): $(XMATRIX).cpp
 	$(CXX) $(OPTION) -o $@ $+
 
+../lib/cuMatrix.o:
+	make ../lib/makefile
+
+../lib/cudaMatrix.o:
+
+$(CUMATRIX): $(CUMATRIX).cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+
 clean:
-	rm -rf $(XMATRIXU)
+	rm $(XMATRIX)
 
 run:
-	./$(XMATRIXU)
+	./$(TARGET)

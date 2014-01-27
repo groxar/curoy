@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "../lib/xMatrix.hpp"
 
-TEST_CASE( "matrix unit test", "[matrix]" ) {
+TEST_CASE( "cpu x86 matrix unit test", "[xMatrix]" ) {
 	int data[2][3] = {{1,2,3},{4,5,6}};
 	int data1[4][5] = {{1,2,3,4,5},{4,5,6,7,8},{7,8,9,10,11},{10,11,12,13,14}};
 	int data2[2][2][3] = 	{{{1,2,3},{4,5,6}}, 
