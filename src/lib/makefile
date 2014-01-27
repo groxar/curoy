@@ -4,12 +4,11 @@ NVCC = nvcc
 CUDACNFG= -arch=sm_35
 LIBDIR = lib/
 OBJDIR = obj/
-TARGET = cudaMatrixTest
 XMATRIX = xMatrix
 CUMATRIX = cuMatrix
 OPTION = -std=c++0x -g
 
-phony: $(TARGET) run
+phony: $(CUMATRIX).o cudaMatrix.o
 
 $(XMATRIX).o: $(XMATRIX).hpp
 	$(CXX) $(OPTION) -o $@ -c $+
@@ -20,8 +19,6 @@ cudaMatrix.o: cuMatrix.cu
 $(CUMATRIX).o: $(CUMATRIX).hpp 
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ -c -x c++ $+ 
 
-$(TARGET): $(TARGET).cpp $(CUMATRIX).o cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 $(LIBDIR):
 	mkdir -p $@
 $(OBJDIR):
