@@ -2,7 +2,9 @@
 
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	addDev<int>(NULL,NULL,NULL,0);
+	addDev<long>(NULL,NULL,NULL,0);
 	addDev<float>(NULL,NULL,NULL,0);
+	addDev<double>(NULL,NULL,NULL,0);
 }
 
 template<typename N>
