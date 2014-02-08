@@ -22,14 +22,14 @@ class xMatrix{
 		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
 		xMatrix(const xMatrix<N>& matrix){
 			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(matrix.size()*sizeof(N));
+				m_data = (N*) realloc(m_data,matrix.size()*sizeof(N));
 			else{
 				m_data = (N*) malloc(matrix.size()*sizeof(N));
 				m_perm = memPermission::owner;
 			}
 
 			if(m_data == nullptr)
-				cout << "reallocation error"<<endl;
+				cout << "allocation error"<<endl;
 
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
@@ -95,14 +95,14 @@ class xMatrix{
 		
 		xMatrix<N>& operator= (const xMatrix<N>& rhs){
 			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(rhs.size()*sizeof(N));
+				m_data = (N*) realloc(m_data,rhs.size()*sizeof(N));
 			else{
 				m_data = (N*) malloc(rhs.size()*sizeof(N));
 				m_perm = memPermission::owner;
 			}
 
 			if(m_data == nullptr)
-				cout << "reallocation error";
+				cout << "allocation error";
 			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			m_vecDim = rhs.m_vecDim;
 			return *this;
@@ -120,14 +120,38 @@ class xMatrix{
 			return result;
 		}
 
+		//double rvalue
+		friend inline xMatrix<N>&& operator+ (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
+			return move(!lhs + rhs); 
+		}
+
 		friend inline xMatrix<N>&& operator+ (xMatrix<N>& lhs, xMatrix<N>&& rhs){
 			return move(!rhs + lhs); 
 		}
-		
+				
 		friend xMatrix<N>&& operator+ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] + rhs.m_data[i];
+			return move(lhs);
+		}
+
+		/**
+		 * ADDITION SKALAR
+		 */
+
+		friend xMatrix<N> operator+ (const xMatrix<N>& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] + rhs;
+			return result;
+		}
+
+		friend xMatrix<N>&& operator+ (xMatrix<N>&& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] + rhs;
 			return move(lhs);
 		}
 		
@@ -140,26 +164,53 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
 			return result;
+		}	
+
+		//double rvalue
+		friend inline xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
+			return move(!lhs - rhs); 
 		}
 
 		friend inline xMatrix<N>&& operator- (xMatrix<N>& lhs, xMatrix<N>&& rhs){
-			return move(!rhs - lhs); 
+			return move(!rhs - lhs); //fix after implementing scalar
 		}
-		
+	
 		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
 			return move(lhs);
 		}
+		
+		/**
+		 * SUBTRACTION SKALAR
+		 */
+
+		friend xMatrix<N> operator- (const xMatrix<N>& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] - rhs;
+			return result;
+		}
+
+		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] -  rhs;
+			return move(lhs);
+		}
+
 
 		/**
 		 * MULTIPLICATION
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend xMatrix<N> operator* (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
-			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2)
+			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
 				throw "DIMENSIONS DONT FIT";
+				return lhs;
+			}
 
 			size_t numX = lhs.m_vecDim[0];
 			size_t numY = rhs.m_vecDim[1];
@@ -168,11 +219,10 @@ class xMatrix{
 			
 			for(size_t y = 0; y < numY; ++y){
 				for(size_t x = 0; x < numX; ++x){
-					for(size_t i = 0; i < lhs.m_vecDim[1];++i)
-					{
+					for(size_t i = 0; i < lhs.m_vecDim[1]; ++i)
 						tempN+=(N)lhs[x][i] * (N)rhs[i][y];
-					}
-					temp[numX*y+x]=tempN;
+
+					temp[numY*x+y] = tempN;
 					tempN=0;
 				}
 			}
@@ -198,7 +248,7 @@ class xMatrix{
 			
 			size_t numX = matrix.m_vecDim[0];
 			size_t numY = matrix.m_vecDim[1];
-			N* temp = (N*) malloc(matrix.size()*sizeof(N));
+			N* temp = (N*) malloc(numX*numY*sizeof(N));
 			
 			for(size_t x = 0; x < numX; x++){
 				for(size_t y = 0; y < numY; y++){

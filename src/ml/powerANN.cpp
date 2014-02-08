@@ -1,0 +1,61 @@
+#include <string>
+#include <iostream>
+#include <istream>
+#include <fstream>
+#include <sstream>
+#include <iterator>
+#include <vector> 
+#include <limits> // increase printed float and double precision
+#include "../lib/xMatrix.hpp"
+
+using namespace std;
+
+xMatrix<double> readFile(string path){
+	ifstream is(path);
+	double* data_ptr;
+	int number_of_rows = 0; 
+	int number_of_cols = 0; 
+	size_t position =0;
+    string line;
+	stringstream lineStream;
+	string cell;
+	vector<double> vf;
+    
+	while (std::getline(is, line)){
+		lineStream << line;
+
+		getline(lineStream,cell,' ') ;//skip first whitespace
+		while (getline(lineStream,cell,' '))
+		{
+			vf.push_back(stod(cell));
+			if(number_of_rows == 0)
+				++number_of_cols;
+		}
+        ++number_of_rows;
+		lineStream.clear();
+	}
+	data_ptr = (double*) malloc(number_of_cols * number_of_rows * sizeof(double));
+	for(size_t i = 0; i < number_of_rows *number_of_cols; i++)
+		data_ptr[i]=vf[i];
+
+
+	
+	return xMatrix<double>(data_ptr,vector<size_t>({(size_t)number_of_rows,(size_t)number_of_cols}),memPermission::owner);
+}
+
+int main(void){
+	xMatrix<double> X;
+	xMatrix<double> Y;
+	X = readFile("Xdata.txt");
+	Y = readFile("Ydata.txt");
+	typedef std::numeric_limits< double > dbl;
+	cout.precision(dbl::digits10);
+
+	cout << X[0][67] << endl;
+	cout << "Size: " << X.dim()[0] << " " << X.dim()[1] << endl;
+	cout << "Size: " << Y.dim()[0] << " " << Y.dim()[1] << endl;
+	cout << "Size: " << T(Y).dim()[0] << " " << T(Y).dim()[1] << endl;
+	cout << T(T(T(X)))[67][0] << endl;
+
+	return EXIT_SUCCESS;
+}
