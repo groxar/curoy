@@ -1,0 +1,4 @@
+*.o
+octave-core
+cuMatrixUnit
+xMatrixUnit
