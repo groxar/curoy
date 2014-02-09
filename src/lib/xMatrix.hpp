@@ -267,12 +267,23 @@ class xMatrix{
 		 * OUTPUT
 		 */
 		friend ostream& operator<< (ostream& os, const xMatrix<N>& matrix){
-			if (matrix.nDim() == 0)
-				os <<(N) *matrix.m_data;
-			else{
-				for(size_t i = 0; i < matrix.m_vecDim[0]; ++i)
-					os << matrix[i] << "|";
+			os << "{";
+			auto end = matrix.m_vecDim.end();
+			for(auto it = matrix.m_vecDim.begin();it!=end;){
+				os << *it;
+
+				if(++it!=end)
+					os << ", ";
 			}
+			os << "}  [";
+
+			for(size_t i = 0; i<matrix.size();){
+				os << matrix.m_data[i];
+				if(++i<matrix.size())
+					os << ", ";
+			}
+			os <<"]";
+
 			return os;
 		}
 

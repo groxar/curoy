@@ -7,6 +7,7 @@
 #include <cstring>
 #include <exception>
 #include <type_traits> 
+#include <cuda.h>
 #include <cuda_runtime.h>
 #include "matrixException.hpp"
 #include "xMatrix.hpp"

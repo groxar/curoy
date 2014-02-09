@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "../lib/xMatrix.hpp"
 
-TEST_CASE( "cpu x86 matrix unit test", "[xMatrix]" ) {
+TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	int data[2][3] = {{1,2,3},{4,5,6}};
 	int data1[4][5] = {{1,2,3,4,5},{4,5,6,7,8},{7,8,9,10,11},{10,11,12,13,14}};
 	int data2[2][2][3] = 	{{{1,2,3},{4,5,6}}, 
@@ -16,6 +16,12 @@ TEST_CASE( "cpu x86 matrix unit test", "[xMatrix]" ) {
 	xMatrix<int> matrixT;
 	void* pointerT=nullptr;
 
+	SECTION("print"){
+		cout << matrix << endl;
+		cout << matrix1 << endl;
+		cout << matrix2 << endl;
+		cout << matrix3 << endl;
+	}
 	SECTION("number of dimensions"){
 		REQUIRE( matrix.nDim()  == 2 );
 		REQUIRE( matrix1.nDim() == 2 );
