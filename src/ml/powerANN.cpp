@@ -7,6 +7,8 @@
 #include <vector> 
 #include <limits> // increase printed float and double precision
 #include "../lib/xMatrix.hpp"
+#include "../lib/cuMatrix.hpp"
+#include "powerANN.hu"
 
 using namespace std;
 
@@ -38,8 +40,6 @@ xMatrix<double> readFile(string path){
 	for(size_t i = 0; i < number_of_rows *number_of_cols; i++)
 		data_ptr[i]=vf[i];
 
-
-	
 	return xMatrix<double>(data_ptr,vector<size_t>({(size_t)number_of_rows,(size_t)number_of_cols}),memPermission::owner);
 }
 
@@ -48,6 +48,7 @@ int main(void){
 	xMatrix<double> Y;
 	X = readFile("Xdata.txt");
 	Y = readFile("Ydata.txt");
+
 	typedef std::numeric_limits< double > dbl;
 	cout.precision(dbl::digits10);
 
@@ -56,6 +57,16 @@ int main(void){
 	cout << "Size: " << Y.dim()[0] << " " << Y.dim()[1] << endl;
 	cout << "Size: " << T(Y).dim()[0] << " " << T(Y).dim()[1] << endl;
 	cout << T(T(T(X)))[67][0] << endl;
+
+	cout << X.dim()[0] << " " << X.dim()[1] << endl;
+	cout << Y.dim()[0] << " " << Y.dim()[1] << endl;
+
+	cuMatrix<double> cuX;
+	cuMatrix<double> cuY;
+
+	X >> cuX;
+	Y >> cuY;
+
 
 	return EXIT_SUCCESS;
 }

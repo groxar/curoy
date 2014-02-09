@@ -4,25 +4,24 @@ NVCC = nvcc
 CUDACNFG= -arch=sm_35
 LIBDIR = lib/
 OBJDIR = obj/
-XMATRIX = xMatrix
-CUMATRIX = cuMatrix
 OPTION = -std=c++0x -g
 
-phony: $(CUMATRIX).o cudaMatrix.o
-
-$(XMATRIX).o: $(XMATRIX).hpp
-	$(CXX) $(OPTION) -o $@ -c $+
-
-cudaMatrix.o: cuMatrix.cu
-	$(NVCC) $(CUDACNFG) -o $@ -c $+
-
-$(CUMATRIX).o: $(CUMATRIX).hpp 
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ -c -x c++ $+ 
+phony: cuMatrix.o cudaMatrix.o
 
 $(LIBDIR):
 	mkdir -p $@
 $(OBJDIR):
 	mkdir -p $@
+
+xMatrix.o: xMatrix.hpp
+	$(CXX) $(OPTION) -o $@ -c $+
+
+cudaMatrix.o: cuMatrix.cu
+	$(NVCC) $(CUDACNFG) -o $@ -c $+
+
+cuMatrix.o: cuMatrix.hpp 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ -c -x c++ $+ 
+
 
 clean:
 	rm -rf $(OBJDIR) $(LIBDIR)	
