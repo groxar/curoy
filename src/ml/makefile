@@ -19,7 +19,10 @@ $(OBJDIR):
 ../lib/cudaMatrix.o:
 	make ../lib/makefile
 
-powerANN: powerANN.cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o
+powerANN.o: powerANN.cu
+	$(NVCC) $(CUDACNFG) -o $@ -c $+
+
+powerANN: powerANN.cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o powerANN.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
 clean:

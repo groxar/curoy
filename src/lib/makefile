@@ -22,7 +22,6 @@ cudaMatrix.o: cuMatrix.cu
 cuMatrix.o: cuMatrix.hpp 
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ -c -x c++ $+ 
 
-
 clean:
 	rm -rf $(OBJDIR) $(LIBDIR)	
 
