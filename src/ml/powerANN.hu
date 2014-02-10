@@ -1,1 +1,13 @@
-void powerANN();
+#pragma once
+
+#include <iostream>
+
+using namespace std;
+
+#define B_WIDTH 16
+#define B_SIZE B_WIDTH*B_WIDTH 
+#define CEIL_DIV(a,b) ((((a)-1)/(b))+1)
+void trainANN(	double* X, size_t xH, size_t xW,
+				double* Y, size_t yH, size_t yW,
+				double* result, size_t rH, size_t rW);
+

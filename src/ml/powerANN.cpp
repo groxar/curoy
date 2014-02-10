@@ -17,7 +17,7 @@ xMatrix<double> readFile(string path){
 	double* data_ptr;
 	int number_of_rows = 0; 
 	int number_of_cols = 0; 
-	size_t position =0;
+	size_t position = 0;
     string line;
 	stringstream lineStream;
 	string cell;
@@ -46,6 +46,7 @@ xMatrix<double> readFile(string path){
 int main(void){
 	xMatrix<double> X;
 	xMatrix<double> Y;
+	xMatrix<double> tMatrix;
 	X = readFile("Xdata.txt");
 	Y = readFile("Ydata.txt");
 
@@ -53,6 +54,7 @@ int main(void){
 	cout.precision(dbl::digits10);
 
 	cout << X[0][67] << endl;
+	cout << X[22][67] << endl;
 	cout << "Size: " << X.dim()[0] << " " << X.dim()[1] << endl;
 	cout << "Size: " << Y.dim()[0] << " " << Y.dim()[1] << endl;
 	cout << "Size: " << T(Y).dim()[0] << " " << T(Y).dim()[1] << endl;
@@ -63,10 +65,22 @@ int main(void){
 
 	cuMatrix<double> cuX;
 	cuMatrix<double> cuY;
+	cuMatrix<double> cuTheta;
 
 	X >> cuX;
 	Y >> cuY;
 
+	//error tranfer error test
+	tMatrix << cuX;
+	for(size_t i = 0; i < X.dim()[0]*X.dim()[1]; ++i)
+	{
+		if(X.m_data[i]!=tMatrix.m_data[i])
+			cout << "error " << X.m_data[i] <<" "<< tMatrix.m_data[i];
+	}
+
+	trainANN(	cuX.m_data,cuX.dim()[0], cuX.dim()[1],
+				cuY.m_data,cuY.dim()[0], cuY.dim()[1],
+				cuTheta.m_data,10,10);
 
 	return EXIT_SUCCESS;
 }
