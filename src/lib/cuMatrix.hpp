@@ -25,15 +25,7 @@ class cuMatrix{
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
 		cuMatrix(const cuMatrix<N>& matrix){ // TODO rework
-			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(matrix.size()*sizeof(N));
-			else{
-				m_data = (N*) malloc(matrix.size()*sizeof(N));
-				m_perm = memPermission::owner;
-			}
-
-			if(m_data == nullptr)
-				cout << "reallocation error"<<endl;
+			this->resize(matrix.size());
 
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
@@ -98,15 +90,8 @@ class cuMatrix{
 		}
 		
 		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){ // TODO rework
-			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(rhs.size()*sizeof(N));
-			else{
-				m_data = (N*) malloc(rhs.size()*sizeof(N));
-				m_perm = memPermission::owner;
-			}
+			this->resize(rhs.size());	
 
-			if(m_data == nullptr)
-				cout << "reallocation error";
 			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			m_vecDim = rhs.m_vecDim;
 			return *this;
