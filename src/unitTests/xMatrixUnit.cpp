@@ -54,6 +54,21 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( matrix[vector<size_t>({1,1})] == 5);
 	}
 
+	SECTION("assignment"){
+
+	}
+
+	SECTION("fill"){
+		matrixT = matrix;
+		fill(!matrixT,0);
+		REQUIRE( matrixT[0][0] == 0);
+		REQUIRE( matrixT[0][1] == 0);
+		REQUIRE( matrixT[0][2] == 0);
+		REQUIRE( matrixT[1][0] == 0);
+		REQUIRE( matrixT[1][1] == 0);
+		REQUIRE( matrixT[1][2] == 0);
+	}
+
 	SECTION("operator: ! (move)") {
 		pointerT = (void*)matrix.m_data;	
 		REQUIRE( matrix.m_data == pointerT);

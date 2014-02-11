@@ -53,6 +53,7 @@ class xMatrix{
 			return numElements;
 		}
 		vector<size_t> dim() const{return m_vecDim;}
+		size_t dim(size_t index) const{return m_vecDim[index];}
 
 		/**
 		 * Access
@@ -108,6 +109,30 @@ class xMatrix{
 			return *this;
 		}
 		
+		/**
+		 * MATRIX FILL
+		 */
+		friend xMatrix<N> fill(const xMatrix<N>& matrix, N number){	
+			if(m_perm == memPermission::owner)
+				m_data = (N*) realloc(m_data,matrix.size()*sizeof(N));
+			else{
+				m_data = (N*) malloc(rhs.size()*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+
+			if(m_data == nullptr)
+				cout << "allocation error";	
+
+			for(size_t i= 0; i < matrix.size();++i ) 
+				result.m_data[i] = number;
+			return result;
+		}
+
+		friend xMatrix<N>&& fill(xMatrix<N>&& matrix, N number){
+			for(size_t i = 0; i < matrix.size();++i ) 
+				matrix.m_data[i] = number;
+			return move(matrix);
+		}
 		
 		/**
 		 * ADDITION
