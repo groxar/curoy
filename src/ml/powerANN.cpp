@@ -55,13 +55,13 @@ int main(void){
 
 	cout << X[0][67] << endl;
 	cout << X[22][67] << endl;
-	cout << "Size: " << X.dim()[0] << " " << X.dim()[1] << endl;
-	cout << "Size: " << Y.dim()[0] << " " << Y.dim()[1] << endl;
-	cout << "Size: " << T(Y).dim()[0] << " " << T(Y).dim()[1] << endl;
+	cout << "Size: " << X.dim(0) << " " << X.dim(1) << endl;
+	cout << "Size: " << Y.dim(0) << " " << Y.dim(1) << endl;
+	cout << "Size: " << T(Y).dim(0) << " " << T(Y).dim(1) << endl;
 	cout << T(T(T(X)))[67][0] << endl;
 
-	cout << X.dim()[0] << " " << X.dim()[1] << endl;
-	cout << Y.dim()[0] << " " << Y.dim()[1] << endl;
+	cout << X.dim(0) << " " << X.dim(1) << endl;
+	cout << Y.dim(0) << " " << Y.dim(1) << endl;
 
 	cuMatrix<double> cuX;
 	cuMatrix<double> cuY;
