@@ -20,6 +20,7 @@ class xMatrix{
 		xMatrix():m_data(nullptr){};
 		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+	
 		xMatrix(const xMatrix<N>& matrix){
 			if(m_perm == memPermission::owner)
 				m_data = (N*) realloc(m_data,matrix.size()*sizeof(N));
@@ -34,6 +35,7 @@ class xMatrix{
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
 		}
+
 		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data),m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		~xMatrix(){ 
@@ -54,6 +56,17 @@ class xMatrix{
 		}
 		vector<size_t> dim() const{return m_vecDim;}
 		size_t dim(size_t index) const{return m_vecDim[index];}
+		void resize(size_t numElements){
+			if(this->m_perm == memPermission::owner)
+				this->m_data = (N*) realloc(this->m_data,numElements*sizeof(N));
+			else{
+				this->m_data = (N*) malloc(numElements*sizeof(N));
+				this->m_perm = memPermission::owner;
+			}
+
+			if(this->m_data == nullptr)
+				cout << "allocation error";	
+		}
 
 		/**
 		 * Access
@@ -104,6 +117,7 @@ class xMatrix{
 
 			if(m_data == nullptr)
 				cout << "allocation error";
+			
 			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			m_vecDim = rhs.m_vecDim;
 			return *this;
@@ -112,20 +126,12 @@ class xMatrix{
 		/**
 		 * MATRIX FILL
 		 */
-		friend xMatrix<N> fill(const xMatrix<N>& matrix, N number){	
-			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(m_data,matrix.size()*sizeof(N));
-			else{
-				m_data = (N*) malloc(rhs.size()*sizeof(N));
-				m_perm = memPermission::owner;
-			}
-
-			if(m_data == nullptr)
-				cout << "allocation error";	
+		friend xMatrix<N> fill(xMatrix<N>& matrix, N number){	
+			matrix.resize(matrix.size());	
 
 			for(size_t i= 0; i < matrix.size();++i ) 
-				result.m_data[i] = number;
-			return result;
+				matrix.m_data[i] = number;
+			return matrix;
 		}
 
 		friend xMatrix<N>&& fill(xMatrix<N>&& matrix, N number){
