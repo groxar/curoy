@@ -21,11 +21,12 @@ class cuMatrix{
 		/**
 		 * CONSTRUKTOR
 		 */
-		cuMatrix():m_data(nullptr){};
-		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
-		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(const cuMatrix<N>& matrix){ // TODO rework
-			this->resize(matrix.size());
+		cuMatrix():m_data(nullptr),m_perm(memPermission::user){};
+		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
+		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+
+		cuMatrix(const cuMatrix<N>& matrix){ // TODO rework THAT IS ALL WRONG 
+			//resize
 
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
@@ -59,13 +60,13 @@ class cuMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			return cuMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::read);
+			return cuMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::user);
 		}
 
 		cuMatrix<N> operator[](vector<size_t> nVec) const {  // TODO rework
 			if(nVec.size()>m_vecDim.size())
 				throw nullptr;
-			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::read);
+			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::user);
 			for(auto n: nVec)
 			{
 				result = result[n];
@@ -90,8 +91,7 @@ class cuMatrix{
 		}
 		
 		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){ // TODO rework
-			this->resize(rhs.size());	
-
+			//resize on rhs
 			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			m_vecDim = rhs.m_vecDim;
 			return *this;

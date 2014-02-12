@@ -32,13 +32,13 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	}
 
 	SECTION("dimensions size"){
-		REQUIRE( matrix.dim()[0]  == 2);
-		REQUIRE( matrix.dim()[1]  == 3);
-		REQUIRE( matrix1.dim()[0] == 4);
-		REQUIRE( matrix1.dim()[1] == 5);
-		REQUIRE( matrix2.dim()[0] == 2);
-		REQUIRE( matrix2.dim()[1] == 2);
-		REQUIRE( matrix2.dim()[2] == 3);
+		REQUIRE( matrix.dim(0)  == 2);
+		REQUIRE( matrix.dim(1)  == 3);
+		REQUIRE( matrix1.dim(0) == 4);
+		REQUIRE( matrix1.dim(1) == 5);
+		REQUIRE( matrix2.dim(0) == 2);
+		REQUIRE( matrix2.dim(1) == 2);
+		REQUIRE( matrix2.dim(2) == 3);
 	}
 
 	SECTION("operator: []"){
@@ -55,12 +55,18 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	}
 
 	SECTION("assignment"){
-
+		matrixT = matrix;
+		REQUIRE( matrixT[0][0] == 1);
+		REQUIRE( matrixT[0][1] == 2);
+		REQUIRE( matrixT[0][2] == 3);
+		REQUIRE( matrixT[1][0] == 4);
+		REQUIRE( matrixT[1][1] == 5);
+		REQUIRE( matrixT[1][2] == 6);
 	}
 
 	SECTION("fill"){
 		matrixT = matrix;
-		fill(!matrixT,0);
+		fill(matrixT,0);
 		REQUIRE( matrixT[0][0] == 0);
 		REQUIRE( matrixT[0][1] == 0);
 		REQUIRE( matrixT[0][2] == 0);
@@ -71,8 +77,21 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 
 	SECTION("operator: ! (move)") {
 		pointerT = (void*)matrix.m_data;	
-		REQUIRE( matrix.m_data == pointerT);
-		REQUIRE( (!matrix).m_data == pointerT);
+		matrixT = !matrix;
+		REQUIRE( (!matrix).m_data != pointerT); //matrix gets the ownership with !
+		REQUIRE( matrixT[0][0] == 1);
+		REQUIRE( matrixT[0][1] == 2);
+		REQUIRE( matrixT[0][2] == 3);
+		REQUIRE( matrixT[1][0] == 4);
+		REQUIRE( matrixT[1][1] == 5);
+		REQUIRE( matrixT[1][2] == 6);
+
+		pointerT = (void*)matrix.m_data;	
+		REQUIRE( (!matrix).m_data == pointerT); //matrix has its ownership to the data, therefore nothing should happen
+		REQUIRE( (!!!!matrix).m_data == pointerT);
+
+
+
 	}
 
 	SECTION("operator: +"){
