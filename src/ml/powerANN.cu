@@ -68,7 +68,6 @@ double sum(double* X, size_t length){
 void trainANN(	double* X, size_t xH, size_t xW,
 				double* Y, size_t yH, size_t yW,
 				double* result, size_t rH, size_t rW){
-
 	double sumX = sum(X,xH*xW);
 	cout << "sum of X: " << sumX << endl;
 	cout << "expected: 262678.260160073"<< endl;

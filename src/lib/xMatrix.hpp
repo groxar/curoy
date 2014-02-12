@@ -17,26 +17,18 @@ class xMatrix{
 		/**
 		 * CONSTRUKTOR
 		 */
-		xMatrix():m_data(nullptr){};
-		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
-		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::read) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+		xMatrix():m_data(nullptr),m_perm(memPermission::user){};
+		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
+		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
 	
 		xMatrix(const xMatrix<N>& matrix){
-			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(m_data,matrix.size()*sizeof(N));
-			else{
-				m_data = (N*) malloc(matrix.size()*sizeof(N));
-				m_perm = memPermission::owner;
-			}
-
-			if(m_data == nullptr)
-				cout << "allocation error"<<endl;
-
+			rebase(matrix.size());
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
+			m_perm = memPermission::owner;
 		}
 
-		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data),m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		~xMatrix(){ 
 			if(m_perm == memPermission::owner)
@@ -56,20 +48,21 @@ class xMatrix{
 		}
 		vector<size_t> dim() const{return m_vecDim;}
 		size_t dim(size_t index) const{return m_vecDim[index];}
-		void resize(size_t numElements){
-			if(this->m_perm == memPermission::owner)
-				this->m_data = (N*) realloc(this->m_data,numElements*sizeof(N));
-			else{
-				this->m_data = (N*) malloc(numElements*sizeof(N));
-				this->m_perm = memPermission::owner;
+		void rebase(size_t numElements){
+			if(m_perm == memPermission::user){
+				m_data = (N*) malloc(numElements*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+			else if(this->m_perm == memPermission::owner && numElements != this->size()){
+				m_data = (N*) realloc(this->m_data,numElements*sizeof(N));
 			}
 
-			if(this->m_data == nullptr)
+			if(this->m_data == NULL)
 				cout << "allocation error";	
 		}
 
 		/**
-		 * Access
+		 * ACCESS
 		 */
 		xMatrix<N> operator[](size_t n) const { //access on none const
 			size_t memJump = 1;
@@ -77,13 +70,13 @@ class xMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::read);
+			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::user);
 		}
 
 		xMatrix<N> operator[](vector<size_t> nVec) const {
 			if(nVec.size()>m_vecDim.size())
 				throw nullptr;
-			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::read);
+			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::user);
 			for(auto n: nVec)
 			{
 				result = result[n];
@@ -92,14 +85,27 @@ class xMatrix{
 			return result;
 		}
 
+		/**
+		 * MOVE
+		 */
 		friend inline xMatrix<N>&& operator! (xMatrix<N>& matrix){
-			return move(matrix); //handle non ownership
+			if(matrix.m_perm == memPermission::user){
+				N* ptr = (N*) malloc(matrix.size()*sizeof(N));
+				memcpy(ptr,matrix.m_data,matrix.size()*sizeof(N));
+				matrix.m_data = ptr;
+				matrix.m_perm = memPermission::owner;
+			}
+			return move(matrix);
+		}
+		
+		friend inline xMatrix<N>&& operator! (xMatrix<N>&& matrix){
+			return move(matrix);
 		}
 
 		/**
 		 * ASSIGNMENT
 		 */
-		xMatrix<N>& operator= (xMatrix<N>&& rhs){ // DO WE NEED THE REFERENZE ON RETURN?
+		xMatrix<N>& operator= (xMatrix<N>&& rhs){
 			m_data = rhs.m_data;
 			m_vecDim = move(rhs.m_vecDim);
 			m_perm = rhs.m_perm;
@@ -108,18 +114,12 @@ class xMatrix{
 		}
 		
 		xMatrix<N>& operator= (const xMatrix<N>& rhs){
-			if(m_perm == memPermission::owner)
-				m_data = (N*) realloc(m_data,rhs.size()*sizeof(N));
-			else{
-				m_data = (N*) malloc(rhs.size()*sizeof(N));
-				m_perm = memPermission::owner;
+			if(m_data != rhs.m_data){
+				rebase(rhs.size());	
+				memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
+				m_vecDim = rhs.m_vecDim;
 			}
 
-			if(m_data == nullptr)
-				cout << "allocation error";
-			
-			memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
-			m_vecDim = rhs.m_vecDim;
 			return *this;
 		}
 		
@@ -127,7 +127,7 @@ class xMatrix{
 		 * MATRIX FILL
 		 */
 		friend xMatrix<N> fill(xMatrix<N>& matrix, N number){	
-			matrix.resize(matrix.size());	
+			matrix.rebase(matrix.size());	
 
 			for(size_t i= 0; i < matrix.size();++i ) 
 				matrix.m_data[i] = number;
@@ -203,7 +203,7 @@ class xMatrix{
 		}
 
 		friend inline xMatrix<N>&& operator- (xMatrix<N>& lhs, xMatrix<N>&& rhs){
-			return move(!rhs - lhs); //fix after implementing scalar
+			return move((!rhs)*-1 + lhs); //fix after implementing scalar
 		}
 	
 		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>& rhs){

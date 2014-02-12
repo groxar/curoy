@@ -81,6 +81,5 @@ int main(void){
 	trainANN(	cuX.m_data,cuX.dim()[0], cuX.dim()[1],
 				cuY.m_data,cuY.dim()[0], cuY.dim()[1],
 				cuTheta.m_data,10,10);
-
 	return EXIT_SUCCESS;
 }

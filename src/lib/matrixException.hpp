@@ -8,6 +8,6 @@ class matrixDimException{
 	}
 };
 
-enum class memPermission{read, owner};
+enum class memPermission{user, owner};
 
 
