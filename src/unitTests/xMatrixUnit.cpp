@@ -16,6 +16,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	xMatrix<int> matrixT;
 	void* pointerT=nullptr;
 
+
 	SECTION("print"){
 		cout << matrix << endl;
 		cout << matrix1 << endl;
@@ -39,6 +40,14 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( matrix2.dim(0) == 2);
 		REQUIRE( matrix2.dim(1) == 2);
 		REQUIRE( matrix2.dim(2) == 3);
+		REQUIRE( dimCompare(matrix.dim(),matrix.dim()) == 0);
+		REQUIRE( dimCompare(matrix.dim(),matrix1.dim()) == 2);
+		REQUIRE( dimCompare(matrix.dim(),matrix2.dim()) == 2);
+		REQUIRE( dimCompare(matrix.dim(),matrix3.dim()) == 1);
+		REQUIRE( dimCompare(vector<size_t>({}),vector<size_t>({}))==0);
+		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({}))==0);
+		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({2}))==0);
+		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({2}))==1);
 	}
 
 	SECTION("operator: []"){
@@ -62,6 +71,14 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( matrixT[1][0] == 4);
 		REQUIRE( matrixT[1][1] == 5);
 		REQUIRE( matrixT[1][2] == 6);
+		matrixT[0][2] = 1234;
+		matrixT[1][0] = 12;
+		REQUIRE( matrixT[0][2] == 1234);
+		REQUIRE( matrixT[1][0] == 12);
+		matrixT = matrix2;
+		cout << matrixT << endl;
+		matrixT[1] = matrix;
+		cout << matrixT << endl;
 	}
 
 	SECTION("fill"){

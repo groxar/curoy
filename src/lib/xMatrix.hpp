@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include <numeric>
+#include <algorithm>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -10,6 +11,31 @@
 #include "matrixException.hpp"
 
 using namespace std;
+
+size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
+	vector<size_t> templ;
+	vector<size_t> tempr;
+	size_t result = 0;
+
+	for(auto it: lhs){
+		if(it!=1)
+			templ.push_back(it);
+	}
+
+	for(auto it: rhs){
+		if(it!=1)
+			tempr.push_back(it);
+	}
+
+	size_t end = min(templ.size(),tempr.size());
+	result += max(templ.size(),tempr.size()) - end;
+	for(size_t i = 0; i < end; ++i){
+		if(templ[i] != tempr[i])
+			++result;
+	}
+
+	return result;
+}
 
 template<typename N>
 class xMatrix{
@@ -70,13 +96,13 @@ class xMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::user);
+			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::diver);
 		}
 
 		xMatrix<N> operator[](vector<size_t> nVec) const {
 			if(nVec.size()>m_vecDim.size())
 				throw nullptr;
-			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::user);
+			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 			{
 				result = result[n];
@@ -89,7 +115,7 @@ class xMatrix{
 		 * MOVE
 		 */
 		friend inline xMatrix<N>&& operator! (xMatrix<N>& matrix){
-			if(matrix.m_perm == memPermission::user){
+			if(matrix.m_perm == memPermission::user || matrix.m_perm == memPermission::diver){ //make sure that diver should behave like that
 				N* ptr = (N*) malloc(matrix.size()*sizeof(N));
 				memcpy(ptr,matrix.m_data,matrix.size()*sizeof(N));
 				matrix.m_data = ptr;
@@ -115,11 +141,26 @@ class xMatrix{
 		
 		xMatrix<N>& operator= (const xMatrix<N>& rhs){
 			if(m_data != rhs.m_data){
-				rebase(rhs.size());	
-				memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
+				if(m_perm == memPermission::diver){
+					if(dimCompare(this->dim(),rhs.dim()) != 0){
+						cout << "cant assign that to diver" << endl;
+						return *this;
+					}
+				}
+				else
+					rebase(rhs.size());	
 				m_vecDim = rhs.m_vecDim;
+				memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			}
 
+			return *this;
+		}
+
+		xMatrix<N>& operator= (const N value){
+			if(size()==1)
+				m_data[0] = value;
+			else
+				cout << "error Assignment error" << endl;//fix it
 			return *this;
 		}
 		
@@ -203,7 +244,7 @@ class xMatrix{
 		}
 
 		friend inline xMatrix<N>&& operator- (xMatrix<N>& lhs, xMatrix<N>&& rhs){
-			return move((!rhs)*-1 + lhs); //fix after implementing scalar
+			return move((!rhs) * -1 + lhs); //fix after implementing scalar
 		}
 	
 		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>& rhs){
@@ -325,3 +366,5 @@ class xMatrix{
 		enum memPermission m_perm;
 
 };
+
+
