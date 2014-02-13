@@ -75,10 +75,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		matrixT[1][0] = 12;
 		REQUIRE( matrixT[0][2] == 1234);
 		REQUIRE( matrixT[1][0] == 12);
-		matrixT = matrix2;
-		cout << matrixT << endl;
-		matrixT[1] = matrix;
-		cout << matrixT << endl;
+		//ADD diver assginment
 	}
 
 	SECTION("fill"){
