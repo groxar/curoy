@@ -47,14 +47,48 @@ class xMatrix{
 		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
 	
+		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+
 		xMatrix(const xMatrix<N>& matrix){
-			rebase(matrix.size());
-			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 			m_vecDim = matrix.m_vecDim;
+			m_perm = memPermission::user;
+			rebase(matrix.size());
 			m_perm = memPermission::owner;
+			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 		}
 
-		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+		xMatrix(initializer_list<N> data){ 
+			m_vecDim.push_back(data.size());
+			m_perm = memPermission::user;
+			rebase(data.size());
+			m_perm = memPermission::owner;
+
+			int pos = 0;
+			for(auto it : data){
+				m_data[pos] = it; 
+				++pos;
+			}
+		}
+
+		xMatrix(initializer_list<xMatrix<N>> matrixList){ // NOT FINISHED
+			// determine vector dimension
+			for(auto matrix : matrixList){
+				for(int depth = 0; depth < matrix.nDim();++depth ){
+					if(depth == m_vecDim.size())
+						m_vecDim.push_back(matrix.dim(depth));
+					else if ( depth < matrix.nDim() && matrix.dim(depth) > m_vecDim[depth])
+						m_vecDim[depth] = matrix.dim(depth);
+				}
+			}
+			m_vecDim.insert(m_vecDim.begin(),matrixList.size());
+
+			// put data
+			m_perm = memPermission::user;
+			rebase(size());
+			m_perm = memPermission::owner;
+
+			fill(*this,0);
+		}
 
 		~xMatrix(){ 
 			if(m_perm == memPermission::owner)
@@ -278,7 +312,7 @@ class xMatrix{
 		 * MULTIPLICATION
 		 */
 		//simple R^2 matrix multiplikation (1,2)
-	 	friend xMatrix<N> operator* (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+	 	friend xMatrix<N> mult (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
 			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
 				throw "DIMENSIONS DONT FIT";
 				return lhs;
@@ -303,6 +337,45 @@ class xMatrix{
 		}
 		
 		/**
+		 * MULTIPLICATION SKALAR
+		 */
+
+		friend xMatrix<N> operator* (const xMatrix<N>& lhs,const N rhs) {
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] * rhs;
+			return result;
+		}
+
+		friend xMatrix<N>&& operator* (xMatrix<N>&& lhs,const N rhs) {
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] * rhs;
+			return move(lhs);
+		}
+		
+	
+		/**
+		 * DIVISION SKALAR
+		 */
+
+		friend xMatrix<N> operator/ (const xMatrix<N>& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] / rhs;
+			return result;
+		}
+
+		friend xMatrix<N>&& operator/ (xMatrix<N>&& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] / rhs;
+			return move(lhs);
+		}
+
+		/**
 		 * MATRIX OPERATION
 		 */
 		friend N sum(const xMatrix<N>& matrix){
@@ -313,6 +386,17 @@ class xMatrix{
 			return result;
 		}
 
+		friend bool eq(const xMatrix<N>& lhs, const xMatrix<N>& rhs){
+			if(dimCompare(lhs.dim(),rhs.dim())!=0)
+				return false;
+
+			size_t end = lhs.size();
+			for(size_t i=0; i<end;++i){
+				if(lhs.m_data[i] != rhs.m_data[i])
+					return false;
+			}
+			return true;
+		}
 		//simple Transpose only for 2D Matrix tested
 		friend xMatrix<N> T(const xMatrix<N>& matrix){
 			vector<size_t> transVec(matrix.m_vecDim);
@@ -362,9 +446,7 @@ class xMatrix{
 		N* m_data;//-> to private after tests
 		vector<size_t> m_vecDim;
 	private:
-			
 		enum memPermission m_perm;
-
 };
 
 

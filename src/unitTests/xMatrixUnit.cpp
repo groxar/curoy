@@ -17,6 +17,12 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	void* pointerT=nullptr;
 
 
+	SECTION("test"){
+		xMatrix<int> matrix4({{1,2,3},{4,5,6},{{1,2,3},{4,5,6,7,8}}});
+		xMatrix<int> matrix5({1,2,3,4,5,6});
+		cout << matrix4 << endl;
+		cout << matrix5 << endl;
+	}
 	SECTION("print"){
 		cout << matrix << endl;
 		cout << matrix1 << endl;
@@ -48,6 +54,17 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({}))==0);
 		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({2}))==0);
 		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({2}))==1);
+	}
+
+	SECTION("matrix compare"){
+		matrixT = xMatrix<int>(*data,{6});
+		REQUIRE(eq(matrix,matrixT) == false);
+		matrixT = xMatrix<int>(*data,{2,3});
+		REQUIRE(eq(matrix,matrixT) == true);
+		matrixT = xMatrix<int>(*data,{3,2});
+		REQUIRE(eq(matrix,matrixT) == false);
+		matrixT = xMatrix<int>((int*)data2[1],{2,3});
+		REQUIRE(eq(matrix,matrixT) == false);
 	}
 
 	SECTION("operator: []"){
@@ -146,12 +163,12 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	}
 
 	SECTION("operator *") {
-		matrixT = matrix*T(matrix);
+		matrixT = mult(matrix, T(matrix));
 		REQUIRE( matrixT[0][0] == 14);
 		REQUIRE( matrixT[0][1] == 32);
 		REQUIRE( matrixT[1][0] == 32);
 		REQUIRE( matrixT[1][1] == 77);
-		matrixT = T(matrix)* matrix3;
+		matrixT = mult(T(matrix), matrix3);
 		REQUIRE( matrixT[0][0] == 17);
 		REQUIRE( matrixT[0][1] == 22);
 		REQUIRE( matrixT[0][2] == 27);
