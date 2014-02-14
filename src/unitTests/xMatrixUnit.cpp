@@ -17,17 +17,15 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	void* pointerT=nullptr;
 
 
-	SECTION("test"){
-		xMatrix<int> matrix4({{1,2,3},{4,5,6},{{1,2,3},{4,5,6,7,8}}});
-		xMatrix<int> matrix5({1,2,3,4,5,6});
-		cout << matrix4 << endl;
-		cout << matrix5 << endl;
+	SECTION("direkt construktor"){
+		xMatrix<int> matrix4({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
+		REQUIRE(dimCompare(matrix4.dim(), vector<size_t>{2,3,5}) == 0);
+		xMatrix<int> matrix5({{1,2,3},{4,5,6}});
+		REQUIRE( eq(matrix5, matrix));
 	}
 	SECTION("print"){
 		cout << matrix << endl;
-		cout << matrix1 << endl;
 		cout << matrix2 << endl;
-		cout << matrix3 << endl;
 	}
 	SECTION("number of dimensions"){
 		REQUIRE( matrix.nDim()  == 2 );
@@ -52,6 +50,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( dimCompare(matrix.dim(),matrix3.dim()) == 1);
 		REQUIRE( dimCompare(vector<size_t>({}),vector<size_t>({}))==0);
 		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({}))==0);
+		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({}))==1);
 		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({2}))==0);
 		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({2}))==1);
 	}
@@ -82,12 +81,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 
 	SECTION("assignment"){
 		matrixT = matrix;
-		REQUIRE( matrixT[0][0] == 1);
-		REQUIRE( matrixT[0][1] == 2);
-		REQUIRE( matrixT[0][2] == 3);
-		REQUIRE( matrixT[1][0] == 4);
-		REQUIRE( matrixT[1][1] == 5);
-		REQUIRE( matrixT[1][2] == 6);
+		REQUIRE( eq(matrixT, matrix));
 		matrixT[0][2] = 1234;
 		matrixT[1][0] = 12;
 		REQUIRE( matrixT[0][2] == 1234);
@@ -98,12 +92,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	SECTION("fill"){
 		matrixT = matrix;
 		fill(matrixT,0);
-		REQUIRE( matrixT[0][0] == 0);
-		REQUIRE( matrixT[0][1] == 0);
-		REQUIRE( matrixT[0][2] == 0);
-		REQUIRE( matrixT[1][0] == 0);
-		REQUIRE( matrixT[1][1] == 0);
-		REQUIRE( matrixT[1][2] == 0);
+		REQUIRE( eq(matrixT, xMatrix<int>({{0,0,0},{0,0,0}})));
 	}
 
 	SECTION("operator: ! (move)") {
@@ -120,8 +109,6 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		pointerT = (void*)matrix.m_data;	
 		REQUIRE( (!matrix).m_data == pointerT); //matrix has its ownership to the data, therefore nothing should happen
 		REQUIRE( (!!!!matrix).m_data == pointerT);
-
-
 
 	}
 
