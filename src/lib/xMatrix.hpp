@@ -9,33 +9,9 @@
 #include <exception>
 #include <type_traits> 
 #include "matrixException.hpp"
+#include "dimIterator.hpp"
 
 using namespace std;
-
-size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
-	vector<size_t> templ;
-	vector<size_t> tempr;
-	size_t result = 0;
-
-	for(auto it: lhs){
-		if(it!=1)
-			templ.push_back(it);
-	}
-
-	for(auto it: rhs){
-		if(it!=1)
-			tempr.push_back(it);
-	}
-
-	size_t end = min(templ.size(),tempr.size());
-	result += max(templ.size(),tempr.size()) - end;
-	for(size_t i = 0; i < end; ++i){
-		if(templ[i] != tempr[i])
-			++result;
-	}
-
-	return result;
-}
 
 template<typename N>
 class xMatrix{
@@ -46,7 +22,6 @@ class xMatrix{
 		xMatrix():m_data(nullptr),m_perm(memPermission::user){};
 		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-	
 		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		xMatrix(const xMatrix<N>& matrix){
@@ -70,7 +45,7 @@ class xMatrix{
 			}
 		}
 
-		xMatrix(initializer_list<xMatrix<N>> matrixList){ // NOT FINISHED
+		xMatrix(initializer_list<xMatrix<N>> matrixList){
 			// determine vector dimension
 			for(auto matrix : matrixList){
 				for(int depth = 0; depth < matrix.nDim();++depth ){
@@ -86,8 +61,14 @@ class xMatrix{
 			m_perm = memPermission::user;
 			rebase(size());
 			m_perm = memPermission::owner;
-
+			
 			fill(*this,0);
+			size_t matrixPos = 0;
+			for(auto matrix : matrixList){
+				memcpy(((*this)[matrixPos]).m_data, matrix.m_data, sizeof(N)*matrix.size());
+				++matrixPos;
+			}
+			cout << *this<< endl;
 		}
 
 		~xMatrix(){ 
@@ -138,12 +119,11 @@ class xMatrix{
 				throw nullptr;
 			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
-			{
 				result = result[n];
-			}
 
 			return result;
 		}
+
 
 		/**
 		 * MOVE
@@ -194,7 +174,7 @@ class xMatrix{
 			if(size()==1)
 				m_data[0] = value;
 			else
-				cout << "error Assignment error" << endl;//fix it
+				cout << "Assignment error" << endl;//fix it
 			return *this;
 		}
 		
