@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 #include "../lib/xMatrix.hpp"
+using namespace curoy;
 
 TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	int data[2][3] = {{1,2,3},{4,5,6}};
@@ -17,7 +18,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	void* pointerT=nullptr;
 
 
-	SECTION("direkt construktor"){
+	SECTION("direct constructor"){
 		xMatrix<int> matrix4({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 		REQUIRE(dimCompare(matrix4.dim(), vector<size_t>{2,3,5}) == 0);
 		xMatrix<int> matrix5({{1,2,3},{4,5,6}});
@@ -168,6 +169,12 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( matrixT[2][1] == 36);
 		REQUIRE( matrixT[2][2] == 45);
 		REQUIRE( matrixT[2][3] == 54);
+	}
+
+	SECTION("matrix operation"){
+		matrixT = pow(matrix,2);
+		REQUIRE(eq(matrixT,xMatrix<int>({{1,4,9},{16,25,36}})));
+
 	}
 	
 }

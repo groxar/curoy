@@ -11,6 +11,7 @@
 #include "powerANN.hu"
 
 using namespace std;
+using namespace curoy;
 
 xMatrix<double> readFile(string path){
 	ifstream is(path);

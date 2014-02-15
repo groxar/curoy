@@ -2,7 +2,7 @@
 #include <vector>
 
 using namespace std;
-size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
+inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
 	vector<size_t> templ;
 	vector<size_t> tempr;
 	size_t result = 0;
