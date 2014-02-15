@@ -15,6 +15,7 @@
 
 using namespace std;
 
+namespace curoy{
 template<typename N>
 class cuMatrix{
 	public:
@@ -238,3 +239,4 @@ class cuMatrix{
 		vector<size_t> m_vecDim;
 
 };
+}

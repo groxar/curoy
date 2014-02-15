@@ -4,6 +4,8 @@
 #include "../lib/cuMatrix.hpp"
 
 using namespace std;
+using namespace curoy;
+
 TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){ 
 	
 	int data1[4][5] = {{1,2,3,4,5},{4,5,6,7,8},{7,8,9,10,11},{10,11,12,13,14}};

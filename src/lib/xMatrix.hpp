@@ -8,16 +8,19 @@
 #include <cstring>
 #include <exception>
 #include <type_traits> 
+#include <tgmath.h>
+#include <functional>
 #include "matrixException.hpp"
 #include "dimIterator.hpp"
 
 using namespace std;
 
+namespace curoy{
 template<typename N>
 class xMatrix{
 	public:
 		/**
-		 * CONSTRUKTOR
+		 * CONSTRUCTOR
 		 */
 		xMatrix():m_data(nullptr),m_perm(memPermission::user){};
 		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
@@ -141,6 +144,7 @@ class xMatrix{
 		friend inline xMatrix<N>&& operator! (xMatrix<N>&& matrix){
 			return move(matrix);
 		}
+
 
 		/**
 		 * ASSIGNMENT
@@ -339,7 +343,6 @@ class xMatrix{
 		/**
 		 * DIVISION SKALAR
 		 */
-
 		friend xMatrix<N> operator/ (const xMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
 			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
@@ -354,10 +357,54 @@ class xMatrix{
 				lhs.m_data[i] = lhs.m_data[i] / rhs;
 			return move(lhs);
 		}
+		
+
+		/**
+		 * DIVISION SKALAR
+		 */
+		friend xMatrix<N> operator% (const xMatrix<N>& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] % rhs;
+			return result;
+		}
+
+		friend xMatrix<N>&& operator% (xMatrix<N>&& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] % rhs;
+			return move(lhs);
+		}
+
 
 		/**
 		 * MATRIX OPERATION
 		 */
+		friend xMatrix<N> log(const xMatrix<N>& matrix){
+			size_t numElements = matrix.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = log(matrix.m_data[i]);
+			return result;
+		}
+		
+		friend xMatrix<N> log10(const xMatrix<N>& matrix){
+			size_t numElements = matrix.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = log10(matrix.m_data[i]);
+			return result;
+		}
+
+		friend xMatrix<N> pow(const xMatrix<N>& matrix, N exponent){
+			size_t numElements = matrix.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = pow(matrix.m_data[i],exponent);
+			return result;
+		}
+
 		friend N sum(const xMatrix<N>& matrix){
 			N result=0;
 			size_t end = matrix.size();
@@ -365,6 +412,15 @@ class xMatrix{
 				result+= *(matrix.m_data+i);
 			return result;
 		}
+		
+		friend N prod(const xMatrix<N>& matrix){
+			N result=0;
+			size_t end = matrix.size();
+			for(size_t i=0; i<end;++i)
+				result*= *(matrix.m_data+i);
+			return result;
+		}
+
 
 		friend bool eq(const xMatrix<N>& lhs, const xMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0)
@@ -428,5 +484,4 @@ class xMatrix{
 	private:
 		enum memPermission m_perm;
 };
-
-
+}
