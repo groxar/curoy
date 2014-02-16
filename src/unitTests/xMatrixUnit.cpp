@@ -100,12 +100,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		pointerT = (void*)matrix.m_data;	
 		matrixT = !matrix;
 		REQUIRE( (!matrix).m_data != pointerT); //matrix gets the ownership with !
-		REQUIRE( matrixT[0][0] == 1);
-		REQUIRE( matrixT[0][1] == 2);
-		REQUIRE( matrixT[0][2] == 3);
-		REQUIRE( matrixT[1][0] == 4);
-		REQUIRE( matrixT[1][1] == 5);
-		REQUIRE( matrixT[1][2] == 6);
+		REQUIRE( eq(matrixT, xMatrix<int>({{1,2,3},{4,5,6}})));
 
 		pointerT = (void*)matrix.m_data;	
 		REQUIRE( (!matrix).m_data == pointerT); //matrix has its ownership to the data, therefore nothing should happen
@@ -118,12 +113,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		pointerT = (void*)matrixT.m_data;
 		REQUIRE( matrix.m_data != pointerT); 				//data has to be copied because matrix isn't a data memory owner
 		REQUIRE( matrix[0][0] == 1);						//unchanged check
-		REQUIRE( matrixT[0][0] == 2);	
-		REQUIRE( matrixT[0][1] == 4);	
-		REQUIRE( matrixT[0][2] == 6);	
-		REQUIRE( matrixT[1][0] == 8);	
-		REQUIRE( matrixT[1][1] == 10);	
-		REQUIRE( matrixT[1][2] == 12);	
+		REQUIRE( eq(matrixT, xMatrix<int>({{2,4,6},{8,10,12}})));
 		REQUIRE( pointerT != (matrixT + matrixT).m_data);  	// result is within a temporal variable
 		REQUIRE( pointerT == (!matrixT + matrixT).m_data); 	// result is calculated in place
 		REQUIRE( pointerT == (!matrixT + !matrixT).m_data); 	// result is calculated in place within the left element
@@ -134,16 +124,11 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	}
 	
 	SECTION("operator: -"){
-		matrixT = matrix + matrix;
+		matrixT = matrix - matrix;
 		pointerT = (void*)matrixT.m_data;
 		REQUIRE( matrix.m_data != pointerT); 				//data has to be copied because matrix isn't a data memory owner
 		REQUIRE( matrix[0][0] == 1);						//unchanged check
-		REQUIRE( matrixT[0][0] == 2);	
-		REQUIRE( matrixT[0][1] == 4);	
-		REQUIRE( matrixT[0][2] == 6);	
-		REQUIRE( matrixT[1][0] == 8);	
-		REQUIRE( matrixT[1][1] == 10);	
-		REQUIRE( matrixT[1][2] == 12);	
+		REQUIRE( eq(matrixT, xMatrix<int>({{0,0,0},{0,0,0}})));
 		REQUIRE( pointerT != (matrixT - matrixT).m_data);  	// result is within a temporal variable
 		REQUIRE( pointerT == (!matrixT - matrixT).m_data); 	// result is calculated in place
 		REQUIRE( pointerT == (!matrixT - !matrixT).m_data); 	// result is calculated in place within the left element
@@ -152,29 +137,16 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 
 	SECTION("operator *") {
 		matrixT = mult(matrix, T(matrix));
-		REQUIRE( matrixT[0][0] == 14);
-		REQUIRE( matrixT[0][1] == 32);
-		REQUIRE( matrixT[1][0] == 32);
-		REQUIRE( matrixT[1][1] == 77);
+		REQUIRE( eq(matrixT, xMatrix<int>({{14,32},{32,77}})));
 		matrixT = mult(T(matrix), matrix3);
-		REQUIRE( matrixT[0][0] == 17);
-		REQUIRE( matrixT[0][1] == 22);
-		REQUIRE( matrixT[0][2] == 27);
-		REQUIRE( matrixT[0][3] == 32);
-		REQUIRE( matrixT[1][0] == 22);
-		REQUIRE( matrixT[1][1] == 29);
-		REQUIRE( matrixT[1][2] == 36);
-		REQUIRE( matrixT[1][3] == 43);
-		REQUIRE( matrixT[2][0] == 27);
-		REQUIRE( matrixT[2][1] == 36);
-		REQUIRE( matrixT[2][2] == 45);
-		REQUIRE( matrixT[2][3] == 54);
+		REQUIRE( eq(matrixT, xMatrix<int>({{17,22,27,32},{22,29,36,43},{27,36,45,54}})));
 	}
 
 	SECTION("matrix operation"){
 		matrixT = pow(matrix,2);
 		REQUIRE(eq(matrixT,xMatrix<int>({{1,4,9},{16,25,36}})));
-
+		pow(!matrix,2);
+		REQUIRE(eq(matrix,xMatrix<int>({{1,4,9},{16,25,36}})));
 	}
 	
 }
