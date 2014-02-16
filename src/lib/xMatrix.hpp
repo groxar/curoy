@@ -389,12 +389,27 @@ class xMatrix{
 			return result;
 		}
 		
+		friend xMatrix<N>&& log(xMatrix<N>&& matrix) {
+			size_t numElements = matrix.size();
+			for(int i = 0; i < numElements; ++i)
+				matrix.m_data[i] = log(matrix.m_data[i]);
+			return move(matrix);
+		}
+
+		
 		friend xMatrix<N> log10(const xMatrix<N>& matrix){
 			size_t numElements = matrix.size();
 			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = log10(matrix.m_data[i]);
 			return result;
+		}
+		
+		friend xMatrix<N>&& log10(xMatrix<N>&& matrix) {
+			size_t numElements = matrix.size();
+			for(int i = 0; i < numElements; ++i)
+				matrix.m_data[i] = log10(matrix.m_data[i]);
+			return move(matrix);
 		}
 
 		friend xMatrix<N> pow(const xMatrix<N>& matrix, N exponent){
@@ -403,6 +418,13 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = pow(matrix.m_data[i],exponent);
 			return result;
+		}
+
+		friend xMatrix<N>&& pow(xMatrix<N>&& matrix, N exponent) {
+			size_t numElements = matrix.size();
+			for(int i = 0; i < numElements; ++i)
+				matrix.m_data[i] = pow(matrix.m_data[i],exponent);
+			return move(matrix);
 		}
 
 		friend N sum(const xMatrix<N>& matrix){
@@ -421,7 +443,6 @@ class xMatrix{
 			return result;
 		}
 
-
 		friend bool eq(const xMatrix<N>& lhs, const xMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0)
 				return false;
@@ -433,6 +454,13 @@ class xMatrix{
 			}
 			return true;
 		}
+
+		// TODO IMPLEMENT
+		friend xMatrix<N> pinv(const xMatrix<N>& matrix){
+			cout << "pinv() is unimplemented"<<endl;
+			return matrix;
+		}
+
 		//simple Transpose only for 2D Matrix tested
 		friend xMatrix<N> T(const xMatrix<N>& matrix){
 			vector<size_t> transVec(matrix.m_vecDim);
