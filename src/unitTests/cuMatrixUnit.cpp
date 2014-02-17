@@ -24,7 +24,7 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(result[3][4] == 14 );
 	}
 	
-	SECTION("operator +"){ //every section seems to run with its own TEST_CASE initialization
+	SECTION("operator +"){
 		hMatrix >> dMatrix;
 		addResult = dMatrix + dMatrix +dMatrix; 
 		result << addResult;
