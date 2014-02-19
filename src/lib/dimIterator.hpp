@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
-
 using namespace std;
+
+namespace curoy {
 inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
 	vector<size_t> templ;
 	vector<size_t> tempr;
@@ -25,4 +26,5 @@ inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
 	}
 
 	return result;
+}
 }
