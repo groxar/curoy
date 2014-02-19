@@ -6,7 +6,7 @@ LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -g
 
-phony: cuMatrix.o cudaMatrix.o
+phony: cuMatrix.o cudaMatrix.o 
 
 $(LIBDIR):
 	mkdir -p $@
