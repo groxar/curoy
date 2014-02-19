@@ -34,16 +34,16 @@ class cuMatrix{
 		cuMatrix(const cuMatrix<N>& matrix){
 			m_vecDim = matrix.m_vecDim;
 			m_perm = memPermission::user;
-		rebase(matrix.size());
-		m_perm = memPermission::owner;
-		cudaMemcpy(m_data, matrix.m_data, matrix.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+			rebase(matrix.size());
+			m_perm = memPermission::owner;
+			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyDeviceToDevice);
 		}
-
 
 		~cuMatrix(){ 
 			if(m_perm == memPermission::owner)
 				cudaFree(m_data);
 		}
+
 
 		/**
 		 * MISC 
@@ -61,7 +61,7 @@ class cuMatrix{
 
 		void rebase(size_t numElements){
 			if(m_perm == memPermission::user){
-				(N*) cudaMalloc((void**)&m_data,numElements*sizeof(N));
+				cudaMalloc((void**)&m_data,numElements*sizeof(N));
 				m_perm = memPermission::owner;
 			}
 			else if(m_perm == memPermission::owner && numElements != size()){
@@ -70,7 +70,7 @@ class cuMatrix{
 			}
 
 			if(m_data == NULL)
-				cout << "allocation error";	
+				cout << "GPU allocation error"<< endl;	
 		}
 
 		/**
@@ -78,14 +78,15 @@ class cuMatrix{
 		 */
 		friend cuMatrix<N>& operator>> (const xMatrix<N>& lhs, cuMatrix<N>& rhs){
 			rhs.m_vecDim= vector<size_t>(lhs.m_vecDim.begin(),lhs.m_vecDim.end());
-			cudaMalloc((int**) &rhs.m_data, lhs.size()*sizeof(N));
+			rhs.rebase(lhs.size());
 			cudaMemcpy(rhs.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyHostToDevice);
 			return rhs;
 		}
 		
 		friend xMatrix<N>& operator<< (xMatrix<N>& lhs, const cuMatrix<N>& rhs){
 			lhs.m_vecDim = vector<size_t>(rhs.m_vecDim.begin(),rhs.m_vecDim.end());
-			lhs.m_data = (N*) malloc(rhs.size()*sizeof(N));
+			lhs.m_data = (N*)malloc(sizeof(N)*rhs.size());
+			lhs.rebase(rhs.size());
 			cudaMemcpy(lhs.m_data,rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToHost);
 			return lhs;
 		}
@@ -105,7 +106,7 @@ class cuMatrix{
 
 		cuMatrix<N> operator[](vector<size_t> nVec) const {
 			if(nVec.size()>m_vecDim.size())
-				throw nullptr;
+				throw "[] error";
 			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];
@@ -119,8 +120,9 @@ class cuMatrix{
 		 */
 		friend inline cuMatrix<N>&& operator! (cuMatrix<N>& matrix){
 			if(matrix.m_perm == memPermission::user || matrix.m_perm == memPermission::diver){ //make sure that diver should behave like that
-				N* ptr = (N*) malloc(matrix.size()*sizeof(N));
-				memcpy(ptr,matrix.m_data,matrix.size()*sizeof(N));
+				N* ptr;
+				cudaMalloc((void**)&ptr,matrix.size()*sizeof(N));
+				cudaMemcpy(ptr,matrix.m_data,matrix.size()*sizeof(N),cudaMemcpyDeviceToDevice);
 				matrix.m_data = ptr;
 				matrix.m_perm = memPermission::owner;
 			}
@@ -154,13 +156,13 @@ class cuMatrix{
 				else
 					rebase(rhs.size());	
 				m_vecDim = rhs.m_vecDim;
-				memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
+				cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
 			}
 
 			return *this;
 		}
 
-		cuMatrix<N>& operator= (const N value){
+		cuMatrix<N>& operator= (const N value){// NOT FINISHED
 			if(size()==1)
 				m_data[0] = value;
 			else

@@ -26,7 +26,7 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	
 	SECTION("operator +"){
 		hMatrix >> dMatrix;
-		addResult = dMatrix + dMatrix +dMatrix; 
+		addResult = dMatrix + dMatrix + dMatrix; 
 		result << addResult;
 		REQUIRE(result[0][0] == 3);
 		REQUIRE(result[0][4] == 15);
