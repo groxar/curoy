@@ -1,6 +1,7 @@
 #pragma once
 #include <exception>
 
+namespace curoy{
 class matrixDimException{
 	virtual const char* what() const throw()
 	{
@@ -10,4 +11,5 @@ class matrixDimException{
 
 enum class memPermission{user, owner, diver};
 
+}
 
