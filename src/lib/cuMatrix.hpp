@@ -1,4 +1,7 @@
 #pragma once
+#include "dimIterator.hpp"
+#include "xMatrix.hpp"
+#include "cuMatrix.hu"
 #include <vector>
 #include <cstdint>
 #include <numeric>
@@ -11,11 +14,8 @@
 #include <tgmath.h>
 #include <functional>
 #include "matrixException.hpp"
-#include "dimIterator.hpp"
 #include <cuda.h>
 #include <cuda_runtime.h>
-#include "xMatrix.hpp"
-#include "cuMatrix.hu"
 
 using namespace std;
 
@@ -39,6 +39,15 @@ class cuMatrix{
 			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyDeviceToDevice);
 		}
 
+		cuMatrix(const xMatrix<N>& matrix){
+			m_vecDim = matrix.m_vecDim;
+			m_perm = memPermission::user;
+			rebase(matrix.size());
+			m_perm = memPermission::owner;
+			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyHostToDevice);
+		}
+
+
 		~cuMatrix(){ 
 			if(m_perm == memPermission::owner)
 				cudaFree(m_data);
@@ -60,16 +69,17 @@ class cuMatrix{
 		size_t dim(size_t index) const{return m_vecDim[index];}
 
 		void rebase(size_t numElements){
+			cudaError_t err;
 			if(m_perm == memPermission::user){
-				cudaMalloc((void**)&m_data,numElements*sizeof(N));
+				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
 				m_perm = memPermission::owner;
 			}
 			else if(m_perm == memPermission::owner && numElements != size()){
 				cudaFree(m_data);
-				cudaMalloc((void**)&m_data,numElements*sizeof(N));
+				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
 			}
 
-			if(m_data == NULL)
+			if(m_data == NULL || err != 0)
 				cout << "GPU allocation error"<< endl;	
 		}
 
@@ -164,7 +174,7 @@ class cuMatrix{
 
 		cuMatrix<N>& operator= (const N value){// NOT FINISHED
 			if(size()==1)
-				m_data[0] = value;
+				cudaMemcpy(m_data,&value,sizeof(N),cudaMemcpyHostToDevice);
 			else
 				cout << "Assignment error" << endl;//fix it
 			return *this;
@@ -286,25 +296,17 @@ class cuMatrix{
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> mult (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
-			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
+			if(lhs.m_vecDim[1]!=rhs.dim(0) || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
 				throw "DIMENSIONS DONT FIT";
 				return lhs;
 			}
 
-			size_t numX = lhs.m_vecDim[0];
-			size_t numY = rhs.m_vecDim[1];
-			N* temp = (N*) malloc(numX*numY*sizeof(N));
-			N tempN=0;
-			
-			for(size_t y = 0; y < numY; ++y){
-				for(size_t x = 0; x < numX; ++x){
-					for(size_t i = 0; i < lhs.m_vecDim[1]; ++i)
-						tempN+=(N)lhs[x][i] * (N)rhs[i][y];
+			size_t numX = lhs.dim(0);
+			size_t numY = rhs.dim(1);
+			N* temp;
+			cudaMalloc((void**)&temp,numX*numY*sizeof(N));
 
-					temp[numY*x+y] = tempN;
-					tempN=0;
-				}
-			}
+			multDev(lhs.m_data,rhs.m_data,temp,numX,lhs.dim(1),numY);		
 			
 			return cuMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
 		}
@@ -432,13 +434,17 @@ class cuMatrix{
 			return result;
 		}
 
-		friend bool eq(const cuMatrix<N>& lhs, const cuMatrix<N>& rhs){
+		friend bool eq(const xMatrix<N>& lhs, const cuMatrix<N>& rhs){
+			return eq(rhs,lhs);
+		}
+		friend bool eq(const cuMatrix<N>& lhs, const xMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0)
 				return false;
-
-			size_t end = lhs.size();
+			xMatrix<N> matrix;
+			matrix << lhs;
+			size_t end = matrix.size();
 			for(size_t i=0; i<end;++i){
-				if(lhs.m_data[i] != rhs.m_data[i])
+				if(matrix.m_data[i] != rhs.m_data[i])
 					return false;
 			}
 			return true;
@@ -476,24 +482,9 @@ class cuMatrix{
 		 * OUTPUT
 		 */
 		friend ostream& operator<< (ostream& os, const cuMatrix<N>& matrix){
-			os << "{";
-			auto end = matrix.m_vecDim.end();
-			for(auto it = matrix.m_vecDim.begin();it!=end;){
-				os << *it;
-
-				if(++it!=end)
-					os << ", ";
-			}
-			os << "}  [";
-
-			for(size_t i = 0; i<matrix.size();){
-				os << matrix.m_data[i];
-				if(++i<matrix.size())
-					os << ", ";
-			}
-			os <<"]";
-
-			return os;
+			xMatrix<N> tempMatrix;
+			tempMatrix << matrix;
+			return os << tempMatrix;
 		}
 
 		N* m_data;//-> to private after tests
