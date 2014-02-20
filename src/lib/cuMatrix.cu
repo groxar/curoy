@@ -13,7 +13,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 }
 
 template<typename N>
-__global__ void addDevice(N* lhs, N* rhs, N* result, size_t numElements){
+__global__ void addKernel(N* lhs, N* rhs, N* result, size_t numElements){
 	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
 	if(idx<numElements)
 		result[idx]=lhs[idx]+rhs[idx];
@@ -21,10 +21,10 @@ __global__ void addDevice(N* lhs, N* rhs, N* result, size_t numElements){
 
 template<typename N> 
 void addDev(N* lhs, N* rhs, N* result, size_t numElements){
-	addDevice<N><<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	addKernel<N><<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
 }
 
-__global__ void matrixMultiplyShared(double * A, double * B, double * C,
+__global__ void matrixMultiplyKernel(double * A, double * B, double * C,
 			             int numARows, int numAColumns,
 			             int numBRows, int numBColumns,
 			             int numCRows, int numCColumns) {
@@ -65,5 +65,5 @@ template<typename N>
 void multDev(N* lhs, N* rhs, N* result, size_t n, size_t k, size_t m){
 	dim3 dimGrid(CEIL_DIV(n*m,B_WIDTH),CEIL_DIV(n*m,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
-	matrixMultiplyShared<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
+	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
 }

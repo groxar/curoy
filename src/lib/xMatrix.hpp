@@ -83,6 +83,9 @@ class xMatrix{
 		 */
 		size_t nDim() const{return m_vecDim.size();}
 		size_t size() const{
+			if(m_vecDim.size() == 0)
+				return 0;
+
 			size_t numElements = 1;
 			auto end = this->m_vecDim.end();
 			for(auto i = this->m_vecDim.begin(); i != end; ++i)
@@ -113,7 +116,11 @@ class xMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			return xMatrix<N>(m_data+n*memJump, vector<size_t>(++m_vecDim.begin(),end),memPermission::diver);
+			
+			vector<size_t> tempV(++m_vecDim.begin(),end);
+			if(tempV.size()==0 && size() > 1  )
+				tempV.push_back(1);
+			return xMatrix<N>(m_data+n*memJump, tempV,memPermission::diver);
 		}
 
 		xMatrix<N> operator[](vector<size_t> nVec) const {
