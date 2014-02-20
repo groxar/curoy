@@ -15,14 +15,20 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	cuMatrix<int> addResult;
 	cuMatrix<double> dMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 
+
+	SECTION("Device Query"){
+		int deviceCount;
+		cudaError_t err = cudaGetDeviceCount(&deviceCount);
+		if(err != cudaSuccess)
+			exit(EXIT_FAILURE);
+		cout << "Number of Cuda-Devices: " << deviceCount << endl;
+
+	}
+
 	SECTION("Data transfer from host to gpu and back"){
 		hMatrix >> dMatrix;
 		result << dMatrix;
-		REQUIRE(result[0][0] == 1);
-		REQUIRE(result[0][4] == 5);
-		REQUIRE(result[2][3] == 10 );
-		REQUIRE(result[3][0] == 10 );
-		REQUIRE(result[3][4] == 14 );
+		REQUIRE(eq(result,hMatrix));
 	}
 	
 	SECTION("io stream"){
@@ -39,12 +45,13 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(result[3][4] == 42 );
 	}
 
-	SECTION("operator *"){
+	SECTION("matrix multiplication"){
 		cuMatrix<double> cuA({{1,2,3},{4,5,6}});
 		cuMatrix<double> cuB({{1,4},{2,5},{3,6}});
 		cuMatrix<double> cuC= mult(cuA,cuB);
 		REQUIRE(eq(cuC,xMatrix<double>({{14,32},{32,77}})));
 	}
+
 	SECTION("cuda device reset"){
 		cudaDeviceReset();
 	}
