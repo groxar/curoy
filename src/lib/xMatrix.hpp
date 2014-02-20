@@ -71,7 +71,6 @@ class xMatrix{
 				memcpy(((*this)[matrixPos]).m_data, matrix.m_data, sizeof(N)*matrix.size());
 				++matrixPos;
 			}
-			cout << *this<< endl;
 		}
 
 		~xMatrix(){ 
