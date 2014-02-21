@@ -93,7 +93,7 @@ class xMatrix{
 			return numElements;
 		}
 		vector<size_t> dim() const{return m_vecDim;}
-		size_t dim(size_t index) const{return m_vecDim[index];}
+		size_t dim(size_t index) const{return index < m_vecDim.size()?m_vecDim[index]:1;}
 		void rebase(size_t numElements){
 			if(m_perm == memPermission::user){
 				m_data = (N*) malloc(numElements*sizeof(N));
@@ -470,10 +470,12 @@ class xMatrix{
 		//simple Transpose only for 2D Matrix tested
 		friend xMatrix<N> T(const xMatrix<N>& matrix){
 			vector<size_t> transVec(matrix.m_vecDim);
+			if(transVec.size() < 2)
+				transVec.push_back(1);
 			swap(transVec[0],transVec[1]);
 			
-			size_t numX = matrix.m_vecDim[0];
-			size_t numY = matrix.m_vecDim[1];
+			size_t numX = matrix.dim(0);
+			size_t numY = matrix.dim(1);
 			N* temp = (N*) malloc(numX*numY*sizeof(N));
 			
 			for(size_t x = 0; x < numX; x++){

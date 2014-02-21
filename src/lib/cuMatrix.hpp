@@ -69,7 +69,7 @@ class cuMatrix{
 			return numElements;
 		}
 		vector<size_t> dim() const{return m_vecDim;}
-		size_t dim(size_t index) const{return m_vecDim[index];}
+		size_t dim(size_t index) const{return index < m_vecDim.size()?m_vecDim[index]:1;}
 
 		void rebase(size_t numElements){
 			cudaError_t err;
@@ -462,6 +462,8 @@ class cuMatrix{
 		//simple Transpose only for 2D Matrix tested
 		friend cuMatrix<N> T(const cuMatrix<N>& matrix){
 			vector<size_t> transVec(matrix.m_vecDim);
+			if(transVec.size() < 2)
+				transVec.push_back(1);
 			swap(transVec[0],transVec[1]);
 			
 			size_t numX = matrix.dim(0);

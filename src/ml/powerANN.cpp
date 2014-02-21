@@ -87,5 +87,10 @@ int main(void){
 	cout << "sum of Y: " << sumY << endl;
 	cout << "expected: 27500"<< endl;
 
+	cout <<	"sum T(X)"<<sum(T(X))<< endl;
+	cout <<	"sum T(Y)"<<sum(T(Y))<< endl;
+	cout <<	"sum T(cuX)"<<sum(T(cuX))<< endl;
+	cout <<	"sum T(cuY)"<<sum(T(cuY))<< endl;
+
 	return EXIT_SUCCESS;
 }
