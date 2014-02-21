@@ -303,20 +303,22 @@ class xMatrix{
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend xMatrix<N> mult (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
-			if(lhs.m_vecDim[1]!=rhs.m_vecDim[0] || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
-				throw "DIMENSIONS DONT FIT";
+			if(lhs.dim(1)!=rhs.dim(0) || lhs.nDim()!=2 || rhs.nDim()!=2){
+				cout<< "DIMENSIONS DONT FIT"<< endl;
 				return lhs;
 			}
 
-			size_t numX = lhs.m_vecDim[0];
-			size_t numY = rhs.m_vecDim[1];
+			size_t numX = lhs.dim(0);
+			size_t numK = lhs.dim(1);
+			size_t numY = rhs.dim(1);
+
 			N* temp = (N*) malloc(numX*numY*sizeof(N));
 			N tempN=0;
 			
 			for(size_t y = 0; y < numY; ++y){
 				for(size_t x = 0; x < numX; ++x){
-					for(size_t i = 0; i < lhs.m_vecDim[1]; ++i)
-						tempN+=(N)lhs[x][i] * (N)rhs[i][y];
+					for(size_t i = 0; i < numK; ++i)
+						tempN+=lhs.m_data[x*numK + i] * rhs.m_data[i*numY + y];
 
 					temp[numY*x+y] = tempN;
 					tempN=0;
