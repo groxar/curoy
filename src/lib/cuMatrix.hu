@@ -9,3 +9,9 @@ void addDev(N* lhs, N* rhs, N* result, size_t numElements);
 
 template<typename N> 
 void multDev(N* lhs, N* rhs, N* result, size_t n, size_t k, size_t m);
+
+template<typename N>
+N sum(N* X, size_t length);
+
+template<typename N>
+void transposeDev(N* input, N* result, size_t nRows, size_t nCols);
