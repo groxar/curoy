@@ -129,7 +129,7 @@ N sum(N* X, size_t length){
 }
 
 template<typename N>
-__global__ void transposeKernel(N* input, N* output,size_t nRows, size_t nCols){
+__global__ void transposeSharedKernel(N* input, N* output,size_t nRows, size_t nCols){
 	__shared__ N sInput[B_WIDTH][B_WIDTH];
 	int bx = blockIdx.x;
     int by = blockIdx.y;
@@ -149,8 +149,23 @@ __global__ void transposeKernel(N* input, N* output,size_t nRows, size_t nCols){
 }
 
 template<typename N>
+__global__ void transposeKernel(N* input, N* output,size_t nRows, size_t nCols){
+	int bx = blockIdx.x;
+    int by = blockIdx.y;
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    int row = bx * B_WIDTH + tx;
+    int col = by * B_WIDTH + ty;
+	int pos = row * nCols + col;
+
+	if(row < nRows && col < nCols)
+		output[col * nRows + row] = input[pos];
+}
+
+template<typename N>
 void transposeDev(N* input, N* result, size_t nRows, size_t nCols){
-	dim3 dimGrid(CEIL_DIV(nCols,B_WIDTH),CEIL_DIV(nRows,B_WIDTH));
+	dim3 dimGrid(CEIL_DIV(nRows,B_WIDTH),CEIL_DIV(nCols,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
 	transposeKernel<<<dimGrid,dimBlock>>>(input,result,nRows,nCols);
 }
