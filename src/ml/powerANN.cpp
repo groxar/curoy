@@ -79,8 +79,13 @@ int main(void){
 			cout << "error " << X.m_data[i] <<" "<< tMatrix.m_data[i];
 	}
 
-	trainANN(	cuX.m_data,cuX.dim()[0], cuX.dim()[1],
-				cuY.m_data,cuY.dim()[0], cuY.dim()[1],
-				cuTheta.m_data,10,10);
+	double sumX = sum(cuX.m_data,cuX.dim(0)*cuX.dim(1));
+	cout << "sum of X: " << sumX << endl;
+	cout << "expected: 262678.260160073"<< endl;
+
+	double sumY = sum(cuY.m_data,cuY.dim(0)*cuY.dim(1));
+	cout << "sum of Y: " << sumY << endl;
+	cout << "expected: 27500"<< endl;
+
 	return EXIT_SUCCESS;
 }
