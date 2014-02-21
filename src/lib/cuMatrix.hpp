@@ -304,7 +304,7 @@ class cuMatrix{
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> mult (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			if(lhs.m_vecDim[1]!=rhs.dim(0) || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
-				throw "DIMENSIONS DONT FIT";
+				cout << "DIMENSIONS DONT FIT" << endl;
 				return lhs;
 			}
 
