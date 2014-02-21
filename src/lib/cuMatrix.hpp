@@ -426,11 +426,7 @@ class cuMatrix{
 		}
 
 		friend N sum(const cuMatrix<N>& matrix){
-			N result=0;
-			size_t end = matrix.size();
-			for(size_t i=0; i<end;++i)
-				result+= *(matrix.m_data+i);
-			return result;
+			return sum(matrix.m_data,matrix.size());
 		}
 		
 		friend N prod(const cuMatrix<N>& matrix){
@@ -468,22 +464,23 @@ class cuMatrix{
 			vector<size_t> transVec(matrix.m_vecDim);
 			swap(transVec[0],transVec[1]);
 			
-			size_t numX = matrix.m_vecDim[0];
-			size_t numY = matrix.m_vecDim[1];
-			N* temp = (N*) malloc(numX*numY*sizeof(N));
+			size_t numX = matrix.dim(0);
+			size_t numY = matrix.dim(1);
+			N* temp;
+			cudaMalloc((void**) &temp, numX*numY*sizeof(N));
 			
-			for(size_t x = 0; x < numX; x++){
-				for(size_t y = 0; y < numY; y++){
-					temp[numX*y+x]=matrix.m_data[numY*x+y];
-				}
-			}
+			transposeDev(matrix.m_data,temp,numX,numY);
 			return cuMatrix<N>(temp,transVec,memPermission::owner);
 		}
 
 		/**
 		 * CAST 
 		 */
-		operator N () const{ return *m_data;}//needed ?
+		operator N () const{ 
+			N result;
+			cudaMemcpy(&result,m_data,sizeof(N),cudaMemcpyDeviceToHost);
+			return result;
+		}
 
 		/**
 		 * OUTPUT

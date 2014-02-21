@@ -4,12 +4,18 @@
 #include <stdio.h>
 
 
+//DEBUG ONLY
+#include <iostream>
+using namespace std;
+
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	addDev<int>(NULL,NULL,NULL,0);
 	addDev<long>(NULL,NULL,NULL,0);
 	addDev<float>(NULL,NULL,NULL,0);
 	addDev<double>(NULL,NULL,NULL,0);
 	multDev<double>(NULL,NULL,NULL,0,0,0);
+	sum<double>(NULL,0);
+	transposeDev<double>(NULL, NULL, 0, 0);
 }
 
 template<typename N>
@@ -63,7 +69,88 @@ __global__ void matrixMultiplyKernel(double * A, double * B, double * C,
 
 template<typename N>
 void multDev(N* lhs, N* rhs, N* result, size_t n, size_t k, size_t m){
-	dim3 dimGrid(CEIL_DIV(n*m,B_WIDTH),CEIL_DIV(n*m,B_WIDTH));
+	dim3 dimGrid(CEIL_DIV(n,B_WIDTH),CEIL_DIV(m,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
 	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
+}
+
+__global__ void addReduce(double * input, double * output, size_t len) {
+  
+    __shared__ double partialSum[2*B_SIZE];
+    unsigned int t = threadIdx.x;
+    unsigned int start = 2*blockIdx.x*blockDim.x;
+
+	//load Segments into shared memory
+    start+t<len?
+      partialSum[t]=input[start+t]:
+      partialSum[t]=0;
+    start+blockDim.x+t<len?
+      partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
+  	  partialSum[blockDim.x+t]=0;
+
+	//binary tree reduce
+    for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
+    {
+      __syncthreads();
+      if(t < stride)
+        partialSum[t] += partialSum[t+stride];
+    }
+
+    if(t==0)
+      output[blockIdx.x]=partialSum[0];
+}
+
+template<typename N>
+N sum(N* X, size_t length){
+	N result = 0;
+	N* sumX;
+	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
+
+	size_t dimSize = B_SIZE;
+	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
+
+	addReduce<<<gridSize,dimSize>>>(X,sumX,length);
+	
+
+	N* hostSum;
+	hostSum = (N*) malloc(gridSize*sizeof(N));
+
+	cudaMemcpy(hostSum, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
+
+
+	for(int i = 0; i < gridSize; ++i){
+		result += hostSum[i];
+	}
+
+	cudaFree(sumX);
+	free(hostSum);
+
+	return result;
+}
+
+template<typename N>
+__global__ void transposeKernel(N* input, N* output,size_t nRows, size_t nCols){
+	__shared__ N sInput[B_WIDTH][B_WIDTH];
+	int bx = blockIdx.x;
+    int by = blockIdx.y;
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    int row = bx * B_WIDTH + tx;
+    int col = by * B_WIDTH + ty;
+	int pos = row * nCols + col;
+	int Tpos = col * nRows + row;
+
+	if(row < nRows && col < nCols)
+		sInput[tx][ty] = input[pos];
+	__syncthreads();
+	if(col < nRows && row < nCols)
+		output[Tpos] = sInput[tx][ty];
+}
+
+template<typename N>
+void transposeDev(N* input, N* result, size_t nRows, size_t nCols){
+	dim3 dimGrid(CEIL_DIV(nCols,B_WIDTH),CEIL_DIV(nRows,B_WIDTH));
+	dim3 dimBlock(B_WIDTH,B_WIDTH);
+	transposeKernel<<<dimGrid,dimBlock>>>(input,result,nRows,nCols);
 }

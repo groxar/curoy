@@ -12,8 +12,10 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	cuMatrix<int> dMatrix;
 	xMatrix<int> hMatrix((int*)data1,{4,5});
 	xMatrix<int> result;
-	cuMatrix<int> addResult;
+	xMatrix <double> hMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 	cuMatrix<double> dMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
+	cuMatrix<double> dMatrix2({{1,2,3},{4,5,6},{1,2,3}});
+	xMatrix <double> hMatrix2({{1,2,3},{4,5,6},{1,2,3}});
 
 
 	SECTION("Device Query"){
@@ -25,6 +27,10 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 
 	}
 
+	SECTION("Initialize"){
+		REQUIRE(eq(hMatrix1,dMatrix1));
+	}
+
 	SECTION("Data transfer from host to gpu and back"){
 		hMatrix >> dMatrix;
 		result << dMatrix;
@@ -34,15 +40,18 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	SECTION("io stream"){
 		cout << dMatrix1 << endl; 	
 	}
+
 	SECTION("operator +"){
+		cuMatrix<int> addResultD;
+		xMatrix<int> addResultH;
 		hMatrix >> dMatrix;
-		addResult = dMatrix + dMatrix + dMatrix; 
-		result << addResult;
-		REQUIRE(result[0][0] == 3);
-		REQUIRE(result[0][4] == 15);
-		REQUIRE(result[2][3] == 30 );
-		REQUIRE(result[3][0] == 30 );
-		REQUIRE(result[3][4] == 42 );
+		addResultD = dMatrix + dMatrix + dMatrix; 
+		addResultH = hMatrix + hMatrix + hMatrix; 
+		REQUIRE(eq(addResultD,addResultH));
+	}
+
+	SECTION("sum"){
+		REQUIRE(sum(hMatrix1)==sum(dMatrix1));
 	}
 
 	SECTION("matrix multiplication"){
@@ -54,5 +63,9 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 
 	SECTION("cuda device reset"){
 		cudaDeviceReset();
+	}
+
+	SECTION("Traspose"){
+		REQUIRE(eq(T(hMatrix2),T(dMatrix2)));
 	}
 }
