@@ -8,14 +8,14 @@ using namespace curoy;
 
 TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){ 
 	
-	int data1[4][5] = {{1,2,3,4,5},{4,5,6,7,8},{7,8,9,10,11},{10,11,12,13,14}};
-	cuMatrix<int> dMatrix;
-	xMatrix<int> hMatrix((int*)data1,{4,5});
-	xMatrix<int> result;
+	double data1[4][5] = {{1,2,3,4,5},{4,5,6,7,8},{7,8,9,10,11},{10,11,12,13,14}};
+	xMatrix<double> hMatrix((double*)data1,{4,5});
+	cuMatrix<double> dMatrix;
+	xMatrix<double> result;
 	xMatrix <double> hMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 	cuMatrix<double> dMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
-	cuMatrix<double> dMatrix2({{1,2,3},{4,5,6}});
 	xMatrix <double> hMatrix2({{1,2,3},{4,5,6}});
+	cuMatrix<double> dMatrix2({{1,2,3},{4,5,6}});
 
 
 	SECTION("Device Query"){
@@ -40,20 +40,22 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	SECTION("io stream"){
 		cout <<"whole matrix: "<< dMatrix1 << endl; 	
 		cout <<"diver: " << dMatrix1[1]<<endl;
-		cout <<"single value: "<< (int)dMatrix1[1]<<endl;
+		cout <<"single value: "<< (double)dMatrix1[1]<<endl;
 	}
 
-	SECTION("operator +"){
-		cuMatrix<int> addResultD;
-		xMatrix<int> addResultH;
-		hMatrix >> dMatrix;
-		addResultD = dMatrix + dMatrix + dMatrix; 
-		addResultH = hMatrix + hMatrix + hMatrix; 
-		REQUIRE(eq(addResultD,addResultH));
+	SECTION("ELEMENTWISE OPERATOR"){
+		REQUIRE(eq(hMatrix1+hMatrix1,dMatrix1+dMatrix1));
+		REQUIRE(eq(hMatrix1-hMatrix1,dMatrix1-dMatrix1));
+		REQUIRE(eq(hMatrix1*hMatrix1,dMatrix1*dMatrix1));
+		REQUIRE(eq(hMatrix2/hMatrix2,dMatrix2/dMatrix2));
 	}
 
 	SECTION("sum"){
 		REQUIRE(sum(hMatrix1)==sum(dMatrix1));
+	}
+	SECTION("fill"){
+		hMatrix << dMatrix1;
+		REQUIRE(eq(fill(dMatrix1,3),fill(hMatrix1,3)));
 	}
 
 	SECTION("matrix multiplication"){
@@ -68,9 +70,6 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	}
 
 	SECTION("Traspose"){
-		cout << "transpose"<< endl;
-		cout <<"mult: "<< mult(xMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}),T(xMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}))) << endl;
-		cout <<"mult: "<< mult(cuMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}),T(cuMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}))) << endl;
 		REQUIRE(eq(T(hMatrix2),T(dMatrix2)));
 	}
 }

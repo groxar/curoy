@@ -191,7 +191,7 @@ class xMatrix{
 		/**
 		 * MATRIX FILL
 		 */
-		friend xMatrix<N> fill(xMatrix<N>& matrix, N number){	
+		friend xMatrix<N> fill(xMatrix<N>& matrix, const N number){	
 			matrix.rebase(matrix.size());	
 
 			for(size_t i= 0; i < matrix.size();++i ) 
@@ -199,7 +199,7 @@ class xMatrix{
 			return matrix;
 		}
 
-		friend xMatrix<N>&& fill(xMatrix<N>&& matrix, N number){
+		friend xMatrix<N>&& fill(xMatrix<N>&& matrix, const N number){
 			for(size_t i = 0; i < matrix.size();++i ) 
 				matrix.m_data[i] = number;
 			return move(matrix);
@@ -327,7 +327,34 @@ class xMatrix{
 			
 			return xMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
 		}
-		
+	
+		/**
+		 * ELEMENTWISE MULTIPLICATION
+		 */
+		friend xMatrix<N> operator* (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] * rhs.m_data[i];
+			return result;
+		}	
+
+		//double rvalue
+		friend inline xMatrix<N>&& operator* (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
+			return move(!lhs * rhs); 
+		}
+
+		friend inline xMatrix<N>&& operator* (xMatrix<N>& lhs, xMatrix<N>&& rhs){
+			return move(!rhs * lhs); //fix after implementing scalar
+		}
+	
+		friend xMatrix<N>&& operator* (xMatrix<N>&& lhs, xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] * rhs.m_data[i];
+			return move(lhs);
+		}	
+
 		/**
 		 * MULTIPLICATION SKALAR
 		 */
@@ -349,6 +376,32 @@ class xMatrix{
 		
 	
 		/**
+		 * ELEMENTWISE MULTIPLICATION
+		 */
+		friend xMatrix<N> operator/ (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
+			for(int i = 0; i < numElements; ++i)
+				result.m_data[i] = lhs.m_data[i] / rhs.m_data[i];
+			return result;
+		}	
+
+		//double rvalue
+		friend inline xMatrix<N>&& operator/ (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
+			return move(!lhs / rhs); 
+		}
+
+		friend inline xMatrix<N>&& operator/ (xMatrix<N>& lhs, xMatrix<N>&& rhs){
+			return move(!rhs / lhs); //fix after implementing scalar
+		}
+	
+		friend xMatrix<N>&& operator/ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
+			size_t numElements = lhs.size();
+			for(int i = 0; i < numElements; ++i)
+				lhs.m_data[i] = lhs.m_data[i] / rhs.m_data[i];
+		}
+			
+		/**
 		 * DIVISION SKALAR
 		 */
 		friend xMatrix<N> operator/ (const xMatrix<N>& lhs, N rhs) {
@@ -368,7 +421,7 @@ class xMatrix{
 		
 
 		/**
-		 * DIVISION SKALAR
+		 * MODULO SKALAR
 		 */
 		friend xMatrix<N> operator% (const xMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
