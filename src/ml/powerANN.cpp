@@ -73,11 +73,6 @@ int main(void){
 
 	//error tranfer error test
 	tMatrix << cuX;
-	for(size_t i = 0; i < X.dim()[0]*X.dim()[1]; ++i)
-	{
-		if(X.m_data[i]!=tMatrix.m_data[i])
-			cout << "error " << X.m_data[i] <<" "<< tMatrix.m_data[i];
-	}
 
 	double sumX = sum(cuX.m_data,cuX.dim(0)*cuX.dim(1));
 	cout << "sum of X: " << sumX << endl;
@@ -87,10 +82,15 @@ int main(void){
 	cout << "sum of Y: " << sumY << endl;
 	cout << "expected: 27500"<< endl;
 
-	cout <<	"sum T(X)"<<sum(T(X))<< endl;
-	cout <<	"sum T(Y)"<<sum(T(Y))<< endl;
+	//cout <<	"sum T(X)"<<sum(T(X))<< endl;
+	//cout <<	"sum T(Y)"<<sum(T(Y))<< endl;
 	cout <<	"sum T(cuX)"<<sum(T(cuX))<< endl;
 	cout <<	"sum T(cuY)"<<sum(T(cuY))<< endl;
+
+	cout <<"mult sum "<< sum(mult(T(cuY),cuY))<<endl;
+	cout <<"mult sum "<< sum(mult(T(Y),Y))<<endl;
+	//cout <<"mutl sum"<< sum(cuX*T(cuX))<<endl;
+	cout << cuX.size()*sizeof(double)<< endl;
 
 	return EXIT_SUCCESS;
 }

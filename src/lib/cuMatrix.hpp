@@ -118,7 +118,7 @@ class cuMatrix{
 			vector<size_t> tempV(++m_vecDim.begin(),end);
 			if(tempV.size()==0 && size() > 1  )
 				tempV.push_back(1);
-			return xMatrix<N>(m_data+n*memJump, tempV,memPermission::diver);
+			return cuMatrix<N>(m_data+n*memJump, tempV,memPermission::diver);
 		}
 
 		cuMatrix<N> operator[](vector<size_t> nVec) const {
