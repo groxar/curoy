@@ -14,8 +14,8 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	xMatrix<int> result;
 	xMatrix <double> hMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 	cuMatrix<double> dMatrix1({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
-	cuMatrix<double> dMatrix2({{1,2,3},{4,5,6},{1,2,3}});
-	xMatrix <double> hMatrix2({{1,2,3},{4,5,6},{1,2,3}});
+	cuMatrix<double> dMatrix2({{1,2,3},{4,5,6}});
+	xMatrix <double> hMatrix2({{1,2,3},{4,5,6}});
 
 
 	SECTION("Device Query"){
@@ -38,7 +38,9 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	}
 	
 	SECTION("io stream"){
-		cout << dMatrix1 << endl; 	
+		cout <<"whole matrix: "<< dMatrix1 << endl; 	
+		cout <<"diver: " << dMatrix1[1]<<endl;
+		cout <<"single value: "<< (int)dMatrix1[1]<<endl;
 	}
 
 	SECTION("operator +"){
@@ -66,6 +68,9 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	}
 
 	SECTION("Traspose"){
+		cout << "transpose"<< endl;
+		cout <<"mult: "<< mult(xMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}),T(xMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}))) << endl;
+		cout <<"mult: "<< mult(cuMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}),T(cuMatrix<double>({{1,2,3,4,5,6,7,8,9,10},{11,12,13,14,15,16,17}}))) << endl;
 		REQUIRE(eq(T(hMatrix2),T(dMatrix2)));
 	}
 }
