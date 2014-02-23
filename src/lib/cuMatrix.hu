@@ -5,13 +5,47 @@
 #define CEIL_DIV(a,b) ((((a)-1)/(b))+1)
 
 template<typename N> 
-void addDev(N* lhs, N* rhs, N* result, size_t numElements);
+void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m);
+
+template<typename N>
+N sum(const N* X, size_t length);
+
+template<typename N>
+void transposeDev(const N* input, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void fillDev(N* X, const N number, size_t size);
+
+/**
+ * ELEMENTWISE Operations
+ */
 
 template<typename N> 
-void multDev(N* lhs, N* rhs, N* result, size_t n, size_t k, size_t m);
+void addDev(const N* lhs, const N* rhs, N* result, size_t numElements);
 
-template<typename N>
-N sum(N* X, size_t length);
+template<typename N> 
+void subDev(const N* lhs, const N* rhs, N* result, size_t numElements);
 
-template<typename N>
-void transposeDev(N* input, N* result, size_t nRows, size_t nCols);
+template<typename N> 
+void mulDev(const N* lhs, const N* rhs, N* result, size_t numElements);
+
+template<typename N> 
+void divDev(const N* lhs, const N* rhs, N* result, size_t numElements);
+
+/**
+ * SKALAR Operations
+ */
+
+template<typename N> 
+void addSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
+
+template<typename N> 
+void subSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
+
+template<typename N> 
+void mulSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
+
+template<typename N> 
+void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
+
+

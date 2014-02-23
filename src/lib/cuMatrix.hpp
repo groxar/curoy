@@ -190,17 +190,14 @@ class cuMatrix{
 		/**
 		 * MATRIX FILL
 		 */
-		friend cuMatrix<N> fill(cuMatrix<N>& matrix, N number){	
+		friend cuMatrix<N> fill(cuMatrix<N>& matrix,const N number){	
 			matrix.rebase(matrix.size());	
-
-			for(size_t i= 0; i < matrix.size();++i ) 
-				matrix.m_data[i] = number;
+			fillDev(matrix.m_data, number, matrix.size());
 			return matrix;
 		}
 
-		friend cuMatrix<N>&& fill(cuMatrix<N>&& matrix, N number){
-			for(size_t i = 0; i < matrix.size();++i ) 
-				matrix.m_data[i] = number;
+		friend cuMatrix<N>&& fill(cuMatrix<N>&& matrix,const N number){
+			fillDev(matrix.m_data, number, matrix.size());
 			return move(matrix);
 		}
 	
@@ -212,7 +209,7 @@ class cuMatrix{
 			size_t numElements = lhs.size();
 			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
 			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
-			addDev<N>(lhs.m_data,rhs.m_data,result.m_data,numElements);	
+			addDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
 			return result;
 		}
 
@@ -227,7 +224,7 @@ class cuMatrix{
 		
 		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
-			addDev<N>(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
+			addDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
 			return move(lhs);
 		}	
 
@@ -238,29 +235,29 @@ class cuMatrix{
 
 		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] + rhs;
+			N* temp;
+			cudaMalloc((void**) &temp,numElements*sizeof(N));
+			cuMatrix<N> result(temp,lhs.m_vecDim,memPermission::owner);
+			addSkalarDev(lhs.m_data, rhs, result.m_data,numElements);
 			return result;
 		}
 
 		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] + rhs;
+			addSkalarDev(lhs.m_data, rhs, lhs.m_data,numElements);
 			return move(lhs);
 		}
 		
 		/**
 		 * SUBSTRACTION
 		 */
-		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
+		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
+			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
+			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
+			subDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
 			return result;
-		}	
+		}
 
 		//double rvalue
 		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
@@ -268,38 +265,36 @@ class cuMatrix{
 		}
 
 		friend inline cuMatrix<N>&& operator- (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move((!rhs) * -1 + lhs); //fix after implementing scalar
+			return move(!rhs - lhs); 
 		}
-	
-		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){
+		
+		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
+			subDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
 			return move(lhs);
-		}
+		}	
 		
 		/**
 		 * SUBTRACTION SKALAR
 		 */
-
 		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] - rhs;
+			N* temp;
+			cudaMalloc((void**) &temp,numElements*sizeof(N));
+			cuMatrix<N> result(temp,lhs.m_vecDim,memPermission::owner);
+			subSkalarDev(lhs.m_data, rhs, result.m_data,numElements);
 			return result;
 		}
 
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] -  rhs;
+			subSkalarDev(lhs.m_data, rhs, lhs.m_data,numElements);
 			return move(lhs);
 		}
-
-
+		
+		
 		/**
-		 * MULTIPLICATION
+		 * MATRIX MULTIPLICATION
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> mult (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
@@ -319,59 +314,104 @@ class cuMatrix{
 		}
 		
 		/**
-		 * MULTIPLICATION SKALAR
+		 * ELEMENTWISE MULTIPLICATION
 		 */
-
-		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs,const N rhs) {
+		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] * rhs;
+			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
+			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
+			mulDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
 			return result;
 		}
 
-		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs,const N rhs) {
-			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] * rhs;
-			return move(lhs);
+		//double rvalue
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
+			return move(!lhs * rhs); 
+		}
+
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
+			return move(!rhs * lhs); 
 		}
 		
-	
+		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
+			size_t numElements = lhs.size();
+			mulDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
+			return move(lhs);
+		}	
+		
+		/**
+		 * MULTIPLICATION SKALAR
+		 */
+		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			N* temp;
+			cudaMalloc((void**) &temp,numElements*sizeof(N));
+			cuMatrix<N> result(temp,lhs.m_vecDim,memPermission::owner);
+			mulSkalarDev(lhs.m_data, rhs, result.m_data,numElements);
+			return result;
+		}
+
+		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, N rhs) {
+			size_t numElements = lhs.size();
+			mulSkalarDev(lhs.m_data, rhs, lhs.m_data,numElements);
+			return move(lhs);
+		}
+
+		/**
+		 * DIVISION
+		 */
+		friend cuMatrix<N> operator/ (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ 
+			size_t numElements = lhs.size();
+			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
+			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
+			divDev(lhs.m_data,rhs.m_data,result.m_data,numElements);	
+			return result;
+		}
+
+		//double rvalue
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
+			return move(!lhs / rhs); 
+		}
+
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
+			return move(!rhs / lhs); 
+		}
+		
+		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
+			size_t numElements = lhs.size();
+			divDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
+			return move(lhs);
+		}	
+		
 		/**
 		 * DIVISION SKALAR
 		 */
 		friend cuMatrix<N> operator/ (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] / rhs;
+			N* temp;
+			cudaMalloc((void**) &temp,numElements*sizeof(N));
+			cuMatrix<N> result(temp,lhs.m_vecDim,memPermission::owner);
+			divSkalarDev(lhs.m_data, rhs, result.m_data,numElements);
 			return result;
 		}
 
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, N rhs) {
 			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] / rhs;
+			divSkalarDev(lhs.m_data, rhs, lhs.m_data,numElements);
 			return move(lhs);
 		}
-		
+
 
 		/**
-		 * DIVISION SKALAR
+		 * MODULO SKALAR
 		 */
 		friend cuMatrix<N> operator% (const cuMatrix<N>& lhs, N rhs) {
-			size_t numElements = lhs.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] % rhs;
-			return result;
+			cout << "operator%: unimplemented"<< endl;
+			return lhs;
 		}
 
 		friend cuMatrix<N>&& operator% (cuMatrix<N>&& lhs, N rhs) {
-			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] % rhs;
+			cout << "operator%: unimplemented"<< endl;
 			return move(lhs);
 		}
 
