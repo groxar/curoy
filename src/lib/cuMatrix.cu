@@ -25,6 +25,9 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	sumColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
+	powDev<double>(NULL,0,NULL,0);
+	logDev<double>(NULL,NULL,0);
+	log10Dev<double>(NULL,NULL,0);
 }
 
 /**
@@ -323,4 +326,43 @@ void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 	divSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
 }
 
+/**
+ * MATH functions
+ */
+
+template<typename N>
+__global__ void powKernel(const N* input,const N exponent, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx < numElements)	
+		result[idx]=pow(input[idx],exponent);
+}
+
+template<typename N>
+void powDev(const N* input, const N exponent,  N* result, size_t numElements){
+	powKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,exponent,result,numElements);		
+}
+
+template<typename N>
+__global__ void logKernel(const N* input, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx < numElements)	
+		result[idx]=log(input[idx]);
+}
+
+template<typename N>
+void logDev(const N* input, N* result, size_t numElements){
+	logKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
+}
+
+template<typename N>
+__global__ void log10Kernel(const N* input, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx < numElements)	
+		result[idx]=log10(input[idx]);
+}
+
+template<typename N>
+void log10Dev(const N* input, N* result, size_t numElements){
+	log10Kernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
+}
 
