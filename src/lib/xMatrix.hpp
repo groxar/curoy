@@ -391,10 +391,6 @@ class xMatrix{
 			return move(!lhs / rhs); 
 		}
 
-		friend inline xMatrix<N>&& operator/ (xMatrix<N>& lhs, xMatrix<N>&& rhs){
-			return move(!rhs / lhs); //fix after implementing scalar
-		}
-	
 		friend xMatrix<N>&& operator/ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
@@ -419,24 +415,6 @@ class xMatrix{
 			return move(lhs);
 		}
 		
-
-		/**
-		 * MODULO SKALAR
-		 */
-		friend xMatrix<N> operator% (const xMatrix<N>& lhs, N rhs) {
-			size_t numElements = lhs.size();
-			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),lhs.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = lhs.m_data[i] % rhs;
-			return result;
-		}
-
-		friend xMatrix<N>&& operator% (xMatrix<N>&& lhs, N rhs) {
-			size_t numElements = lhs.size();
-			for(int i = 0; i < numElements; ++i)
-				lhs.m_data[i] = lhs.m_data[i] % rhs;
-			return move(lhs);
-		}
 
 
 		/**

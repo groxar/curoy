@@ -38,9 +38,9 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	}
 	
 	SECTION("io stream"){
-		cout <<"whole matrix: "<< dMatrix1 << endl; 	
-		cout <<"diver: " << dMatrix1[1]<<endl;
-		cout <<"single value: "<< (double)dMatrix1[1]<<endl;
+		cout <<"whole matrix:"	<<endl<< dMatrix1 << endl; 	
+		cout <<"diver:"			<<endl<< dMatrix1[1]<<endl;
+		cout <<"single value:"	<<endl<< (double)dMatrix1[1]<<endl;
 	}
 
 	SECTION("ELEMENTWISE OPERATOR"){
@@ -48,6 +48,11 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(eq(hMatrix1-hMatrix1,dMatrix1-dMatrix1));
 		REQUIRE(eq(hMatrix1*hMatrix1,dMatrix1*dMatrix1));
 		REQUIRE(eq(hMatrix2/hMatrix2,dMatrix2/dMatrix2));
+		!hMatrix1+hMatrix1;
+		!dMatrix1+dMatrix1;
+		REQUIRE(eq(hMatrix1,dMatrix1));
+		!hMatrix2/hMatrix2;
+		!dMatrix2/dMatrix2;
 	}
 
 	SECTION("sum"){
