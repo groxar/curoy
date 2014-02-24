@@ -265,7 +265,7 @@ class cuMatrix{
 		}
 
 		friend inline cuMatrix<N>&& operator- (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move(!rhs - lhs); 
+			return move((!rhs*-1) + lhs); 
 		}
 		
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
@@ -373,10 +373,6 @@ class cuMatrix{
 			return move(!lhs / rhs); 
 		}
 
-		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move(!rhs / lhs); 
-		}
-		
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
 			divDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
