@@ -8,7 +8,10 @@ template<typename N>
 void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m);
 
 template<typename N>
-N sum(const N* X, size_t length);
+N sumDev(const N* X, size_t length);
+
+template<typename N>
+void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
 
 template<typename N>
 void transposeDev(const N* input, N* result, size_t nRows, size_t nCols);

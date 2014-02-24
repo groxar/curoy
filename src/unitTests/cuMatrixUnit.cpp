@@ -57,6 +57,8 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 
 	SECTION("sum"){
 		REQUIRE(sum(hMatrix1)==sum(dMatrix1));
+		cout << sum(dMatrix2,0) << endl;
+		cout << sum(dMatrix2,1) << endl;
 	}
 	SECTION("fill"){
 		hMatrix << dMatrix1;

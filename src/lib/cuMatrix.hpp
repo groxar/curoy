@@ -462,7 +462,22 @@ class cuMatrix{
 		}
 
 		friend N sum(const cuMatrix<N>& matrix){
-			return sum(matrix.m_data,matrix.size());
+			return sumDev(matrix.m_data,matrix.size());
+		}
+
+		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
+		friend cuMatrix<N> sum(const cuMatrix<N>& matrix, size_t dimension){
+			N* temp;
+			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
+			vector<size_t> tempV(matrix.m_vecDim);
+			tempV[dimension]=1;
+
+			if(dimension == 1)
+				sumColumneDev(matrix.m_data,temp,matrix.dim(0),matrix.dim(1));
+			else
+				sumColumneDev(T(matrix).m_data,temp,matrix.dim(1),matrix.dim(0));
+
+			return cuMatrix<N> (temp,tempV,memPermission::owner);
 		}
 		
 		friend N prod(const cuMatrix<N>& matrix){
