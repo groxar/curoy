@@ -473,7 +473,7 @@ class xMatrix{
 				result+= *(matrix.m_data+i);
 			return result;
 		}
-		
+
 		friend N prod(const xMatrix<N>& matrix){
 			N result=0;
 			size_t end = matrix.size();
