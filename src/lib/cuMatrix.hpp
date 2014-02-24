@@ -417,47 +417,43 @@ class cuMatrix{
 		 */
 		friend cuMatrix<N> log(const cuMatrix<N>& matrix){
 			size_t numElements = matrix.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = log(matrix.m_data[i]);
-			return result;
+			N* temp;
+			cudaMalloc((void**)&temp,sizeof(N)*numElements);
+			logDev(matrix.m_data,temp,numElements);
+			return cuMatrix<N>(temp,matrix.m_vecDim,memPermission::owner);
 		}
 		
 		friend cuMatrix<N>&& log(cuMatrix<N>&& matrix) {
 			size_t numElements = matrix.size();
-			for(int i = 0; i < numElements; ++i)
-				matrix.m_data[i] = log(matrix.m_data[i]);
+			logDev(matrix.m_data,matrix.m_data,numElements);
 			return move(matrix);
 		}
 
-		
 		friend cuMatrix<N> log10(const cuMatrix<N>& matrix){
 			size_t numElements = matrix.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = log10(matrix.m_data[i]);
-			return result;
+			N* temp;
+			cudaMalloc((void**)&temp,sizeof(N)*numElements);
+			log10Dev(matrix.m_data,temp,numElements);
+			return cuMatrix<N>(temp,matrix.m_vecDim,memPermission::owner);
 		}
 		
 		friend cuMatrix<N>&& log10(cuMatrix<N>&& matrix) {
 			size_t numElements = matrix.size();
-			for(int i = 0; i < numElements; ++i)
-				matrix.m_data[i] = log10(matrix.m_data[i]);
+			log10Dev(matrix.m_data,matrix.m_data,numElements);
 			return move(matrix);
 		}
-
-		friend cuMatrix<N> pow(const cuMatrix<N>& matrix, N exponent){
+		
+		friend cuMatrix<N> pow(const cuMatrix<N>& matrix,const N exponent){
 			size_t numElements = matrix.size();
-			cuMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
-			for(int i = 0; i < numElements; ++i)
-				result.m_data[i] = pow(matrix.m_data[i],exponent);
-			return result;
+			N* temp;
+			cudaMalloc((void**)&temp,sizeof(N)*numElements);
+			powDev(matrix.m_data,exponent,temp,numElements);
+			return cuMatrix<N>(temp,matrix.m_vecDim,memPermission::owner);
 		}
-
-		friend cuMatrix<N>&& pow(cuMatrix<N>&& matrix, N exponent) {
+		
+		friend cuMatrix<N>&& pow(cuMatrix<N>&& matrix,const N exponent) {
 			size_t numElements = matrix.size();
-			for(int i = 0; i < numElements; ++i)
-				matrix.m_data[i] = pow(matrix.m_data[i],exponent);
+			powDev(matrix.m_data,exponent,matrix.m_data,numElements);
 			return move(matrix);
 		}
 

@@ -43,7 +43,7 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 		cout <<"single value:"	<<endl<< (double)dMatrix1[1]<<endl;
 	}
 
-	SECTION("ELEMENTWISE OPERATOR"){
+	SECTION("Elementwise operation"){
 		REQUIRE(eq(hMatrix1+hMatrix1,dMatrix1+dMatrix1));
 		REQUIRE(eq(hMatrix1-hMatrix1,dMatrix1-dMatrix1));
 		REQUIRE(eq(hMatrix1*hMatrix1,dMatrix1*dMatrix1));
@@ -53,6 +53,11 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(eq(hMatrix1,dMatrix1));
 		!hMatrix2/hMatrix2;
 		!dMatrix2/dMatrix2;
+	}
+
+	SECTION("Math operation"){
+		REQUIRE(eq(log(dMatrix2),log(hMatrix2)));
+		REQUIRE(eq(pow(dMatrix2,2),pow(hMatrix2,2)));
 	}
 
 	SECTION("sum"){

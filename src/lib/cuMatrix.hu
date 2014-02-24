@@ -51,4 +51,14 @@ void mulSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 template<typename N> 
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 
+/**
+ *	MATH functions
+ */
+template<typename N>
+void powDev(const N* input, const N exponent,  N* result, size_t numElements);
 
+template<typename N>
+void logDev(const N* input, N* result, size_t numElements);
+
+template<typename N>
+void log10Dev(const N* input, N* result, size_t numElements);
