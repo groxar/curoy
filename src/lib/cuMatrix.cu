@@ -21,6 +21,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	mulSkalarDev<double>(NULL,0,NULL,0);
 	divSkalarDev<double>(NULL,0,NULL,0);
 	multDev<double>(NULL,NULL,NULL,0,0,0);
+	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
 	sumColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
@@ -75,6 +76,60 @@ void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m
 	dim3 dimGrid(CEIL_DIV(n,B_WIDTH),CEIL_DIV(m,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
 	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
+}
+
+__global__ void prodReduce(const double * input, double * output, size_t len) {
+    __shared__ double partialSum[2*B_SIZE];
+    unsigned int t = threadIdx.x;
+    unsigned int start = 2*blockIdx.x*blockDim.x;
+
+	//load Segments into shared memory
+    start+t<len?
+      partialSum[t]=input[start+t]:
+      partialSum[t]=1;
+    start+blockDim.x+t<len?
+      partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
+  	  partialSum[blockDim.x+t]=1;
+
+	//binary tree reduce
+    for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
+    {
+      __syncthreads();
+      if(t < stride)
+        partialSum[t] *= partialSum[t+stride];
+    }
+
+    if(t==0){
+      output[blockIdx.x]=partialSum[0];
+	}
+}
+
+template<typename N>
+N prodDev(const N* X, size_t length){
+	N result = 0;
+	N* sumX;
+	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
+
+	size_t dimSize = B_SIZE;
+	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
+
+	prodReduce<<<gridSize,dimSize>>>(X,sumX,length);
+	
+
+	N* hostSum;
+	hostSum = (N*) malloc(gridSize*sizeof(N));
+
+	cudaMemcpy(hostSum, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
+
+
+	for(int i = 0; i < gridSize; ++i){
+		result *= hostSum[i];
+	}
+
+	cudaFree(sumX);
+	free(hostSum);
+
+	return result;
 }
 
 __global__ void addReduce(const double * input, double * output, size_t len) {

@@ -477,11 +477,7 @@ class cuMatrix{
 		}
 		
 		friend N prod(const cuMatrix<N>& matrix){
-			N result=0;
-			size_t end = matrix.size();
-			for(size_t i=0; i<end;++i)
-				result*= *(matrix.m_data+i);
-			return result;
+			return prodDev(matrix.m_data,matrix.size());
 		}
 
 		friend bool eq(const xMatrix<N>& lhs, const cuMatrix<N>& rhs){
