@@ -4,6 +4,7 @@
 #include <hiredis.h>
 
 namespace curoy{
+/*This class stores xMatrices in human readable lists of strings, thus saving doubles as fixed point numbers with only 15 places*/
 class xMatrixRedisStringAdapter: public IxMatrixIOAdapter
 {
 	public:
