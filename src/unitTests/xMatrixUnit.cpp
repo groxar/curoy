@@ -19,15 +19,16 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 
 
 	SECTION("direct constructor"){
+		cout <<"whole matrix:"	<<endl<< matrix << endl; 	
+		cout <<"diver:"			<<endl<< matrix[1]<<endl;
+		cout <<"single value:"	<<endl<< (double)matrix[1]<<endl;
+
 		xMatrix<int> matrix4({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 		REQUIRE(dimCompare(matrix4.dim(), vector<size_t>{2,3,5}) == 0);
 		xMatrix<int> matrix5({{1,2,3},{4,5,6}});
 		REQUIRE( eq(matrix5, matrix));
 	}
-	SECTION("print"){
-		cout << matrix << endl;
-		cout << matrix2 << endl;
-	}
+	
 	SECTION("number of dimensions"){
 		REQUIRE( matrix.nDim()  == 2 );
 		REQUIRE( matrix1.nDim() == 2 );
@@ -85,7 +86,6 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( eq(matrixT, matrix));
 		matrixT[0][2] = 1234;
 		matrixT[1][0] = 12;
-		cout << matrixT << endl;
 		REQUIRE( matrixT[0][2] == 1234);
 		REQUIRE( matrixT[1][0] == 12);
 		//ADD diver assginment

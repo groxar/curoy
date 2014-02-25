@@ -58,12 +58,12 @@ TEST_CASE(  "[cuMatrix]", "cuda matrix unit test"){
 	SECTION("Math operation"){
 		REQUIRE(eq(log(dMatrix2),log(hMatrix2)));
 		REQUIRE(eq(pow(dMatrix2,2),pow(hMatrix2,2)));
+
 	}
 
 	SECTION("sum"){
 		REQUIRE(sum(hMatrix1)==sum(dMatrix1));
-		cout << sum(dMatrix2,0) << endl;
-		cout << sum(dMatrix2,1) << endl;
+		REQUIRE(prod(hMatrix1)==prod(dMatrix1));
 	}
 	SECTION("fill"){
 		hMatrix << dMatrix1;
