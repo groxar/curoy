@@ -7,7 +7,7 @@ OBJDIR = obj/
 OPTION = -std=c++0x
 
 
-phony: cuMatrixUnit xMatrixUnit run
+phony: cuMatrixUnit xMatrixUnit powerANN run
 
 xMatrixUnit: xMatrixUnit.cpp
 	$(CXX) $(OPTION) -o $@ $+
@@ -19,9 +19,16 @@ xMatrixUnit: xMatrixUnit.cpp
 cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
+powerANN: powerANN.cpp ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+
 clean:
 	rm xMatrixUnit cuMatrixUnit
 
 run:
+	echo "\n\nCUMATRIX"
 	./cuMatrixUnit 
+	echo "\n\nXMATRIX"
 	./xMatrixUnit
+	echo "\n\nANN"
+	./powerANN

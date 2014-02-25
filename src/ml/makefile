@@ -22,7 +22,7 @@ $(OBJDIR):
 powerANN.o: powerANN.cu
 	$(NVCC) $(CUDACNFG) -o $@ -c $+
 
-powerANN: powerANN.cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o powerANN.o
+powerANN: powerANN.cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
 clean:
