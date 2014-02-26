@@ -32,18 +32,14 @@ class cuMatrix{
 		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		cuMatrix(const cuMatrix<N>& matrix){
-			m_vecDim = matrix.m_vecDim;
 			m_perm = memPermission::user;
-			rebase(matrix.size());
-			m_perm = memPermission::owner;
+			resize(matrix.m_vecDim);
 			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyDeviceToDevice);
 		}
 
 		cuMatrix(const xMatrix<N>& matrix){
-			m_vecDim = matrix.m_vecDim;
 			m_perm = memPermission::user;
-			rebase(matrix.size());
-			m_perm = memPermission::owner;
+			resize(matrix.m_vecDim);
 			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyHostToDevice);
 		}
 
@@ -84,6 +80,11 @@ class cuMatrix{
 
 			if(m_data == NULL || err != 0)
 				cout << "GPU allocation error"<< endl;	
+		}
+
+		void resize(vector<size_t> vecDim){
+			m_vecDim = vecDim;
+			rebase(size());
 		}
 
 		/**
@@ -307,6 +308,8 @@ class cuMatrix{
 		 * ELEMENTWISE MULTIPLICATION
 		 */
 		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){ 
+			if(dimCompare(lhs.m_vecDim, rhs.m_vecDim)!=0)
+				cout << "* dimCompare failed"<<endl;
 			size_t numElements = lhs.size();
 			cuMatrix<N> result(nullptr,lhs.m_vecDim,memPermission::owner);
 			cudaMalloc((int**)&result.m_data,numElements*sizeof(N));
@@ -319,6 +322,8 @@ class cuMatrix{
 		friend inline cuMatrix<N>&& operator* (cuMatrix<N>& lhs, cuMatrix<N>&& rhs) { return move(!rhs * lhs); }
 		
 		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
+			if(dimCompare(lhs.m_vecDim, rhs.m_vecDim)!=0)
+				cout << "* dimCompare failed"<<endl;
 			size_t numElements = lhs.size();
 			mulDev(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
 			return move(lhs);
@@ -501,14 +506,6 @@ class cuMatrix{
 			return cuMatrix<N>(temp,transVec,memPermission::owner);
 		}
 
-		/**
-		 * CAST 
-		 */
-		operator N () const{ 
-			N result;
-			cudaMemcpy(&result,m_data,sizeof(N),cudaMemcpyDeviceToHost);
-			return result;
-		}
 
 		/**
 		 * OUTPUT

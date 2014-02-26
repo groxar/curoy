@@ -28,10 +28,8 @@ class xMatrix{
 		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		xMatrix(const xMatrix<N>& matrix){
-			m_vecDim = matrix.m_vecDim;
 			m_perm = memPermission::user;
-			rebase(matrix.size());
-			m_perm = memPermission::owner;
+			resize(matrix.m_vecDim);
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 		}
 
@@ -39,7 +37,6 @@ class xMatrix{
 			m_vecDim.push_back(data.size());
 			m_perm = memPermission::user;
 			rebase(data.size());
-			m_perm = memPermission::owner;
 
 			int pos = 0;
 			for(auto it : data){
@@ -63,7 +60,6 @@ class xMatrix{
 			// put data
 			m_perm = memPermission::user;
 			rebase(size());
-			m_perm = memPermission::owner;
 			
 			fill(*this,0);
 			size_t matrixPos = 0;
@@ -105,6 +101,10 @@ class xMatrix{
 
 			if(this->m_data == NULL)
 				cout << "allocation error";	
+		}
+		void resize(vector<size_t> vecDim){
+			m_vecDim=vecDim;
+			rebase(size());
 		}
 
 		/**
@@ -522,7 +522,11 @@ class xMatrix{
 		/**
 		 * CAST 
 		 */
-		operator N () const{ return *m_data;}//needed ?
+		//operator N () const{ return *m_data;}//needed ?
+		
+		friend bool operator== (const xMatrix<N>& matrix,const N value){
+			return *(matrix.m_data) ==value;
+		}
 
 		/**
 		 * OUTPUT

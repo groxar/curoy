@@ -21,7 +21,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	SECTION("direct constructor"){
 		cout <<"whole matrix:"	<<endl<< matrix << endl; 	
 		cout <<"diver:"			<<endl<< matrix[1]<<endl;
-		cout <<"single value:"	<<endl<< (double)matrix[1]<<endl;
+//		cout <<"single value:"	<<endl<< (double)matrix[1]<<endl;
 
 		xMatrix<int> matrix4({{{1,2,3},{4,5,6},{1,2,3}},{{7,8,9},{4,5,6,7,8}}});
 		REQUIRE(dimCompare(matrix4.dim(), vector<size_t>{2,3,5}) == 0);

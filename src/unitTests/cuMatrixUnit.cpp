@@ -40,7 +40,7 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 	SECTION("io stream"){
 		cout <<"whole matrix:"	<<endl<< dMatrix1 << endl; 	
 		cout <<"diver:"			<<endl<< dMatrix1[1]<<endl;
-		cout <<"single value:"	<<endl<< (double)dMatrix1[1]<<endl;
+//		cout <<"single value:"	<<endl<< (double)dMatrix1[1]<<endl;
 	}
 
 	SECTION("Elementwise operation"){
