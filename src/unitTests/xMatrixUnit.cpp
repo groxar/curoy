@@ -30,6 +30,7 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 	}
 	
 	SECTION("number of dimensions"){
+		cout << xMatrix<int>({{1},{2,4,5}})<<endl;
 		REQUIRE( matrix.nDim()  == 2 );
 		REQUIRE( matrix1.nDim() == 2 );
 		REQUIRE( matrix2.nDim() == 3 );
