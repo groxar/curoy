@@ -214,13 +214,8 @@ class cuMatrix{
 		}
 
 		//double rvalue
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
-			return move(!lhs + rhs); 
-		}
-
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move(!rhs + lhs); 
-		}
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs + rhs); }
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>& lhs, cuMatrix<N>&& rhs) { return move(!rhs + lhs); }
 		
 		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
@@ -260,13 +255,8 @@ class cuMatrix{
 		}
 
 		//double rvalue
-		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
-			return move(!lhs - rhs); 
-		}
-
-		friend inline cuMatrix<N>&& operator- (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move((!rhs*-1) + lhs); 
-		}
+		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs - rhs); }
+		friend inline cuMatrix<N>&& operator- (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ return move((!rhs*-1) + lhs); }
 		
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
@@ -325,13 +315,8 @@ class cuMatrix{
 		}
 
 		//double rvalue
-		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
-			return move(!lhs * rhs); 
-		}
-
-		friend inline cuMatrix<N>&& operator* (cuMatrix<N>& lhs, cuMatrix<N>&& rhs){
-			return move(!rhs * lhs); 
-		}
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs * rhs); }
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>& lhs, cuMatrix<N>&& rhs) { return move(!rhs * lhs); }
 		
 		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
@@ -369,9 +354,7 @@ class cuMatrix{
 		}
 
 		//double rvalue
-		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){
-			return move(!lhs / rhs); 
-		}
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs / rhs); }
 
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>& rhs){ 
 			size_t numElements = lhs.size();
