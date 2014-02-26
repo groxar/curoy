@@ -102,7 +102,7 @@ namespace curoy{
 			freeReplyObject(reply);
 
 			//create corresponding xMatrix
-			xMatrix<double> matrix(data, dimensions);
+			xMatrix<double> matrix(data, dimensions, memPermission::owner);
 			return matrix;
 
 		} else {

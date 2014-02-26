@@ -80,7 +80,7 @@ namespace curoy{
 				}
 			}
 			else{
-				throw 0;
+				throw "unexpected result when loading the xMatrix dimensions";
 				//TODO: error handling
 			}
 			freeReplyObject(reply);
@@ -92,11 +92,11 @@ namespace curoy{
 			freeReplyObject(reply);
 
 			//create corresponding xMatrix
-			xMatrix<double> matrix(data, dimensions);
+			xMatrix<double> matrix(data, dimensions, memPermission::owner);
 			return matrix;
 
 		} else {
-			throw 0;
+			throw "redisContext is null in xMatrixRedisBinaryAdapter::Load";
 			//TODO: error handling
 		}
 	}

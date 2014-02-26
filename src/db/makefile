@@ -1,7 +1,7 @@
 OPTION = -g -std=c++0x
 LIBOPTION = -lhiredis -I/usr/local/include/hiredis
 
-phony: xMatrixRedisBinaryAdapter.o xMatrixRedisStringAdapter.o example
+phony: example
 
 xMatrixRedisStringAdapter.o: xMatrixRedisStringAdapter.cpp
 	clang++ $(OPTION) $(LIBOPTION) -o $@ -c $+
@@ -9,5 +9,8 @@ xMatrixRedisStringAdapter.o: xMatrixRedisStringAdapter.cpp
 xMatrixRedisBinaryAdapter.o: xMatrixRedisBinaryAdapter.cpp
 	clang++ $(OPTION) $(LIBOPTION) -o $@ -c $+
 
-example: example.cpp xMatrixRedisStringAdapter.o xMatrixRedisBinaryAdapter.o
+xMatrixFileAdapter.o: xMatrixFileAdapter.cpp
+	clang++ $(OPTION) $(LIBOPTION) -o $@ -c $+
+
+example: example.cpp xMatrixRedisStringAdapter.o xMatrixRedisBinaryAdapter.o xMatrixFileAdapter.o
 	clang++ $(OPTION) $(LIBOPTION) -o $@ $+
