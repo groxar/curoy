@@ -4,13 +4,18 @@
 #include "../lib/cuMatrix.hpp"
 #include "../ml/gradient.hpp"
 #include "../ml/util.hpp"
+#include <limits>
 
 using namespace std;
 using namespace curoy;
 
 TEST_CASE("[gradient]", "cuda gradientDescent"){ 
+	//increases double print precision
+	typedef std::numeric_limits< double > dbl;
+	cout.precision(dbl::digits10);
+
 	xMatrix<double> hX;
-	hX = readFile("../ml/gradientData/gradientX.txt");
+	hX = readFile("../ml/gradientData/XdataNormalized.txt");
 	xMatrix<double> hy;
 	hy = readFile("../ml/gradientData/gradientY.txt");
 	cuMatrix<double> X;
@@ -19,6 +24,8 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	hy >> y;
 	cuMatrix<double> theta;
 	theta.resize(vector<size_t>({3,1}));
-	fill(theta,1);
-	cout << gradientDescent(X, y, theta , 0.01, 2)<< endl;
+	fill(theta,0);
+	cout << gradientDescent(X, y, theta , 0.01, 400)<< endl;
+	cout << theta<< endl;
+	cout << "expected: 334302.063993 100087.116006 3673.548451"<< endl;
 }

@@ -229,7 +229,10 @@ class cuMatrix{
 		 * ADDITION SKALAR
 		 */
 
-		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs, N rhs) {
+		friend cuMatrix<N> operator+ (const N lhs, const cuMatrix<N>& rhs) { return rhs + lhs; }
+		friend cuMatrix<N>&& operator+ (const N lhs, const cuMatrix<N>&& rhs) { return move(rhs + lhs); }
+
+		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs, const N rhs) {
 			size_t numElements = lhs.size();
 			N* temp;
 			cudaMalloc((void**) &temp,numElements*sizeof(N));
@@ -238,7 +241,7 @@ class cuMatrix{
 			return result;
 		}
 
-		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, N rhs) {
+		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const N rhs) {
 			size_t numElements = lhs.size();
 			addSkalarDev(lhs.m_data, rhs, lhs.m_data,numElements);
 			return move(lhs);
@@ -268,6 +271,9 @@ class cuMatrix{
 		/**
 		 * SUBTRACTION SKALAR
 		 */
+		friend cuMatrix<N> operator- (const N lhs, const cuMatrix<N>& rhs) { return rhs + lhs * -1; }
+		friend cuMatrix<N>&& operator- (const N lhs, const cuMatrix<N>&& rhs) { return move(rhs + lhs * -1); }
+
 		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
 			N* temp;
@@ -332,6 +338,9 @@ class cuMatrix{
 		/**
 		 * MULTIPLICATION SKALAR
 		 */
+		friend cuMatrix<N> operator* (const N lhs, const cuMatrix<N>& rhs) { return rhs * lhs; }
+		friend cuMatrix<N>&& operator* (const N lhs, const cuMatrix<N>&& rhs) { return move(rhs * lhs); }
+
 		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
 			N* temp;
@@ -370,6 +379,9 @@ class cuMatrix{
 		/**
 		 * DIVISION SKALAR
 		 */
+		friend cuMatrix<N> operator/ (const N lhs, const cuMatrix<N>& rhs) { return move(pow(rhs,-1) * lhs); }
+		friend cuMatrix<N>&& operator/ (const N lhs, const cuMatrix<N>&& rhs) { return move(pow(rhs,-1) * lhs); }
+
 		friend cuMatrix<N> operator/ (const cuMatrix<N>& lhs, N rhs) {
 			size_t numElements = lhs.size();
 			N* temp;

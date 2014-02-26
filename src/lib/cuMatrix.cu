@@ -331,7 +331,7 @@ void subSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  */
 template<typename N>
 __global__ void mulKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	int idx = blockIdx.x * B_SIZE +threadIdx.x;
 	if(idx<numElements)
 		result[idx]=lhs[idx] * rhs[idx];
 }
