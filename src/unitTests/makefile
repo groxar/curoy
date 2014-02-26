@@ -7,7 +7,7 @@ OBJDIR = obj/
 OPTION = -std=c++0x
 
 
-phony: cuMatrixUnit xMatrixUnit powerANN gradientUnit run
+phony: cuMatrixUnit xMatrixUnit gradientUnit run
 
 xMatrixUnit: xMatrixUnit.cpp
 	$(CXX) $(OPTION) -o $@ $+
@@ -29,9 +29,9 @@ clean:
 	rm xMatrixUnit cuMatrixUnit
 
 run:
-	echo "\n\nCUMATRIX"
+	@echo "\n\nCUMATRIX"
 	./cuMatrixUnit 
-	echo "\n\nXMATRIX"
+	@echo "\n\nXMATRIX"
 	./xMatrixUnit
-	echo "\n\nANN"
-	./powerANN
+	@echo "\n\n"
+	./gradientUnit
