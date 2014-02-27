@@ -2,3 +2,5 @@
 octave-core
 cuMatrixUnit
 xMatrixUnit
+src/ml/gradientData/*
+src/ml/annData/*
