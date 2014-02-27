@@ -25,7 +25,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	cuMatrix<double> theta;
 	theta.resize(vector<size_t>({3,1}));
 	fill(theta,0);
-	cout << gradientDescent(X, y, theta , 0.01, 400)<< endl;
+	gradientDescent(X, y, theta , 0.01, 400);
 	cout << theta<< endl;
 	cout << "expected: 334302.063993 100087.116006 3673.548451"<< endl;
 }

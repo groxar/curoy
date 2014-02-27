@@ -7,7 +7,7 @@ OBJDIR = obj/
 OPTION = -std=c++0x
 
 
-phony: cuMatrixUnit xMatrixUnit gradientUnit run
+phony: cuMatrixUnit xMatrixUnit featureNormalize run
 
 xMatrixUnit: xMatrixUnit.cpp
 	$(CXX) $(OPTION) -o $@ $+
@@ -25,6 +25,9 @@ powerANN: powerANN.cpp ../lib/cudaMatrix.o
 gradientUnit: gradientUnit.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
+featureNormalize: featureNormalizeUnit.cpp ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+
 clean:
 	rm xMatrixUnit cuMatrixUnit
 
@@ -33,5 +36,5 @@ run:
 	./cuMatrixUnit 
 	@echo "\n\nXMATRIX"
 	./xMatrixUnit
-	@echo "\n\n"
-	./gradientUnit
+	@echo "\n\nNormalized"
+	./featureNormalize
