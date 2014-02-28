@@ -1,5 +1,5 @@
 OPTION = -g -std=c++0x
-LIBOPTION = -lhiredis -I/usr/local/include/hiredis
+LIBOPTION = -lhiredis -L/usr/local/lib -I/usr/local/include/hiredis
 
 phony: example
 
@@ -10,7 +10,7 @@ xMatrixRedisBinaryAdapter.o: xMatrixRedisBinaryAdapter.cpp
 	clang++ $(OPTION) $(LIBOPTION) -o $@ -c $+
 
 xMatrixFileAdapter.o: xMatrixFileAdapter.cpp
-	clang++ $(OPTION) $(LIBOPTION) -o $@ -c $+
+	clang++ $(OPTION) -o $@ -c $+
 
 example: example.cpp xMatrixRedisStringAdapter.o xMatrixRedisBinaryAdapter.o xMatrixFileAdapter.o
 	clang++ $(OPTION) $(LIBOPTION) -o $@ $+
