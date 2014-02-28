@@ -10,7 +10,7 @@ class xMatrixRedisStringAdapter: public IxMatrixIOAdapter
 	public:
 		xMatrixRedisStringAdapter(string socketpath);
 		virtual ~xMatrixRedisStringAdapter();
-		virtual bool Save(string, const xMatrix<double>&);
+		virtual void Save(string, const xMatrix<double>&);
 		virtual xMatrix<double> Load(string);
 	private:
 		redisContext *m_redisContext;

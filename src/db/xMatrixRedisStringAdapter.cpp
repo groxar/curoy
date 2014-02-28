@@ -28,7 +28,7 @@ namespace curoy{
 	The key for the dimension information is stored at "specifiedKey:dim"
 	The data itself is stored at "specifiedKey:data".
 	*/
-	bool xMatrixRedisStringAdapter::Save(string key, const xMatrix<double> &matrix)
+	void xMatrixRedisStringAdapter::Save(string key, const xMatrix<double> &matrix)
 	{
 		if(m_redisContext != 0)
 		{
@@ -49,9 +49,8 @@ namespace curoy{
 				reply = (redisReply *) redisCommand(m_redisContext,"RPUSH %s:%s %#.15g", key.c_str(), "data", matrixData[i]);
 				freeReplyObject(reply);
 			}
-			return true;
 		} else {
-			return false;
+			throw "fehler";
 		}
 	}
 
