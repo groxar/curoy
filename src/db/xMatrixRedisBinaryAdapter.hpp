@@ -10,7 +10,7 @@ class xMatrixRedisBinaryAdapter: public IxMatrixIOAdapter
 	public:
 		xMatrixRedisBinaryAdapter(string socketpath);
 		virtual ~xMatrixRedisBinaryAdapter();
-		virtual bool Save(string, const xMatrix<double>&);
+		virtual void Save(string, const xMatrix<double>&);
 		virtual xMatrix<double> Load(string);
 	private:
 		redisContext *m_redisContext;

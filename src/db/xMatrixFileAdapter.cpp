@@ -9,12 +9,13 @@
 
 namespace curoy{
 
+
 	/*
 	Saves an xMatrix<double> to the redis database.
 	The key for the dimension information is stored at "specifiedKey:dim"
 	The data itself is stored at "specifiedKey:data".
 	*/
-	bool xMatrixFileAdapter::Save(string key, const xMatrix<double> &matrix)
+	void xMatrixFileAdapter::Save(string key, const xMatrix<double> &matrix)
 	{
 		throw "not implemented: xMatrixFileAdapter::Save";
 	}

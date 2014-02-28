@@ -29,21 +29,19 @@ namespace curoy{
 	The data itself is stored at "specifiedKey:data".
 	The function returns a boolean which indicates if the matrix was stored successfully
 	*/
-	bool xMatrixRedisBinaryAdapter::Save(string key, const xMatrix<double> &matrix)
+	void xMatrixRedisBinaryAdapter::Save(string key, const xMatrix<double> &matrix)
 	{
 		if(m_redisContext != 0)
 		{
 			redisReply *reply = (redisReply *) redisCommand(m_redisContext,"DEL %s:%s", key.c_str(), "dim");
 			freeReplyObject(reply);
-			int fields = 1;
 			for(int i = 0; i < matrix.nDim(); i++){
-				reply = (redisReply *) redisCommand(m_redisContext,"RPUSH %s:%s %d", key.c_str(), "dim", matrix.dim(i));
+				reply = (redisReply *) redisCommand(m_redisContext,"RPUSH %s:%s %lu", key.c_str(), "dim", matrix.dim(i));
 				freeReplyObject(reply);
-				fields *= matrix.dim(i);
 			}
 
 			//calculate the length of a char array containing the matrixData
-			int bytes = fields * sizeof(double) / sizeof(unsigned char);
+			int bytes = matrix.size() * sizeof(double) / sizeof(unsigned char);
 
 			double *matrixData = matrix.m_data;
 
@@ -52,9 +50,8 @@ namespace curoy{
 			reply = (redisReply *) redisCommand(m_redisContext, "SET %s:%s %b", key.c_str(), "data", matrixData, (size_t) bytes);
 			freeReplyObject(reply);
 
-			return true;
 		} else {
-			return false;
+			throw "fehler";
 		}
 	}
 
@@ -75,7 +72,7 @@ namespace curoy{
 				
 				for(int i = 0; i < reply->elements; i++)
 				{
-					size_t dimSize = static_cast<size_t>(atoi(reply->element[i]->str));
+					size_t dimSize = atol(reply->element[i]->str);
 					dimensions.push_back(dimSize);
 				}
 			}
