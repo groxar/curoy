@@ -41,7 +41,7 @@ class cuMatrix{
 
 		cuMatrix(const xMatrix<N>& matrix){
 			m_perm = memPermission::user;
-			resize(matrix.m_vecDim);
+			resize(matrix.dim());
 			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyHostToDevice);
 		}
 
@@ -69,20 +69,7 @@ class cuMatrix{
 		vector<size_t> dim() const{return m_vecDim;}
 		size_t dim(size_t index) const{return index < m_vecDim.size()?m_vecDim[index]:1;}
 
-		void rebase(size_t numElements){
-			cudaError_t err;
-			if(m_perm == memPermission::user){
-				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
-				m_perm = memPermission::owner;
-			}
-			else if(m_perm == memPermission::owner && numElements != size()){
-				cudaFree(m_data);
-				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
-			}
 
-			if(m_data == NULL || err != 0)
-				cout << "GPU allocation error"<< endl;	
-		}
 
 		void resize(vector<size_t> vecDim){
 			m_vecDim = vecDim;
@@ -93,16 +80,13 @@ class cuMatrix{
 		 * Data Transfer to/from CUDA device
 		 */
 		friend cuMatrix<N>& operator>> (const xMatrix<N>& lhs, cuMatrix<N>& rhs){
-			rhs.m_vecDim= vector<size_t>(lhs.m_vecDim.begin(),lhs.m_vecDim.end());
-			rhs.rebase(lhs.size());
+			rhs.resize(lhs.dim());
 			cudaMemcpy(rhs.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyHostToDevice);
 			return rhs;
 		}
 		
 		friend xMatrix<N>& operator<< (xMatrix<N>& lhs, const cuMatrix<N>& rhs){
-			lhs.m_vecDim = vector<size_t>(rhs.m_vecDim.begin(),rhs.m_vecDim.end());
-			lhs.m_data = (N*)malloc(sizeof(N)*rhs.size());
-			lhs.rebase(rhs.size());
+			lhs.resize(rhs.dim());
 			cudaMemcpy(lhs.m_data,rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToHost);
 			return lhs;
 		}
@@ -239,10 +223,10 @@ class cuMatrix{
 			return move(lhs);
 		}
 
+
 		/**
 		 * Matrix operation skalar
 		 */
-		
 		template<typename FUNC,typename... M>
 		friend cuMatrix<N> mapFunc(FUNC f,const cuMatrix<N>& lhs, M... values){
 			size_t numElements = lhs.size();
@@ -427,8 +411,23 @@ class cuMatrix{
 		}
 
 		N* m_data;//-> to private after tests
-		vector<size_t> m_vecDim;
 	private:
 		enum memPermission m_perm;
+		vector<size_t> m_vecDim;
+		
+		void rebase(size_t numElements){
+			cudaError_t err;
+			if(m_perm == memPermission::user){
+				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+			else if(m_perm == memPermission::owner && numElements != size()){
+				cudaFree(m_data);
+				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
+			}
+
+			if(m_data == NULL || err != 0)
+				cout << "GPU allocation error"<< endl;	
+		}
 };
 }

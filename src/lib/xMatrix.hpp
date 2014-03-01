@@ -92,18 +92,7 @@ class xMatrix{
 		}
 		vector<size_t> dim() const{return m_vecDim;}
 		size_t dim(size_t index) const{return index < m_vecDim.size()?m_vecDim[index]:1;}
-		void rebase(size_t numElements){
-			if(m_perm == memPermission::user){
-				m_data = (N*) malloc(numElements*sizeof(N));
-				m_perm = memPermission::owner;
-			}
-			else if(this->m_perm == memPermission::owner && numElements != this->size()){
-				m_data = (N*) realloc(this->m_data,numElements*sizeof(N));
-			}
 
-			if(this->m_data == NULL)
-				cout << "allocation error";	
-		}
 		void resize(vector<size_t> vecDim){
 			m_vecDim=vecDim;
 			rebase(size());
@@ -555,8 +544,21 @@ class xMatrix{
 		}
 
 		N* m_data;//-> to private after tests
-		vector<size_t> m_vecDim;
 	private:
 		enum memPermission m_perm;
+		vector<size_t> m_vecDim;
+
+		void rebase(size_t numElements){
+			if(m_perm == memPermission::user){
+				m_data = (N*) malloc(numElements*sizeof(N));
+				m_perm = memPermission::owner;
+			}
+			else if(this->m_perm == memPermission::owner && numElements != this->size()){
+				m_data = (N*) realloc(this->m_data,numElements*sizeof(N));
+			}
+
+			if(this->m_data == NULL)
+				cout << "allocation error";	
+		}
 };
 }
