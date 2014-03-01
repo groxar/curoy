@@ -25,6 +25,8 @@ class xMatrix{
 		xMatrix():m_data(nullptr),m_perm(memPermission::user){};
 		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+		xMatrix(vector<size_t> dim){m_perm=memPermission::user;resize(dim);}
+		xMatrix(vector<size_t> dim, N value){m_perm=memPermission::user;resize(dim);fill(*this,value);}
 		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		xMatrix(const xMatrix<N>& matrix){
