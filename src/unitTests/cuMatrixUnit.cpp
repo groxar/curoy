@@ -94,11 +94,13 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(eq(cuC,xMatrix<double>({{14,32},{32,77}})));
 	}
 
+	SECTION("Traspose"){
+		REQUIRE(eq(T(hMatrix2),T(dMatrix2)));
+	}
+	
 	SECTION("cuda device reset"){
 		cudaDeviceReset();
 	}
 
-	SECTION("Traspose"){
-		REQUIRE(eq(T(hMatrix2),T(dMatrix2)));
-	}
+
 }
