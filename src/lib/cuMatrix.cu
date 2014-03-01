@@ -17,10 +17,14 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	subDev<double>(NULL,NULL,NULL,0);
 	mulDev<double>(NULL,NULL,NULL,0);
 	divDev<double>(NULL,NULL,NULL,0);
+	eqDev<double>(NULL,NULL,NULL,0);
+	neqDev<double>(NULL,NULL,NULL,0);
 	addSkalarDev<double>(NULL,0,NULL,0);
 	subSkalarDev<double>(NULL,0,NULL,0);
 	mulSkalarDev<double>(NULL,0,NULL,0);
 	divSkalarDev<double>(NULL,0,NULL,0);
+	eqSkalarDev<double>(NULL,0,NULL,0);
+	neqSkalarDev<double>(NULL,0,NULL,0);
 	multDev<double>(NULL,NULL,NULL,0,0,0);
 	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
@@ -380,6 +384,60 @@ __global__ void divSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 template<typename N> 
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 	divSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+}
+
+/**
+ * Equal
+ */
+template<typename N>
+__global__ void eqKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]= (lhs[idx]==rhs[idx]);
+}
+
+template<typename N> 
+void eqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
+	eqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+}
+
+template<typename N>
+__global__ void eqSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]= (lhs[idx] == rhs);
+}
+
+template<typename N> 
+void eqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
+	eqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+}
+
+/**
+ * not Equal
+ */
+template<typename N>
+__global__ void neqKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]=lhs[idx]!=rhs[idx];
+}
+
+template<typename N> 
+void neqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
+	neqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+}
+
+template<typename N>
+__global__ void neqSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]=lhs[idx] != rhs;
+}
+
+template<typename N> 
+void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
+	neqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
 }
 
 /**
