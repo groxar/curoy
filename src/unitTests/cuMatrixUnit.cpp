@@ -29,6 +29,11 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 
 	SECTION("Initialize"){
 		REQUIRE(eq(hMatrix1,dMatrix1));
+		cuMatrix<double> testMatrix1(vector<size_t>({2,3}));
+		cuMatrix<double> testMatrix2(vector<size_t>({2,3}),3.0);
+		REQUIRE(dimCompare(testMatrix1.dim(),dMatrix2.dim())==0);
+		fill(testMatrix1,3);
+		cout <<testMatrix2<<endl;	
 	}
 
 	SECTION("Data transfer from host to gpu and back"){
