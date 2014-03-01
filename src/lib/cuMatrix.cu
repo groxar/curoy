@@ -8,6 +8,7 @@
 #include <iostream>
 using namespace std;
 
+namespace curoy{
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	addDev<int>(NULL,NULL,NULL,0);
 	addDev<long>(NULL,NULL,NULL,0);
@@ -420,4 +421,4 @@ template<typename N>
 void log10Dev(const N* input, N* result, size_t numElements){
 	log10Kernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
 }
-
+}
