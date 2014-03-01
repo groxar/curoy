@@ -204,7 +204,7 @@ class cuMatrix{
 
 			return result;
 		}
-		friend cuMatrix<N> operator& (const cuMatrix<N> lhs, N value){
+		friend cuMatrix<N> operator& (const cuMatrix<N> lhs,const N value){
 			vector<size_t>  vecDim = lhs.dim(); 
 			vecDim[0] = lhs.dim(0) + 1;
 			cuMatrix<N> result(vecDim,value);
@@ -212,12 +212,24 @@ class cuMatrix{
 			
 			return result;
 		}
+		friend cuMatrix<N> operator& (const N value, const cuMatrix<N> lhs){
+			vector<size_t>  vecDim = lhs.dim(); 
+			vecDim[0] = lhs.dim(0) + 1;
+			cuMatrix<N> result(vecDim,value);
+			cudaMemcpy(&(result.m_data[lhs.dim(1)]),lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+			
+			return result;
+		}
 		friend cuMatrix<N> operator| (const cuMatrix<N> lhs,const cuMatrix<N> rhs){
 			return T(T(lhs)&T(rhs));
 		}
-		friend cuMatrix<N> operator| (const cuMatrix<N> lhs, N value){
+		friend cuMatrix<N> operator| (const cuMatrix<N> lhs,const N value){
 			return T(T(lhs)&value);
 		}
+		friend cuMatrix<N> operator| (const N value, const cuMatrix<N> lhs){
+			return T(value&T(lhs));
+		}
+	
 	
 	
 	
