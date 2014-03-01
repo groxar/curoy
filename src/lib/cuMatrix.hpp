@@ -51,7 +51,7 @@ class cuMatrix{
 
 
 		/**
-		 * MISC 
+		 * Matrix information
 		 */
 		size_t nDim() const{return m_vecDim.size();}
 		size_t size() const{
@@ -124,7 +124,7 @@ class cuMatrix{
 
 		cuMatrix<N> operator[](vector<size_t> nVec) const {
 			if(nVec.size()>m_vecDim.size())
-				throw "[] error";
+				cout << "[] overflow error"<< endl;
 			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];
