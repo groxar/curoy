@@ -29,8 +29,8 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr),m_perm(memPermission::user){}
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(vector<size_t> dim){m_perm=memPermission::user;resize(dim);}
-		cuMatrix(vector<size_t> dim, N value){m_perm=memPermission::user;resize(dim);fill(*this,value);}
+		cuMatrix(vector<size_t> dim):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
+		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
 		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		cuMatrix(const cuMatrix<N>& matrix){
@@ -262,78 +262,78 @@ class cuMatrix{
 		/**
 		 * ADDITION
 		 */
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs + rhs); }
-		friend inline cuMatrix<N>&& operator+ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ return move(!rhs + lhs); }
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){ return move(mapFunc(&curoy::addDev<N>,!lhs,rhs)); }	
-		friend inline cuMatrix<N> operator+ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) { return move(mapFunc(&curoy::addDev<N>,lhs,rhs)); }
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs + rhs); }
+		friend inline cuMatrix<N>&& operator+ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs + lhs); }
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::addDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator+ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::addDev<N>,lhs,rhs)); }
 
 		/**
 		 * ADDITION SKALAR
 		 */
-		friend cuMatrix<N> operator+ (const N lhs, const cuMatrix<N>& rhs) { return rhs + lhs; }
-		friend cuMatrix<N>&& operator+ (const N lhs, cuMatrix<N>&& rhs) { return move(rhs + lhs); }
-		friend cuMatrix<N> operator+ (const cuMatrix<N>& lhs, const N rhs) { return move(mapFunc(&curoy::addSkalarDev<N>,lhs,rhs)); }
-		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const N rhs) { return move(mapFunc(&curoy::addSkalarDev<N>,!lhs,rhs)); }
+		friend cuMatrix<N>   operator+ (const N lhs, const cuMatrix<N>& rhs) 	{ return rhs + lhs; }
+		friend cuMatrix<N>&& operator+ (const N lhs, cuMatrix<N>&& rhs) 		{ return move(rhs + lhs); }
+		friend cuMatrix<N>   operator+ (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::addSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::addSkalarDev<N>,!lhs,rhs)); }
 		
 		/**
 		 * SUBSTRACTION
 		 */
-		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs - rhs); }
-		friend inline cuMatrix<N>&& operator- (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ return move((!rhs*-1) + lhs); }
-		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){ return move(mapFunc(&curoy::subDev<N>,!lhs,rhs)); }	
-		friend inline cuMatrix<N> operator- (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) { return move(mapFunc(&curoy::subDev<N>,lhs,rhs)); }
+		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs - rhs); }
+		friend inline cuMatrix<N>&& operator- (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move((!rhs*-1) + lhs); }
+		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::subDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator- (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::subDev<N>,lhs,rhs)); }
 		
 		/**
 		 * SUBTRACTION SKALAR
 		 */
-		friend cuMatrix<N> operator- (const N lhs, const cuMatrix<N>& rhs) { return move(rhs + lhs * -1); }
-		friend cuMatrix<N>&& operator- (const N lhs, cuMatrix<N>&& rhs) { return move(rhs + lhs * -1); }
-		friend cuMatrix<N> operator- (const cuMatrix<N>& lhs, const N rhs) { return move(mapFunc(&curoy::subSkalarDev<N>,lhs,rhs)); }
-		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const N rhs) { return move(mapFunc(&curoy::subSkalarDev<N>,!lhs,rhs)); }
+		friend cuMatrix<N>   operator- (const N lhs, const cuMatrix<N>& rhs) 	{ return move(rhs + lhs * -1); }
+		friend cuMatrix<N>&& operator- (const N lhs, cuMatrix<N>&& rhs) 		{ return move(rhs + lhs * -1); }
+		friend cuMatrix<N>   operator- (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::subSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::subSkalarDev<N>,!lhs,rhs)); }
 		
 		/**
 		 * Elementwise Multiplcation 
 		 */
-		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs * rhs); }
-		friend inline cuMatrix<N>&& operator* (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ return move(!rhs * lhs); }
-		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){ return move(mapFunc(&curoy::mulDev<N>,!lhs,rhs)); }	
-		friend inline cuMatrix<N> operator* (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) { return move(mapFunc(&curoy::mulDev<N>,lhs,rhs)); }
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs * rhs); }
+		friend inline cuMatrix<N>&& operator* (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs * lhs); }
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::mulDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator* (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::mulDev<N>,lhs,rhs)); }
 
 		/**
 		 * Elementwise Multiplcation SKALAR
 		 */
-		friend cuMatrix<N> operator* (const N lhs, const cuMatrix<N>& rhs) { return rhs * lhs; }
-		friend cuMatrix<N>&& operator* (const N lhs, cuMatrix<N>&& rhs) { return move(rhs * lhs); }
-		friend cuMatrix<N> operator* (const cuMatrix<N>& lhs, const N rhs) { return move(mapFunc(&curoy::mulSkalarDev<N>,lhs,rhs)); }
-		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const N rhs) { return move(mapFunc(&curoy::mulSkalarDev<N>,!lhs,rhs)); }
+		friend cuMatrix<N>   operator* (const N lhs, const cuMatrix<N>& rhs) 	{ return rhs * lhs; }
+		friend cuMatrix<N>&& operator* (const N lhs, cuMatrix<N>&& rhs) 		{ return move(rhs * lhs); }
+		friend cuMatrix<N>   operator* (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::mulSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::mulSkalarDev<N>,!lhs,rhs)); }
 	
 		/**
 		 * Divison 
 		 */
-		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs){ return move(!lhs / rhs); }
-		friend inline cuMatrix<N>&& operator/ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs){ return move(pow(!rhs,0.5) * lhs); }
-		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){ return move(mapFunc(&curoy::divDev<N>,!lhs,rhs)); }	
-		friend inline cuMatrix<N> operator/ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) { return move(mapFunc(&curoy::divDev<N>,lhs,rhs)); }
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs / rhs); }
+		friend inline cuMatrix<N>&& operator/ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(pow(!rhs,0.5) * lhs); }
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::divDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator/ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::divDev<N>,lhs,rhs)); }
 
 		/**
 		 * Divison Skalar
 		 */
-		friend cuMatrix<N> operator/ (const N lhs, const cuMatrix<N>& rhs) { return pow(rhs,0.5) * lhs; }
-		friend cuMatrix<N>&& operator/ (const N lhs, cuMatrix<N>&& rhs) { return move( pow(!rhs,0.5) * lhs); }
-		friend cuMatrix<N> operator/ (const cuMatrix<N>& lhs, const N rhs) { return move(mapFunc(&curoy::divSkalarDev<N>,lhs,rhs)); }
-		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const N rhs) { return move(mapFunc(&curoy::divSkalarDev<N>,!lhs,rhs)); }
+		friend cuMatrix<N>   operator/ (const N lhs, const cuMatrix<N>& rhs) 	{ return pow(rhs,0.5) * lhs; }
+		friend cuMatrix<N>&& operator/ (const N lhs, cuMatrix<N>&& rhs) 		{ return move( pow(!rhs,0.5) * lhs); }
+		friend cuMatrix<N>   operator/ (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::divSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::divSkalarDev<N>,!lhs,rhs)); }
 	
 		/**
 		 * Elementwise Matrix Operation
 		 */
-		friend cuMatrix<N> pow (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
-		friend cuMatrix<N>&& pow (cuMatrix<N>&& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,!lhs,exponent)); }
+		friend cuMatrix<N>   pow (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
+		friend cuMatrix<N>&& pow (cuMatrix<N>&& lhs, const N exponent) 		{ return move(mapFunc(&curoy::powDev<N>,!lhs,exponent)); }
 	
-		friend cuMatrix<N> log (const cuMatrix<N>& lhs) { return move(mapFunc(&curoy::logDev<N>,lhs)); }
-		friend cuMatrix<N>&& log (cuMatrix<N>&& lhs) { return move(mapFunc(&curoy::logDev<N>,!lhs)); }
+		friend cuMatrix<N>   log (const cuMatrix<N>& lhs) 	{ return move(mapFunc(&curoy::logDev<N>,lhs)); }
+		friend cuMatrix<N>&& log (cuMatrix<N>&& lhs) 		{ return move(mapFunc(&curoy::logDev<N>,!lhs)); }
 		
-		friend cuMatrix<N> log10 (const cuMatrix<N>& lhs) { return move(mapFunc(&curoy::log10Dev<N>,lhs)); }
-		friend cuMatrix<N>&& log10 (cuMatrix<N>&& lhs) { return move(mapFunc(&curoy::log10Dev<N>,!lhs)); }
+		friend cuMatrix<N>   log10 (const cuMatrix<N>& lhs) { return move(mapFunc(&curoy::log10Dev<N>,lhs)); }
+		friend cuMatrix<N>&& log10 (cuMatrix<N>&& lhs) 		{ return move(mapFunc(&curoy::log10Dev<N>,!lhs)); }
 
 		/**
 		 * MATRIX MULTIPLICATION
