@@ -75,7 +75,7 @@ class xMatrix{
 		}
 
 		/**
-		 * MISC 
+		 * Matrix information
 		 */
 		size_t nDim() const{return m_vecDim.size();}
 		size_t size() const{
@@ -125,7 +125,7 @@ class xMatrix{
 
 		xMatrix<N> operator[](vector<size_t> nVec) const {
 			if(nVec.size()>m_vecDim.size())
-				throw nullptr;
+				cout << "[] overflow error" << endl;
 			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];
