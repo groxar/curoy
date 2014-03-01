@@ -4,7 +4,7 @@
 using namespace std;
 
 namespace curoy{
-	void gradientDescent(const cuMatrix<double>& X){
+ 	void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, cuMatrix<double>& theta ,const double alpha,  size_t numIterations){
 		size_t numDatasets = X.dim(0);	
 		cuMatrix<double> extender;
 		extender.resize(T(theta).dim());

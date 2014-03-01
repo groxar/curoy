@@ -44,7 +44,11 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 	}
 
 	SECTION("Elementwise operation"){
+		REQUIRE(eq(hMatrix1+3.0,dMatrix1+3.0));
 		REQUIRE(eq(hMatrix1+hMatrix1,dMatrix1+dMatrix1));
+		REQUIRE(eq(hMatrix1+hMatrix1+hMatrix1,dMatrix1+dMatrix1+dMatrix1));
+		REQUIRE(eq(hMatrix1+(hMatrix1+hMatrix1),dMatrix1+(dMatrix1+dMatrix1)));
+		REQUIRE(eq((hMatrix1+hMatrix1)+(hMatrix1+hMatrix1),(dMatrix1+dMatrix1)+(dMatrix1+dMatrix1)));
 		REQUIRE(eq(hMatrix1-hMatrix1,dMatrix1-dMatrix1));
 		REQUIRE(eq(hMatrix1*hMatrix1,dMatrix1*dMatrix1));
 		REQUIRE(eq(hMatrix2/hMatrix2,dMatrix2/dMatrix2));
