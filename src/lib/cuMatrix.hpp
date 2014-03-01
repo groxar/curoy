@@ -187,6 +187,38 @@ class cuMatrix{
 			fillDev(matrix.m_data, number, matrix.size());
 			return move(matrix);
 		}
+
+		/**
+		 * MATRIX Concatination
+		 */	
+		friend cuMatrix<N> operator& (const cuMatrix<N> lhs,const cuMatrix<N> rhs){
+			if(!((dimCompare(lhs.dim(),rhs.dim())==1&&lhs.dim(0)!=rhs.dim(0) )||dimCompare(lhs.dim(),rhs.dim())==0)){
+				cout << "concatination error"<<endl;
+				return lhs;
+			}
+			vector<size_t>  vecDim = lhs.dim(); 
+			vecDim[0] = lhs.dim(0) + rhs.dim(0);
+			cuMatrix<N> result(vecDim);
+			cudaMemcpy(result.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+			cudaMemcpy(&(result.m_data[lhs.size()]),rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+
+			return result;
+		}
+		friend cuMatrix<N> operator& (const cuMatrix<N> lhs, N value){
+			vector<size_t>  vecDim = lhs.dim(); 
+			vecDim[0] = lhs.dim(0) + 1;
+			cuMatrix<N> result(vecDim,value);
+			cudaMemcpy(result.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+			
+			return result;
+		}
+		friend cuMatrix<N> operator| (const cuMatrix<N> lhs,const cuMatrix<N> rhs){
+			return T(T(lhs)&T(rhs));
+		}
+		friend cuMatrix<N> operator| (const cuMatrix<N> lhs, N value){
+			return T(T(lhs)&value);
+		}
+	
 	
 	
 		/**
@@ -308,6 +340,38 @@ class cuMatrix{
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::divSkalarDev<N>,!lhs,rhs)); }
 	
 		/**
+		 * Equal
+		 */
+		friend inline cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs == rhs); }
+		friend inline cuMatrix<N>&& operator== (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs == lhs); }
+		friend inline cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::eqDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator== (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::eqDev<N>,lhs,rhs)); }
+
+		/**
+		 * Equal Skalar
+		 */
+		friend cuMatrix<N>   operator== (const N lhs, const cuMatrix<N>& rhs) 	{ return rhs == lhs; }
+		friend cuMatrix<N>&& operator== (const N lhs, cuMatrix<N>&& rhs) 		{ return !rhs == lhs; }
+		friend cuMatrix<N>   operator== (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::eqSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::eqSkalarDev<N>,!lhs,rhs)); }
+
+		/**
+		 * not Equal
+		 */
+		friend inline cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs != rhs); }
+		friend inline cuMatrix<N>&& operator!= (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs != lhs); }
+		friend inline cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::neqDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>   operator!= (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs)	{ return move(mapFunc(&curoy::neqDev<N>,lhs,rhs)); }
+
+		/**
+		 * not Equal Skalar
+		 */
+		friend cuMatrix<N>   operator!= (const N lhs, const cuMatrix<N>& rhs) 	{ return rhs != lhs; }
+		friend cuMatrix<N>&& operator!= (const N lhs, cuMatrix<N>&& rhs) 		{ return !rhs != lhs; }
+		friend cuMatrix<N>   operator!= (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::neqSkalarDev<N>,lhs,rhs)); }
+		friend cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::neqSkalarDev<N>,!lhs,rhs)); }
+
+		/**
 		 * Elementwise Matrix Operation
 		 */
 		friend cuMatrix<N>   pow (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
@@ -376,6 +440,9 @@ class cuMatrix{
 					return false;
 			}
 			return true;
+		}
+		friend bool eq(const cuMatrix<N>& lhs, const cuMatrix<N>& rhs){
+			return sum(lhs==rhs) == lhs.size();
 		}
 
 		// TODO IMPLEMENT

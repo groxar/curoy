@@ -38,6 +38,11 @@ void mulDev(const N* lhs, const N* rhs, N* result, size_t numElements);
 template<typename N> 
 void divDev(const N* lhs, const N* rhs, N* result, size_t numElements);
 
+template<typename N>
+void eqDev (const N* lhs, const N* rhs, N* result, size_t numElements);
+
+template<typename N>
+void neqDev(const N* lhs, const N* rhs, N* result, size_t numElements);
 /**
  * SKALAR Operations
  */
@@ -54,6 +59,11 @@ void mulSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 template<typename N> 
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 
+template<typename N> 
+void eqSkalarDev (const N* lhs, const N rhs, N* result, size_t numElements);
+
+template<typename N>
+void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 /**
  *	MATH functions
  */
