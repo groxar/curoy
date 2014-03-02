@@ -52,10 +52,10 @@ TEST_CASE( "[xMatrix]", "cpu x86 matrix unit test" ) {
 		REQUIRE( dimCompare(matrix.dim(),matrix2.dim()) == 2);
 		REQUIRE( dimCompare(matrix.dim(),matrix3.dim()) == 1);
 		REQUIRE( dimCompare(vector<size_t>({}),vector<size_t>({}))==0);
-		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({}))==0);
-		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({}))==1);
-		REQUIRE( dimCompare(vector<size_t>({1,1,2,1}),vector<size_t>({2}))==0);
-		REQUIRE( dimCompare(vector<size_t>({1,1,1,1}),vector<size_t>({2}))==1);
+		REQUIRE( dimCompareIgnore1(vector<size_t>({1,1,1,1}),vector<size_t>({}))==0);
+		REQUIRE( dimCompareIgnore1(vector<size_t>({1,1,2,1}),vector<size_t>({}))==1);
+		REQUIRE( dimCompareIgnore1(vector<size_t>({1,1,2,1}),vector<size_t>({2}))==0);
+		REQUIRE( dimCompareIgnore1(vector<size_t>({1,1,1,1}),vector<size_t>({2}))==1);
 	}
 
 	SECTION("matrix compare"){
