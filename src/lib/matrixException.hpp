@@ -10,6 +10,7 @@ class matrixDimException{
 };
 
 enum class memPermission{user, owner, diver};
+enum class fillMode{rnd,none};
 
 }
 

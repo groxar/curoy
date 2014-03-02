@@ -29,7 +29,7 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr),m_perm(memPermission::user){}
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(vector<size_t> dim):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
+		cuMatrix(vector<size_t> dim, enum fillMode):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
 		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
 		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
