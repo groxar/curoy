@@ -3,7 +3,7 @@
 using namespace std;
 
 namespace curoy {
-inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
+inline size_t dimCompareIgnore1(const vector<size_t>& lhs, const vector<size_t>& rhs){
 	vector<size_t> templ;
 	vector<size_t> tempr;
 	size_t result = 0;
@@ -22,6 +22,18 @@ inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
 	result += max(templ.size(),tempr.size()) - end;
 	for(size_t i = 0; i < end; ++i){
 		if(templ[i] != tempr[i])
+			++result;
+	}
+
+	return result;
+}
+inline size_t dimCompare(const vector<size_t>& lhs, const vector<size_t>& rhs){
+	size_t result = 0;
+
+	size_t end = min(lhs.size(),rhs.size());
+	result += max(lhs.size(),rhs.size()) - end;
+	for(size_t i = 0; i < end; ++i){
+		if(lhs[i] != rhs[i])
 			++result;
 	}
 
