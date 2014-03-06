@@ -226,26 +226,12 @@ template<typename N>
 N sumDev(const N* X, size_t length){
 	N result = 0;
 	N* sumX;
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
 
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
-
-	addReduce<<<gridSize,dimSize>>>(X,sumX,length);
+	cudaMalloc((void**) &sumX,sizeof(N));
+	sumColumneDev(X,sumX,length,1);
 	
-
-	N* hostSum;
-	hostSum = (N*) malloc(gridSize*sizeof(N));
-
-	cudaMemcpy(hostSum, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
-
-
-	for(int i = 0; i < gridSize; ++i){
-		result += hostSum[i];
-	}
-
+	cudaMemcpy(&result, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
 	cudaFree(sumX);
-	free(hostSum);
 
 	return result;
 }
