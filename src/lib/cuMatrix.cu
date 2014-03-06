@@ -197,13 +197,15 @@ template<typename N>
 __device__ inline N addFuncKernel(const N lhs, const N rhs){
 	return lhs + rhs;
 }
-__global__ void addReduce(const double * input, double * output, size_t len) {
-	funcReduce(&addFuncKernel<double>,input, output,len);	
+
+template<typename N>
+__global__ void addReduce(const N* input, N* output, size_t len) {
+	funcReduce(&addFuncKernel<N>,input, output,len);	
 }	
 
 template<typename N>
 inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColumneDev(&addReduce,X,result,nRows, nCols);
+	funcColumneDev(&addReduce<N>,X,result,nRows, nCols);
 }
 
 /**
@@ -213,13 +215,15 @@ template<typename N>
 __device__ inline N maxFuncKernel(const N lhs, const N rhs){
 	return lhs>rhs? lhs : rhs;
 }
-__global__ void maxReduce(const double * input, double * output, size_t len) {
-	funcReduce(&maxFuncKernel<double>,input, output,len);	
+
+template<typename N>
+__global__ void maxReduce(const N* input, N* output, size_t len) {
+	funcReduce(&maxFuncKernel<N>,input, output,len);	
 }	
 
 template<typename N>
 void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColumneDev(&maxReduce,X,result,nRows, nCols);
+	funcColumneDev(&maxReduce<N>,X,result,nRows, nCols);
 }
 
 template<typename N>
@@ -228,14 +232,13 @@ N sumDev(const N* X, size_t length){
 	N* sumX;
 
 	cudaMalloc((void**) &sumX,sizeof(N));
-	sumColumneDev(X,sumX,length,1);
+	sumColumneDev(X,sumX,1,length);
 	
-	cudaMemcpy(&result, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
+	cudaMemcpy(&result, sumX, sizeof(N),cudaMemcpyDeviceToHost);
 	cudaFree(sumX);
 
 	return result;
 }
-
 
 template<typename N>
 __global__ void transposeSharedKernel(const N* input, N* output,size_t nRows, size_t nCols){
