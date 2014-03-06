@@ -78,6 +78,9 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(sum(hMatrix1)==sum(dMatrix1));
 		REQUIRE(prod(hMatrix1)==prod(dMatrix1));
 	}
+	SECTION("max"){
+		cout << max(dMatrix2,1)<< endl;
+	}
 	SECTION("fill"){
 		hMatrix << dMatrix1;
 		REQUIRE(eq(fill(dMatrix1,3),fill(hMatrix1,3)));

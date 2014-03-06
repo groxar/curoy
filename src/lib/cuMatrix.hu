@@ -17,6 +17,9 @@ template<typename N>
 void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
 
 template<typename N>
+void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
 void transposeDev(const N* input, N* result, size_t nRows, size_t nCols);
 
 template<typename N>

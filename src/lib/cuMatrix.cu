@@ -29,6 +29,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
 	sumColumneDev<double>(NULL,NULL,0,0);
+	maxColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
@@ -137,30 +138,88 @@ N prodDev(const N* X, size_t length){
 	return result;
 }
 
-__global__ void addReduce(const double * input, double * output, size_t len) {
-    __shared__ double partialSum[2*B_SIZE];
-    unsigned int t = threadIdx.x;
-    unsigned int start = 2*blockIdx.x*blockDim.x;
+template<typename FUNC, typename N>
+__device__ void funcReduce(FUNC f, const N* input, N* output, size_t len){
+	__shared__ double partialSum[2*B_SIZE];
+	unsigned int t = threadIdx.x;
+	unsigned int start = 2*blockIdx.x*blockDim.x;
 
 	//load Segments into shared memory
-    start+t<len?
-      partialSum[t]=input[start+t]:
-      partialSum[t]=0;
-    start+blockDim.x+t<len?
-      partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
-  	  partialSum[blockDim.x+t]=0;
+	start+t<len?
+		partialSum[t]=input[start+t]:
+		partialSum[t]=0;
+	start+blockDim.x+t<len?
+		partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
+		partialSum[blockDim.x+t]=0;
 
 	//binary tree reduce
-    for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
-    {
-      __syncthreads();
-      if(t < stride)
-        partialSum[t] += partialSum[t+stride];
-    }
-
-    if(t==0){
-      output[blockIdx.x]=partialSum[0];
+	for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
+	{
+		__syncthreads();
+		if(t < stride)
+			partialSum[t] =f(partialSum[t], partialSum[t+stride]);
 	}
+
+	if(t==0){
+		output[blockIdx.x]=partialSum[0];
+	}
+}
+
+template<typename FUNC, typename N>
+void funcColumneDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
+	N* sumX;
+
+	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
+
+	size_t dimSize = B_SIZE;
+	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
+	size_t numElements;
+
+	for(size_t i = 0; i < nRows;++i){
+		f<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,nCols);
+
+		while(gridSize>1){
+			numElements = gridSize;
+			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
+			f<<<gridSize,dimSize>>>(sumX,sumX,numElements);
+		}
+		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
+		gridSize = CEIL_DIV(nCols,B_SIZE*2);
+	}
+	cudaFree(sumX);
+}
+
+/**
+ * SUM REDUCE
+ */
+
+template<typename N>
+__device__ inline N addFuncKernel(const N lhs, const N rhs){
+	return lhs + rhs;
+}
+__global__ void addReduce(const double * input, double * output, size_t len) {
+	funcReduce(&addFuncKernel<double>,input, output,len);	
+}	
+
+template<typename N>
+inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
+	funcColumneDev(&addReduce,X,result,nRows, nCols);
+}
+
+/**
+ * MAX REDUCE
+ */
+template<typename N>
+__device__ inline N maxFuncKernel(const N lhs, const N rhs){
+	return lhs>rhs? lhs : rhs;
+}
+__global__ void maxReduce(const double * input, double * output, size_t len) {
+	funcReduce(&maxFuncKernel<double>,input, output,len);	
+}	
+
+template<typename N>
+void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
+	funcColumneDev(&maxReduce,X,result,nRows, nCols);
 }
 
 template<typename N>
@@ -191,32 +250,6 @@ N sumDev(const N* X, size_t length){
 	return result;
 }
 
-/**
- *	rowwise sum of all elemets
- */
-template<typename N>
-void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	N* sumX;
-
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
-
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	size_t numElements;
-
-	for(size_t i = 0; i < nRows;++i){
-		addReduce<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,nCols);
-
-		while(gridSize>1){
-			numElements = gridSize;
-			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-			addReduce<<<gridSize,dimSize>>>(sumX,sumX,numElements);
-		}
-		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
-		gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	}
-	cudaFree(sumX);
-}
 
 template<typename N>
 __global__ void transposeSharedKernel(const N* input, N* output,size_t nRows, size_t nCols){
