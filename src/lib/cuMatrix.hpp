@@ -13,6 +13,7 @@
 #include <type_traits> 
 #include <tgmath.h>
 #include <functional>
+#include <tuple>
 #include "matrixException.hpp"
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -446,6 +447,25 @@ class cuMatrix{
 				maxColumneDev(T(matrix).m_data,temp,matrix.dim(1),matrix.dim(0));
 
 			return cuMatrix<N> (temp,tempV,memPermission::owner);
+		}
+		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
+		friend tuple<cuMatrix<N>,size_t> maxPos(const cuMatrix<N>& matrix, size_t dimension){
+			N* temp;
+			size_t* posTemp;
+			size_t position;
+			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
+			cudaMalloc((void**) &posTemp,matrix.dim((dimension+1)%2)*sizeof(N));
+			vector<size_t> tempV(matrix.m_vecDim);
+			tempV[dimension]=1;
+
+			if(dimension == 1)
+				maxPosColumneDev(matrix.m_data,temp,posTemp,matrix.dim(0),matrix.dim(1));
+			else
+				maxPosColumneDev(T(matrix).m_data,temp,posTemp,matrix.dim(1),matrix.dim(0));
+
+			cudaMemcpy(&position,posTemp,sizeof(size_t),cudaMemcpyDeviceToHost);
+			cudaFree(posTemp);
+			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),position);
 		}
 
 		friend N prod(const cuMatrix<N>& matrix){

@@ -1,5 +1,6 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include <iostream>
+#include <tuple>
 #include "catch.hpp"
 #include "../lib/cuMatrix.hpp"
 
@@ -79,7 +80,11 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(prod(hMatrix1)==prod(dMatrix1));
 	}
 	SECTION("max"){
-		cout << max(dMatrix2,1)<< endl;
+		REQUIRE(eq(max(dMatrix2,0)[0],cuMatrix<double>({4,5,6})));
+		tuple<cuMatrix<double>,size_t> maxWPos= maxPos(dMatrix2,1);
+		cout << "TUPLE"<<endl;
+		cout << get<0>(maxWPos)<< endl;
+		cout << get<1>(maxWPos)<< endl;
 	}
 	SECTION("fill"){
 		hMatrix << dMatrix1;
