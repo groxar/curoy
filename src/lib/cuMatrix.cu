@@ -84,60 +84,10 @@ void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m
 	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
 }
 
-__global__ void prodReduce(const double * input, double * output, size_t len) {
-    __shared__ double partialSum[2*B_SIZE];
-    unsigned int t = threadIdx.x;
-    unsigned int start = 2*blockIdx.x*blockDim.x;
-
-	//load Segments into shared memory
-    start+t<len?
-      partialSum[t]=input[start+t]:
-      partialSum[t]=1;
-    start+blockDim.x+t<len?
-      partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
-  	  partialSum[blockDim.x+t]=1;
-
-	//binary tree reduce
-    for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
-    {
-      __syncthreads();
-      if(t < stride)
-        partialSum[t] *= partialSum[t+stride];
-    }
-
-    if(t==0){
-      output[blockIdx.x]=partialSum[0];
-	}
-}
-
-template<typename N>
-N prodDev(const N* X, size_t length){
-	N result = 0;
-	N* sumX;
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
-
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
-
-	prodReduce<<<gridSize,dimSize>>>(X,sumX,length);
-	
-
-	N* hostSum;
-	hostSum = (N*) malloc(gridSize*sizeof(N));
-
-	cudaMemcpy(hostSum, sumX, sizeof(N) * gridSize,cudaMemcpyDeviceToHost);
-
-
-	for(int i = 0; i < gridSize; ++i){
-		result *= hostSum[i];
-	}
-
-	cudaFree(sumX);
-	free(hostSum);
-
-	return result;
-}
-
+/**
+ * Blockwise reduce
+ * it only reduces to CEIL_DIV(len,2*B_SIZE)
+ */
 template<typename FUNC, typename N>
 __device__ void funcReduce(FUNC f, const N* input, N* output, size_t len){
 	__shared__ double partialSum[2*B_SIZE];
@@ -166,14 +116,34 @@ __device__ void funcReduce(FUNC f, const N* input, N* output, size_t len){
 }
 
 template<typename FUNC, typename N>
-void funcColumneDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
+void funcReduceDev(FUNC f,const N* X, N* result, size_t length){
+	size_t dimSize = B_SIZE;
+	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
+	size_t numElements;
 	N* sumX;
 
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
+	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
 
+	f<<<gridSize,dimSize>>>(X,length);
+
+	while(gridSize>1){
+		numElements = gridSize;
+		gridSize = CEIL_DIV(gridSize,B_SIZE*2);
+		f<<<gridSize,dimSize>>>(sumX,sumX,numElements);
+	}
+	cudaMemcpy(result,sumX,sizeof(N),cudaMemcpyDeviceToDevice);
+
+	cudaFree(sumX);
+}
+
+template<typename FUNC, typename N>
+void funcColReduceDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
 	size_t dimSize = B_SIZE;
 	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
 	size_t numElements;
+	N* sumX;
+
+	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
 
 	for(size_t i = 0; i < nRows;++i){
 		f<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,nCols);
@@ -189,10 +159,23 @@ void funcColumneDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
 	cudaFree(sumX);
 }
 
+template<typename FUNC, typename N>
+N funcCompleteReduceToHostValue(FUNC f, const N* X, size_t length){
+	N result = 0;
+	N* d_result;
+
+	cudaMalloc((void**) &d_result,sizeof(N));
+	f(X,d_result,1,length);
+	
+	cudaMemcpy(&result, d_result, sizeof(N),cudaMemcpyDeviceToHost);
+	cudaFree(d_result);
+
+	return result;
+}
+
 /**
  * SUM REDUCE
  */
-
 template<typename N>
 __device__ inline N addFuncKernel(const N lhs, const N rhs){
 	return lhs + rhs;
@@ -205,7 +188,35 @@ __global__ void addReduce(const N* input, N* output, size_t len) {
 
 template<typename N>
 inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColumneDev(&addReduce<N>,X,result,nRows, nCols);
+	funcColReduceDev(&addReduce<N>,X,result,nRows, nCols);
+}
+
+template<typename N>
+N sumDev(const N* X, size_t length){
+	return funcCompleteReduceToHostValue(&sumColumneDev<N>,X,length);
+}
+
+/**
+ * PROD REDUCE
+ */
+template<typename N>
+__device__ inline N prodFuncKernel(const N lhs, const N rhs){
+	return lhs * rhs;
+}
+
+template<typename N>
+__global__ void prodReduce(const N* input, N* output, size_t len) {
+	funcReduce(&prodFuncKernel<N>,input, output,len);	
+}	
+
+template<typename N>
+inline void prodColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
+	funcColReduceDev(&prodReduce<N>,X,result,nRows, nCols);
+}
+
+template<typename N>
+N prodDev(const N* X, size_t length){
+	return funcCompleteReduceToHostValue(&prodColumneDev<N>,X,length);
 }
 
 /**
@@ -223,21 +234,12 @@ __global__ void maxReduce(const N* input, N* output, size_t len) {
 
 template<typename N>
 void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColumneDev(&maxReduce<N>,X,result,nRows, nCols);
+	funcColReduceDev(&maxReduce<N>,X,result,nRows, nCols);
 }
 
 template<typename N>
-N sumDev(const N* X, size_t length){
-	N result = 0;
-	N* sumX;
-
-	cudaMalloc((void**) &sumX,sizeof(N));
-	sumColumneDev(X,sumX,1,length);
-	
-	cudaMemcpy(&result, sumX, sizeof(N),cudaMemcpyDeviceToHost);
-	cudaFree(sumX);
-
-	return result;
+N maxDev(const N* X, size_t length){
+	return funcCompleteReduceToHostValue(&maxColumneDev<N>,X,length);
 }
 
 template<typename N>
