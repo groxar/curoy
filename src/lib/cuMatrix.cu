@@ -2,7 +2,8 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <stdio.h>
-
+#include <cfloat>
+#include "posReduce.hu"
 
 //DEBUG ONLY
 #include <iostream>
@@ -28,13 +29,17 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	multDev<double>(NULL,NULL,NULL,0,0,0);
 	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
+	maxDev<double>(NULL,0);
 	sumColumneDev<double>(NULL,NULL,0,0);
+	prodColumneDev<double>(NULL,NULL,0,0);
 	maxColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
 	logDev<double>(NULL,NULL,0);
 	log10Dev<double>(NULL,NULL,0);
+	//exetern
+	maxPosColumneDev<double>(NULL,NULL,NULL,0, 0);
 }
 
 /**
@@ -89,7 +94,7 @@ void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m
  * it only reduces to CEIL_DIV(len,2*B_SIZE)
  */
 template<typename FUNC, typename N>
-__device__ void funcReduce(FUNC f, const N* input, N* output, size_t len){
+__device__ void funcReduce(FUNC f, const N* input, N* output, N neutralValue, size_t len){
 	__shared__ double partialSum[2*B_SIZE];
 	unsigned int t = threadIdx.x;
 	unsigned int start = 2*blockIdx.x*blockDim.x;
@@ -97,10 +102,10 @@ __device__ void funcReduce(FUNC f, const N* input, N* output, size_t len){
 	//load Segments into shared memory
 	start+t<len?
 		partialSum[t]=input[start+t]:
-		partialSum[t]=0;
+		partialSum[t]=neutralValue;
 	start+blockDim.x+t<len?
 		partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
-		partialSum[blockDim.x+t]=0;
+		partialSum[blockDim.x+t]=neutralValue;
 
 	//binary tree reduce
 	for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
@@ -124,7 +129,7 @@ void funcReduceDev(FUNC f,const N* X, N* result, size_t length){
 
 	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
 
-	f<<<gridSize,dimSize>>>(X,length);
+	f<<<gridSize,dimSize>>>(X,sumX,length);
 
 	while(gridSize>1){
 		numElements = gridSize;
@@ -183,7 +188,7 @@ __device__ inline N addFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void addReduce(const N* input, N* output, size_t len) {
-	funcReduce(&addFuncKernel<N>,input, output,len);	
+	funcReduce(&addFuncKernel<N>,input, output, (N)0,len);	
 }	
 
 template<typename N>
@@ -206,7 +211,7 @@ __device__ inline N prodFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void prodReduce(const N* input, N* output, size_t len) {
-	funcReduce(&prodFuncKernel<N>,input, output,len);	
+	funcReduce(&prodFuncKernel<N>,input, output, (N)1,len);	
 }	
 
 template<typename N>
@@ -229,7 +234,7 @@ __device__ inline N maxFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void maxReduce(const N* input, N* output, size_t len) {
-	funcReduce(&maxFuncKernel<N>,input, output,len);	
+	funcReduce(&maxFuncKernel<N>,input, output, DBL_MIN, len);	
 }	
 
 template<typename N>
@@ -241,6 +246,7 @@ template<typename N>
 N maxDev(const N* X, size_t length){
 	return funcCompleteReduceToHostValue(&maxColumneDev<N>,X,length);
 }
+
 
 template<typename N>
 __global__ void transposeSharedKernel(const N* input, N* output,size_t nRows, size_t nCols){
@@ -504,3 +510,7 @@ void log10Dev(const N* input, N* result, size_t numElements){
 	log10Kernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
 }
 }
+
+
+
+
