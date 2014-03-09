@@ -172,7 +172,7 @@ N funcCompleteReduceToHostValue(FUNC f, const N* X, size_t length){
 	cudaMalloc((void**) &d_result,sizeof(N));
 	f(X,d_result,1,length);
 	
-	cudaMemcpy(&result, d_result, sizeof(N),cudaMemcpyDeviceToHost);
+	cudaMemcpy(&result, d_result, sizeof(N), cudaMemcpyDeviceToHost);
 	cudaFree(d_result);
 
 	return result;
