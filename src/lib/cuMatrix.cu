@@ -36,10 +36,14 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	transposeDev<double>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
+	expDev<double>(NULL,NULL,0);
 	logDev<double>(NULL,NULL,0);
 	log10Dev<double>(NULL,NULL,0);
 	//exetern
 	maxPosColumneDev<double>(NULL,NULL,NULL,0, 0);
+	
+	fillDev<size_t>(NULL,0,0);
+	sumDev<size_t>(NULL,0);
 }
 
 /**
@@ -498,6 +502,18 @@ __global__ void powKernel(const N* input,const N exponent, N* result, size_t num
 template<typename N>
 void powDev(const N* input, const N exponent,  N* result, size_t numElements){
 	powKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,exponent,result,numElements);		
+}
+
+template<typename N>
+__global__ void expKernel(const N* input, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx < numElements)	
+		result[idx]=exp(input[idx]);
+}
+
+template<typename N>
+void expDev(const N* input, N* result, size_t numElements){
+	expKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
 }
 
 template<typename N>
