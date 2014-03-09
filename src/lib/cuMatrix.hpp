@@ -449,7 +449,7 @@ class cuMatrix{
 			return cuMatrix<N> (temp,tempV,memPermission::owner);
 		}
 		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
-		friend tuple<cuMatrix<N>,size_t> maxPos(const cuMatrix<N>& matrix, size_t dimension){
+		friend tuple<cuMatrix<N>,cuMatrix<size_t>> maxPos(const cuMatrix<N>& matrix, size_t dimension){
 			N* temp;
 			size_t* posTemp;
 			size_t position;
@@ -463,9 +463,8 @@ class cuMatrix{
 			else
 				maxPosColumneDev(T(matrix).m_data,temp,posTemp,matrix.dim(1),matrix.dim(0));
 
-			cudaMemcpy(&position,posTemp,sizeof(size_t),cudaMemcpyDeviceToHost);
-			cudaFree(posTemp);
-			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),position);
+			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),
+							  cuMatrix<size_t>(posTemp,tempV,memPermission::owner));
 		}
 
 		friend N prod(const cuMatrix<N>& matrix){

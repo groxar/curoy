@@ -81,7 +81,7 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 	}
 	SECTION("max"){
 		REQUIRE(eq(max(dMatrix2,0)[0],cuMatrix<double>({4,5,6})));
-		tuple<cuMatrix<double>,size_t> maxWPos= maxPos(dMatrix2,1);
+		tuple<cuMatrix<double>,cuMatrix<size_t>> maxWPos= maxPos(cuMatrix<double>({{1,2,3,4,5,6,9,1,2,3},{9,3,4,5,3,4,2},{32,41,2,4},{213241,31231414,23,4,1}}),0);
 		cout << "TUPLE"<<endl;
 		cout << get<0>(maxWPos)<< endl;
 		cout << get<1>(maxWPos)<< endl;
