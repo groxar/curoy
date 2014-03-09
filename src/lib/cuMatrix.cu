@@ -205,13 +205,13 @@ N sumDev(const N* X, size_t length){
  * PROD REDUCE
  */
 template<typename N>
-__device__ inline N prodFuncKernel(const N lhs, const N rhs){
+__device__ inline N mulFuncKernel(const N lhs, const N rhs){
 	return lhs * rhs;
 }
 
 template<typename N>
 __global__ void prodReduce(const N* input, N* output, size_t len) {
-	funcReduce(&prodFuncKernel<N>,input, output, (N)1,len);	
+	funcReduce(&mulFuncKernel<N>,input, output, (N)1,len);	
 }	
 
 template<typename N>
@@ -307,13 +307,28 @@ void fillDev(N* X, const N number, size_t size){
 
 
 /**
+ * ZIP
+ */
+template<typename FUNC, typename N> 
+__device__ void	zipFunc(FUNC f, const N* lhs, const N* rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]=f(lhs[idx],rhs[idx]);
+}
+
+template<typename FUNC, typename N> 
+__device__ void	zipFuncSkalar(FUNC f, const N* lhs, const N rhs, N* result, size_t numElements){
+	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
+	if(idx<numElements)
+		result[idx]=f(lhs[idx],rhs);
+}
+
+/**
  * ADDITION
  */
 template<typename N>
 __global__ void addKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx]+rhs[idx];
+	zipFunc(&addFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -323,9 +338,7 @@ void addDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void addSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx]+ rhs;
+	zipFuncSkalar(&addFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -337,10 +350,13 @@ void addSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  * SUBTRACTION
  */
 template<typename N>
+__device__ N subFuncKernel(const N lhs, const N rhs){
+	return lhs - rhs;
+}
+
+template<typename N>
 __global__ void subKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] - rhs[idx];
+	zipFunc(&subFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -350,9 +366,7 @@ void subDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void subSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] - rhs;
+	zipFuncSkalar(&subFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -366,9 +380,7 @@ void subSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  */
 template<typename N>
 __global__ void mulKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = blockIdx.x * B_SIZE +threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] * rhs[idx];
+	zipFunc(&mulFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -378,9 +390,7 @@ void mulDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void mulSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] * rhs;
+	zipFuncSkalar(&mulFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -393,10 +403,13 @@ void mulSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  * DIVISION
  */
 template<typename N>
+__device__ N divFuncKernel(const N lhs, const N rhs){
+	return lhs / rhs;
+}
+
+template<typename N>
 __global__ void divKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] / rhs[idx];
+	zipFunc(&divFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -406,9 +419,7 @@ void divDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void divSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] / rhs;
+	zipFuncSkalar(&divFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -420,10 +431,13 @@ void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  * Equal
  */
 template<typename N>
+__device__ N eqFuncKernel(const N lhs, const N rhs){
+	return lhs == rhs;
+}
+
+template<typename N>
 __global__ void eqKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]= (lhs[idx]==rhs[idx]);
+	zipFunc(&eqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -433,9 +447,7 @@ void eqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void eqSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]= (lhs[idx] == rhs);
+	zipFuncSkalar(&eqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -447,10 +459,13 @@ void eqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
  * not Equal
  */
 template<typename N>
+__device__ N neqFuncKernel(const N lhs, const N rhs){
+	return lhs != rhs;
+}
+
+template<typename N>
 __global__ void neqKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx]!=rhs[idx];
+	zipFunc(&neqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -460,9 +475,7 @@ void neqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void neqSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=lhs[idx] != rhs;
+	zipFuncSkalar(&neqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
 template<typename N> 
@@ -473,6 +486,7 @@ void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 /**
  * MATH functions
  */
+
 
 template<typename N>
 __global__ void powKernel(const N* input,const N exponent, N* result, size_t numElements){
