@@ -15,11 +15,15 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	cout.precision(dbl::digits10);
 
 	ann myAnn;
-	cuMatrix<double> X = readFile("../ml/annData/X3Data.txt");
+	cuMatrix<double> X3 = readFile("../ml/annData/X3Data.txt");
 	cuMatrix<double> theta1 = readFile("../ml/annData/theta1.txt");
 	cuMatrix<double> theta2 = readFile("../ml/annData/theta2.txt");
+	cuMatrix<double> X = readFile("../ml/annData/Xdata.txt");
+	cuMatrix<double> Y = readFile("../ml/annData/Ydata.txt");
 
 	SECTION("predict"){
-		REQUIRE((int)sum(myAnn.predict(X,theta1,theta2))==22520);
+		REQUIRE((long)sum(myAnn.predict(X3,theta1,theta2))==22520);
+		cout << myAnn.costFunction(X,Y,0,theta1,theta2)<<endl;
+		cout << myAnn.costFunction(X,Y,1,theta1,theta2)<<endl;
 	}
 }

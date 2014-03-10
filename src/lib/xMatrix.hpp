@@ -174,10 +174,8 @@ class xMatrix{
 		}
 
 		xMatrix<N>& operator= (const N value){
-			if(size()==1)
-				m_data[0] = value;
-			else
-				cout << "Assignment error" << endl;//fix it
+			for(size_t i =0; i < size();++i)
+				m_data[i] =value;
 			return *this;
 		}
 		
