@@ -102,6 +102,10 @@ class xMatrix{
 		 * ACCESS
 		 */
 		xMatrix<N> operator[](size_t n) const { //access on none const
+			if(nDim() == 0 || n >= dim(0)){
+				cout << "[] overflow error"<<endl;
+				return xMatrix<N>();
+			}
 			size_t memJump = 1;
 
 			auto end = m_vecDim.end();
@@ -115,8 +119,6 @@ class xMatrix{
 		}
 
 		xMatrix<N> operator[](vector<size_t> nVec) const {
-			if(nVec.size()>m_vecDim.size())
-				cout << "[] overflow error" << endl;
 			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];

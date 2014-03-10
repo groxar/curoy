@@ -168,6 +168,7 @@ void funcColReduceDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
 	cudaFree(sumX);
 }
 
+// TODO remove this big overhead
 template<typename FUNC, typename N>
 N funcCompleteReduceToHostValue(FUNC f, const N* X, size_t length){
 	N result = 0;

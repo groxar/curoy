@@ -46,7 +46,6 @@ class cuMatrix{
 			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyHostToDevice);
 		}
 
-
 		~cuMatrix(){ 
 			if(m_perm == memPermission::owner)
 				cudaFree(m_data);
@@ -97,6 +96,10 @@ class cuMatrix{
 		 * ACCESS
 		 */
 		cuMatrix<N> operator[](size_t n) const {
+			if(nDim() == 0 || n >= dim(0)){
+				cout << "[] overflow error"<<endl;
+				return cuMatrix<N>();
+			}
 			size_t memJump = 1;
 
 			auto end = m_vecDim.end();
@@ -110,15 +113,22 @@ class cuMatrix{
 		}
 
 		cuMatrix<N> operator[](vector<size_t> nVec) const {
-			if(nVec.size()>m_vecDim.size())
-				cout << "[] overflow error"<< endl;
 			cuMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];
 
 			return result;
 		}
-
+		
+		// TODO decide if this is a workaround, fix or a stupid idead. Most likely the last one
+		N operator~(){
+			N result = 0;
+			if(size() < 0)
+				cout << "~ access error"<<endl;
+			else
+				cudaMemcpy(&result,m_data,sizeof(N),cudaMemcpyDeviceToHost);
+			return result;
+		}
 
 		/**
 		 * MOVE
@@ -306,8 +316,8 @@ class cuMatrix{
 		/**
 		 * SUBTRACTION SKALAR
 		 */
-		friend cuMatrix<N>   operator- (const N lhs, const cuMatrix<N>& rhs) 	{ return move(rhs + lhs * -1); }
-		friend cuMatrix<N>&& operator- (const N lhs, cuMatrix<N>&& rhs) 		{ return move(rhs + lhs * -1); }
+		friend cuMatrix<N>   operator- (const N lhs, const cuMatrix<N>& rhs) 	{ return move(-rhs + lhs); }
+		friend cuMatrix<N>&& operator- (const N lhs, cuMatrix<N>&& rhs) 		{ return move(-!rhs + lhs); }
 		friend cuMatrix<N>   operator- (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::subSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::subSkalarDev<N>,!lhs,rhs)); }
 		
@@ -323,7 +333,7 @@ class cuMatrix{
 		 * Elementwise Multiplcation SKALAR
 		 */
 		friend cuMatrix<N>   operator* (const N lhs, const cuMatrix<N>& rhs) 	{ return rhs * lhs; }
-		friend cuMatrix<N>&& operator* (const N lhs, cuMatrix<N>&& rhs) 		{ return move(rhs * lhs); }
+		friend cuMatrix<N>&& operator* (const N lhs, cuMatrix<N>&& rhs) 		{ return move(!rhs * lhs); }
 		friend cuMatrix<N>   operator* (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::mulSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::mulSkalarDev<N>,!lhs,rhs)); }
 	
@@ -431,6 +441,10 @@ class cuMatrix{
 				sumColumneDev(T(matrix).m_data,temp,matrix.dim(1),matrix.dim(0));
 
 			return cuMatrix<N> (temp,tempV,memPermission::owner);
+		}
+
+		friend N max(const cuMatrix<N>& matrix){
+			return maxDev(matrix.m_data,matrix.size());
 		}
 		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
 		friend cuMatrix<N> max(const cuMatrix<N>& matrix, size_t dimension){
