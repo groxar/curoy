@@ -119,8 +119,36 @@ class cuMatrix{
 
 			return result;
 		}
+		//2D only
+		cuMatrix<N> operator()(vector<size_t> firstRange,vector<size_t> secondRange){
+			if(firstRange.size() == nDim() == secondRange.size()==2){
+				cout << "Range error in ()"<< endl;
+				return cuMatrix<N>();
+			}
+			vector<size_t> newDimension;
+			size_t size = 1;
+			size_t end = nDim();
+
+			if(firstRange[0]>firstRange[1] && dim(0)>=firstRange[1])
+				cout <<"ranges have to be ascending, invalid Input: {"<< firstRange[0]<<","<< firstRange[1]<<"}"<<endl;
+			newDimension.push_back(firstRange[1]-firstRange[0]+1);
+			size*=newDimension[0];
+
+			if(secondRange[0]>secondRange[1] && dim(1)>=secondRange[1])
+				cout <<"ranges have to be ascending, invalid Input: {"<< secondRange[0]<<","<< secondRange[1]<<"}"<<endl;
+			newDimension.push_back(secondRange[1]-secondRange[0]+1);
+			size*=newDimension[1];
+
+			N* tempData;
+			cudaMalloc((void**)&tempData,sizeof(N)*size);
+
+			for(int i = firstRange[0]; i <= firstRange[1];++i){
+				cudaMemcpy(&(tempData[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
+			}
+			return cuMatrix(tempData,newDimension,memPermission::owner);
+		}
 		
-		// TODO decide if this is a workaround, fix or a stupid idead. Most likely the last one
+		// TODO decide if this is a workaround, fix or a stupid idea. Most likely it's the last one
 		N operator~(){
 			N result = 0;
 			if(size() < 0)
@@ -177,11 +205,14 @@ class cuMatrix{
 			return *this;
 		}
 
-		cuMatrix<N>& operator= (const N value){// NOT FINISHED
-			if(size()==1)
-				cudaMemcpy(m_data,&value,sizeof(N),cudaMemcpyHostToDevice);
-			else
-				cout << "Assignment error" << endl;//fix it
+		cuMatrix<N>& operator= (const N value){
+			N* tempArray = (N*) malloc(sizeof(N)*size());
+
+			for(size_t i =0; i < size(); ++i)
+				tempArray[i]= value;
+			cudaMemcpy(m_data,tempArray,sizeof(N)*size(),cudaMemcpyHostToDevice);
+			
+			free(tempArray);
 			return *this;
 		}
 		
@@ -202,7 +233,7 @@ class cuMatrix{
 		/**
 		 * MATRIX Concatination
 		 */	
-		friend cuMatrix<N> operator& (const cuMatrix<N> lhs,const cuMatrix<N> rhs){
+		friend cuMatrix<N> operator& (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			if(!((dimCompare(lhs.dim(),rhs.dim())==1&&lhs.dim(0)!=rhs.dim(0) )||dimCompare(lhs.dim(),rhs.dim())==0)){
 				cout << "concatination error"<<endl;
 				return lhs;
@@ -215,7 +246,7 @@ class cuMatrix{
 
 			return result;
 		}
-		friend cuMatrix<N> operator& (const cuMatrix<N> lhs,const N value){
+		friend cuMatrix<N> operator& (const cuMatrix<N>& lhs,const N value){
 			vector<size_t>  vecDim = lhs.dim(); 
 			vecDim[0] = lhs.dim(0) + 1;
 			cuMatrix<N> result(vecDim,value);
@@ -223,7 +254,7 @@ class cuMatrix{
 			
 			return result;
 		}
-		friend cuMatrix<N> operator& (const N value, const cuMatrix<N> lhs){
+		friend cuMatrix<N> operator& (const N value, const cuMatrix<N>& lhs){
 			vector<size_t>  vecDim = lhs.dim(); 
 			vecDim[0] = lhs.dim(0) + 1;
 			cuMatrix<N> result(vecDim,value);
@@ -231,13 +262,13 @@ class cuMatrix{
 			
 			return result;
 		}
-		friend cuMatrix<N> operator| (const cuMatrix<N> lhs,const cuMatrix<N> rhs){
+		friend cuMatrix<N> operator| (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			return T(T(lhs)&T(rhs));
 		}
-		friend cuMatrix<N> operator| (const cuMatrix<N> lhs,const N value){
+		friend cuMatrix<N> operator| (const cuMatrix<N>& lhs,const N value){
 			return T(T(lhs)&value);
 		}
-		friend cuMatrix<N> operator| (const N value, const cuMatrix<N> lhs){
+		friend cuMatrix<N> operator| (const N value, const cuMatrix<N>& lhs){
 			return T(value&T(lhs));
 		}
 	
@@ -391,6 +422,9 @@ class cuMatrix{
 
 		friend cuMatrix<N>   operator- (const cuMatrix<N>& lhs) { return move(lhs*-1); }
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs) 		{ return move(!lhs*-1); }
+
+		friend cuMatrix<N>   operator^ (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
+		friend cuMatrix<N>&& operator^ (cuMatrix<N>&& lhs, const N exponent) 		{ return move(mapFunc(&curoy::powDev<N>,!lhs,exponent)); }
 
 		friend cuMatrix<N>   pow (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
 		friend cuMatrix<N>&& pow (cuMatrix<N>&& lhs, const N exponent) 		{ return move(mapFunc(&curoy::powDev<N>,!lhs,exponent)); }
