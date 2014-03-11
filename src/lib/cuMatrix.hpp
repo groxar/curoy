@@ -17,6 +17,7 @@
 #include "matrixException.hpp"
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <curand.h>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr),m_perm(memPermission::user){}
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(vector<size_t> dim, enum fillMode):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
+		cuMatrix(vector<size_t> dim, enum fillMode mode):m_data(nullptr){m_perm=memPermission::user;resize(dim);if(mode==fillMode::rnd){fillRnd(*this);}}
 		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
 		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
@@ -162,7 +163,7 @@ class cuMatrix{
 		 * MOVE
 		 */
 		friend inline cuMatrix<N>&& operator! (cuMatrix<N>& matrix){
-			if(matrix.m_perm == memPermission::user || matrix.m_perm == memPermission::diver){ //make sure that diver should behave like that
+			if(matrix.m_perm != memPermission::owner){ //make sure that diver should behave like that
 				N* ptr;
 				cudaMalloc((void**)&ptr,matrix.size()*sizeof(N));
 				cudaMemcpy(ptr,matrix.m_data,matrix.size()*sizeof(N),cudaMemcpyDeviceToDevice);
@@ -219,14 +220,27 @@ class cuMatrix{
 		/**
 		 * MATRIX FILL
 		 */
-		friend cuMatrix<N> fill(cuMatrix<N>& matrix,const N number){	
+		friend cuMatrix<N> fill(cuMatrix<N>& matrix,const N value){	
 			matrix.rebase(matrix.size());	
-			fillDev(matrix.m_data, number, matrix.size());
+			fillDev(matrix.m_data, value, matrix.size());
 			return matrix;
 		}
 
-		friend cuMatrix<N>&& fill(cuMatrix<N>&& matrix,const N number){
-			fillDev(matrix.m_data, number, matrix.size());
+		friend cuMatrix<N>&& fill(cuMatrix<N>&& matrix,const N value){
+			fillDev(matrix.m_data, value, matrix.size());
+			return move(matrix);
+		}
+
+		friend cuMatrix<N>&& fillRnd(cuMatrix<N>& matrix){	
+			matrix.rebase(matrix.size());	
+			return move(fillRnd(!matrix));
+		}
+
+		friend cuMatrix<N>&& fillRnd(cuMatrix<N>&& matrix){
+			curandGenerator_t gen;
+			curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
+			curandSetPseudoRandomGeneratorSeed(gen, 4651635983ULL);
+			curandGenerateUniformDouble(gen, matrix.m_data, matrix.size());
 			return move(matrix);
 		}
 
@@ -551,11 +565,10 @@ class cuMatrix{
 			
 			size_t numX = matrix.dim(0);
 			size_t numY = matrix.dim(1);
-			N* temp;
-			cudaMalloc((void**) &temp, numX*numY*sizeof(N));
+			cuMatrix<N> result(transVec,fillMode::none);
 			
-			transposeDev(matrix.m_data,temp,numX,numY);
-			return cuMatrix<N>(temp,transVec,memPermission::owner);
+			transposeDev(matrix.m_data,result.m_data,numX,numY);
+			return result;
 		}
 
 
@@ -574,18 +587,31 @@ class cuMatrix{
 		vector<size_t> m_vecDim;
 		
 		void rebase(size_t numElements){
-			cudaError_t err;
-			if(m_perm == memPermission::user){
+			cudaError_t err = cudaSuccess;
+			if(m_perm != memPermission::owner){
 				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
 				m_perm = memPermission::owner;
 			}
-			else if(m_perm == memPermission::owner && numElements != size()){
+			else if(numElements != size()){
 				cudaFree(m_data);
 				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
 			}
 
-			if(m_data == NULL || err != 0)
+			if(m_data == NULL || err != 0){
 				cout << "GPU allocation error"<< endl;	
+				if(m_data == NULL)
+					cout << "M Data is NULL"<<endl;
+				if(err != 0)
+					cout << cudaGetErrorString(err)<<endl;
+				cout << "numElements: "<< numElements<<endl;
+				cout << "size: "<< size()<<endl;
+				if(m_perm == memPermission::owner)
+					cout << "memory owner"<<endl;
+				else if(m_perm == memPermission::diver)
+					cout << "memory diver"<<endl;
+				else
+					cout << "memory user"<<endl;
+			}
 		}
 };
 }

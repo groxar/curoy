@@ -310,7 +310,6 @@ void fillDev(N* X, const N number, size_t size){
 	fillKernel<<<dimGrid,dimBlock>>>(X,number,size);
 }
 
-
 /**
  * ZIP
  */

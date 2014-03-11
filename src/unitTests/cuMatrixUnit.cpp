@@ -49,6 +49,7 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 		cout <<"diver:"			<<endl<< dMatrix1[1]<<endl;
 //		cout <<"single value:"	<<endl<< (double)dMatrix1[1]<<endl;
 		REQUIRE(eq(cuMatrix<double>({{1,2,3,4,5,6,7,8,9},{2,3,4,5,6,7,8,9},{3,4,5,6,7,8}})({0,2},{2,6}),cuMatrix<double>({{3,4,5,6,7},{4,5,6,7,8},{5,6,7,8,0}})));
+		cout << cuMatrix<double>({4,5},fillMode::rnd)<<endl;
 	}
 
 	SECTION("Elementwise operation"){
