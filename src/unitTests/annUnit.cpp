@@ -23,7 +23,10 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 
 	SECTION("predict"){
 		REQUIRE((long)sum(myAnn.predict(X3,theta1,theta2))==22520);
+		startChrono();
 		cout << myAnn.costFunction(X,Y,0,theta1,theta2)<<endl;
+		timeChrono("lambda 0");
 		cout << myAnn.costFunction(X,Y,1,theta1,theta2)<<endl;
+		timeChrono("lambda 0");
 	}
 }

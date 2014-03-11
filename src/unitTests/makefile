@@ -4,7 +4,7 @@ NVCC = nvcc
 CUDACNFG= -arch=sm_35
 LIBDIR = lib/
 OBJDIR = obj/
-OPTION = -std=c++0x -g
+OPTION = -std=c++0x -O2 -lcurand -L/usr/local/cuda/lib64
 
 
 phony: cuMatrixUnit xMatrixUnit run

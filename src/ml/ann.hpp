@@ -23,8 +23,8 @@ namespace curoy{
 			cuMatrix<double> yT;
 			cuMatrix<double> xT;
 
-			cuMatrix<double> theta1Grad=theta1;
-			cuMatrix<double> theta2Grad=theta2;
+			cuMatrix<double> theta1Grad(theta1.dim(),0);
+			cuMatrix<double> theta2Grad(theta2.dim(),0);
 
 			// forward propagation
 			cuMatrix<double> z2 = mult(mX, T(theta1));
@@ -42,14 +42,13 @@ namespace curoy{
 			// regulization
 			j+=(lambda/(2.0*m))*(sum(theta1^2)+sum(theta2^2));
 			
-			for(size_t t = 0; t < 1; ++t){
+			for(size_t t = 0; t < m; ++t){
 				yT = cuMatrix<double>({k},0);
 				yT[~y[t]]=1;
 				cuMatrix<double> a1=T(mX[t]);
 				cuMatrix<double> d3=T(a3[t]-yT);
 				cuMatrix<double> d2= mult(d3,theta2)*sigmoidGradient( 1 | T(z2[t]));
 
-				// remove Regulation of the first element d2
 				d2=d2({0,0},{1,d2.dim(1)-1});
 				theta1Grad = theta1Grad + mult(T(d2),a1);
 				theta2Grad = theta2Grad + mult(T(d3),T(a2[t]));
