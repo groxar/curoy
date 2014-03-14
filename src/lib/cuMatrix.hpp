@@ -48,8 +48,12 @@ class cuMatrix{
 		}
 
 		~cuMatrix(){ 
-			if(m_perm == memPermission::owner)
-				cudaFree(m_data);
+			cudaError_t err = cudaSuccess;
+			if(m_perm == memPermission::owner){
+				err =cudaFree(m_data);
+				if(err!=cudaSuccess)
+					cout << cudaGetErrorString(err)<<endl;	
+			}
 		}
 
 
@@ -140,13 +144,12 @@ class cuMatrix{
 			newDimension.push_back(secondRange[1]-secondRange[0]+1);
 			size*=newDimension[1];
 
-			N* tempData;
-			cudaMalloc((void**)&tempData,sizeof(N)*size);
+			cuMatrix<N> result(newDimension,fillMode::none);
 
 			for(int i = firstRange[0]; i <= firstRange[1];++i){
-				cudaMemcpy(&(tempData[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
+				cudaMemcpy(&(result.m_data[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
 			}
-			return cuMatrix(tempData,newDimension,memPermission::owner);
+			return result;
 		}
 		
 		// TODO decide if this is a workaround, fix or a stupid idea. Most likely it's the last one
@@ -494,7 +497,7 @@ class cuMatrix{
 		friend N max(const cuMatrix<N>& matrix){
 			return maxDev(matrix.m_data,matrix.size());
 		}
-		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
+		//2D dimension max, rework after implementing align(Transpose with any dimesions)
 		friend cuMatrix<N> max(const cuMatrix<N>& matrix, size_t dimension){
 			N* temp;
 			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
@@ -508,7 +511,7 @@ class cuMatrix{
 
 			return cuMatrix<N> (temp,tempV,memPermission::owner);
 		}
-		//2D dimension sum, rework after implementing align(Transpose with any dimesions)
+		//2D dimension maxPos, rework after implementing align(Transpose with any dimesions)
 		friend tuple<cuMatrix<N>,cuMatrix<size_t>> maxPos(const cuMatrix<N>& matrix, size_t dimension){
 			N* temp;
 			size_t* posTemp;
