@@ -1,0 +1,7 @@
+//hard coded without dim(int)
+devSigmoid: : 0.00215s
+//hard coded with dim(int)
+devSigmoid: : 0.561364s
+//soft coded (usage of library) with dim(int)
+cuSigmoid: : 2.822166s
+

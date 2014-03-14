@@ -1,10 +1,10 @@
 CC = clang
 CXX = clang++
 NVCC = nvcc
-CUDACNFG= -arch=sm_35
+CUDACNFG= -arch=sm_35 -O2 -lcurand
 LIBDIR = lib/
 OBJDIR = obj/
-OPTION = -std=c++0x -O2 -lcurand -L/usr/local/cuda/lib64
+OPTION = -std=c++0x -O3
 
 
 phony: cuMatrixUnit xMatrixUnit run
@@ -16,10 +16,13 @@ xMatrixUnit: xMatrixUnit.cpp
 ../lib/cudaMatrix.o:
 	make ../lib/makefile
 
+../ml/ann.o:
+	make ../ml/makefile
+
 cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
-annUnit: annUnit.cpp ../lib/cudaMatrix.o
+annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 	@echo "\n\nANNUNIT"
 	./annUnit

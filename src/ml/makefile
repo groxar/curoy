@@ -6,12 +6,7 @@ LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -g
 
-phony: powerANN $(OBJDIR) run
-
-$(LIBDIR):
-	mkdir -p $@
-$(OBJDIR):
-	mkdir -p $@
+phony: ann.o 
 
 ../lib/cuMatrix.o:
 	make ../lib/makefile
@@ -19,14 +14,9 @@ $(OBJDIR):
 ../lib/cudaMatrix.o:
 	make ../lib/makefile
 
-powerANN.o: powerANN.cu
+ann.o: ann.cu
 	$(NVCC) $(CUDACNFG) -o $@ -c $+
-
-powerANN: powerANN.cpp ../lib/cuMatrix.o ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 
 clean:
 	rm -rf $(OBJDIR) $(LIBDIR)	
 
-run:
-	./powerANN
