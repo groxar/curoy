@@ -5,6 +5,7 @@
 #include <sstream>
 #include <chrono>
 #include "../lib/xMatrix.hpp"
+
 using namespace std;
 using namespace curoy;
 
@@ -48,4 +49,12 @@ void timeChrono(const string message){
 	cout << message <<": "<< elapsed_seconds.count() <<"s"<< endl;
 	start = std::chrono::high_resolution_clock::now();
 
+}
+
+void printGpuMem(){
+	size_t freeMem = 0;
+	size_t totalMem = 0;
+	cudaMemGetInfo  (&freeMem, &totalMem);
+	cout <<"Free  Gpu Mem: "<< freeMem<<endl;
+	cout <<"Total Gpu Mem: "<< totalMem<<endl;
 }

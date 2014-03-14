@@ -1,0 +1,8 @@
+#pragma once
+#include"../lib/cudaConf.h"
+
+namespace curoy{
+	void sigmoidDev(double* X, size_t numRows, size_t numCols);
+	void sigmoidDev2(double* X, size_t numRows, size_t numCols);
+
+}

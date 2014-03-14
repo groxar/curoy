@@ -1,8 +1,6 @@
 #pragma once
+#include"cudaConf.h"
 
-#define B_WIDTH 32
-#define B_SIZE B_WIDTH*B_WIDTH 
-#define CEIL_DIV(a,b) ((((a)-1)/(b))+1)
 namespace curoy {
 template<typename N> 
 void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m);
