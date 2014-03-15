@@ -31,28 +31,34 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		for(int i = 0; i < 1000;++i)
 			sigmoidDev2(X1.m_data,X1.dim(0),X1.dim(1));
 		cudaDeviceSynchronize();
-		timeChrono("devSigmoid2: ");
+		timeChrono("devSigmoid2 dim");
 		for(int i = 0; i < 1000;++i)
 			sigmoidDev2(X2.m_data,xRows,xCols);
 		cudaDeviceSynchronize();
-		timeChrono("devSigmoid2: ");
-		printGpuMem();
+		timeChrono("sigmoidDev2 size_t");
+		for(int i = 0; i < 1000;++i)
+			sigmoid(X3);
+		cudaDeviceSynchronize();
+		timeChrono("cuSigmoid");
 		for(int i = 0; i < 1000;++i)
 			sigmoid(!X3);
-		timeChrono("cuSigmoid: ");
-		printGpuMem();
-		cout << sum(X1) << endl;
-		cout << sum(X2) <<endl;
-		cout << sum(X3) <<endl;
+		cudaDeviceSynchronize();
+		timeChrono("cuSigmoid move");
+		REQUIRE(sum(X1) == sum(X2));
+		REQUIRE(sum(X2) == sum(X3));
+		//cout << sum(X1) <<endl;
+		//cout << sum(X2) <<endl;
+		//cout << sum(X3) <<endl;
 	}
 	SECTION("predict"){
-		REQUIRE((long)sum(myAnn.predict(X3,theta1,theta2))==22520);
 		startChrono();
-		printGpuMem();
+		REQUIRE((long)sum(myAnn.predict(X3,theta1,theta2))==22520);
+		timeChrono("predict");
 		cout << myAnn.costFunction(X,Y,0,theta1,theta2)<<endl;
+		cudaDeviceSynchronize();
 		timeChrono("lambda 0");
-		printGpuMem();
 		cout << myAnn.costFunction(X,Y,1,theta1,theta2)<<endl;
+		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
 	}
 	SECTION("init"){
@@ -62,11 +68,11 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		!myTheta1*2*eps-eps;
 		!myTheta2*2*eps-eps;
 		startChrono();
-		printGpuMem();
 		cout << myAnn.costFunction(X,Y,0,myTheta1,myTheta2)<<endl;
+		cudaDeviceSynchronize();
 		timeChrono("lambda 0");
-		printGpuMem();
 		cout << myAnn.costFunction(X,Y,1,myTheta1,myTheta2)<<endl;
+		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
 
 		cudaDeviceReset();
