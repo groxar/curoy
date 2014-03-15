@@ -14,6 +14,7 @@
 #include <tgmath.h>
 #include <functional>
 #include <tuple>
+#include <future>
 #include "matrixException.hpp"
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -166,7 +167,7 @@ class cuMatrix{
 		 * MOVE
 		 */
 		friend inline cuMatrix<N>&& operator! (cuMatrix<N>& matrix){
-			if(matrix.m_perm != memPermission::owner){ //make sure that diver should behave like that
+			if(matrix.m_perm != memPermission::owner){
 				N* ptr;
 				cudaMalloc((void**)&ptr,matrix.size()*sizeof(N));
 				cudaMemcpy(ptr,matrix.m_data,matrix.size()*sizeof(N),cudaMemcpyDeviceToDevice);
@@ -185,6 +186,9 @@ class cuMatrix{
 		 * ASSIGNMENT
 		 */
 		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){
+
+			if(m_perm==memPermission::owner)
+				cudaFree(m_data);
 			m_data = rhs.m_data;
 			m_vecDim = move(rhs.m_vecDim);
 			m_perm = rhs.m_perm;
@@ -210,13 +214,8 @@ class cuMatrix{
 		}
 
 		cuMatrix<N>& operator= (const N value){
-			N* tempArray = (N*) malloc(sizeof(N)*size());
-
-			for(size_t i =0; i < size(); ++i)
-				tempArray[i]= value;
-			cudaMemcpy(m_data,tempArray,sizeof(N)*size(),cudaMemcpyHostToDevice);
-			
-			free(tempArray);
+			this->rebase(this->size());
+			fillDev(this->m_data,value,this->size());
 			return *this;
 		}
 		
@@ -396,8 +395,8 @@ class cuMatrix{
 		/**
 		 * Divison Skalar
 		 */
-		friend cuMatrix<N>   operator/ (const N lhs, const cuMatrix<N>& rhs) 	{ return pow(rhs,-1) * lhs; }
-		friend cuMatrix<N>&& operator/ (const N lhs, cuMatrix<N>&& rhs) 		{ return move( pow(!rhs,-1) * lhs); }
+		friend cuMatrix<N>   operator/ (const N lhs, const cuMatrix<N>& rhs) 	{ return mapFunc(&divReverseSkalarDev<N>,rhs,lhs); }
+		friend cuMatrix<N>&& operator/ (const N lhs, cuMatrix<N>&& rhs) 		{ return mapFunc(&divReverseSkalarDev<N>,!rhs,lhs); }
 		friend cuMatrix<N>   operator/ (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::divSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::divSkalarDev<N>,!lhs,rhs)); }
 	

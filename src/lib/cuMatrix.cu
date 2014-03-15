@@ -24,6 +24,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	subSkalarDev<double>(NULL,0,NULL,0);
 	mulSkalarDev<double>(NULL,0,NULL,0);
 	divSkalarDev<double>(NULL,0,NULL,0);
+	divReverseSkalarDev<double>(NULL,0,NULL,0);
 	eqSkalarDev<double>(NULL,0,NULL,0);
 	neqSkalarDev<double>(NULL,0,NULL,0);
 	multDev<double>(NULL,NULL,NULL,0,0,0);
@@ -412,6 +413,11 @@ __device__ N divFuncKernel(const N lhs, const N rhs){
 }
 
 template<typename N>
+__device__ N divReverseFuncKernel(const N lhs, const N rhs){
+	return rhs / lhs;
+}
+
+template<typename N>
 __global__ void divKernel(const N* lhs, const N* rhs, N* result, size_t numElements){
 	zipFunc(&divFuncKernel<N>,lhs,rhs,result,numElements);
 }
@@ -429,6 +435,16 @@ __global__ void divSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 template<typename N> 
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 	divSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+}
+
+template<typename N>
+__global__ void divReverseSkalarKernel(const N* lhs, const N rhs, N* result, size_t numElements){
+	zipFuncSkalar(&divReverseFuncKernel<N>,lhs,rhs,result,numElements);
+}
+
+template<typename N> 
+void divReverseSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
+	divReverseSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
 }
 
 /**

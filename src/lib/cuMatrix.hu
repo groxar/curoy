@@ -76,6 +76,9 @@ template<typename N>
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements);
 
 template<typename N> 
+void divReverseSkalarDev(const N* rhs, const N lhs, N* result, size_t numElements);
+
+template<typename N> 
 void eqSkalarDev (const N* lhs, const N rhs, N* result, size_t numElements);
 
 template<typename N>
