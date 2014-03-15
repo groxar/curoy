@@ -38,7 +38,7 @@ namespace curoy{
 			double j=0;
 
 			cuMatrix<double> mX = 1 | X;
-			cuMatrix<double> yT;
+			cuMatrix<double> yT({k},fillMode::none);
 			cuMatrix<double> xT;
 
 			cuMatrix<double> theta1Grad(theta1.dim(),0);
@@ -53,7 +53,7 @@ namespace curoy{
 			cuMatrix<double> d3;
 			cuMatrix<double> d2;
 			for(size_t i=0; i < m; ++i){ //m iterations
-				yT = cuMatrix<double>({k},0);
+				yT = 0;
 				yT[~y[i]]=1;
 				j+=(1.0/m)*sum(-yT*log(a3[i])-(1.0-yT)*log(1.0-a3[i]));
 			}
@@ -63,7 +63,7 @@ namespace curoy{
 			j+=(lambda/(2.0*m))*(sum(theta1^2)+sum(theta2^2));
 			
 			for(size_t t = 0; t < m; ++t){
-				yT = cuMatrix<double>({k},0);
+				yT = 0;
 				yT[~y[t]]=1;
 				a1=T(mX[t]);
 				d3=T(a3[t]-yT);
@@ -73,7 +73,6 @@ namespace curoy{
 				theta1Grad = theta1Grad + mult(T(d2),a1);
 				theta2Grad = theta2Grad + mult(T(d3),T(a2[t]));
 			}
-
 			// remove Regulation of the first element
 			theta1Grad = (theta1Grad * (1.0/m))+(lambda/m)*theta1;
 			theta2Grad = (theta2Grad * (1.0/m))+(lambda/m)*theta2;

@@ -46,7 +46,6 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	fillDev<size_t>(NULL,0,0);
 	sumDev<size_t>(NULL,0);
 }
-
 /**
  * MATRIX MULTIPLICATION
  */
