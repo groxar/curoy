@@ -5,27 +5,30 @@
 using namespace std;
 
 namespace curoy{
-	cuMatrix<double> sigmoid(cuMatrix<double>& X){
-		return move(1/(1+exp(-X)));
+	cuMatrix<double>& sigmoid(cuMatrix<double>& X){
+		sigmoidDev2(X.m_data,X.dim(0),X.dim(1));
+		return X; 
 	}
 	cuMatrix<double>&& sigmoid(cuMatrix<double>&& X){
-		return move(1/(1+exp(-!X)));
+		sigmoidDev2(X.m_data,X.dim(0),X.dim(1));
+		return move(X);
 	}
 	cuMatrix<double> sigmoidGradient(cuMatrix<double>& X){
-		return sigmoid(X)*(1-sigmoid(X));
+		sigmoid(X);
+		return X*(1-X);
 	}
 	cuMatrix<double>&& sigmoidGradient(cuMatrix<double>&& X){
-		return sigmoid(!X)*(1-sigmoid(!X));
+		sigmoid(!X);
+		return move(!X*(1-!X));
 	}
 	class ann{
 	public:
 		cuMatrix<size_t> predict(const cuMatrix<double>& X, const cuMatrix<double>& theta1, const cuMatrix<double>& theta2){
-			cuMatrix<double> a = X;
+			cuMatrix<double> a(X);
 			a =sigmoid(mult( 1 | a, T(theta1)));
 			a =sigmoid(mult( 1 | a, T(theta2)));
 
 			return get<1>(maxPos(a,1));
-			//return cuMatrix<size_t>({1,2},3);
 		} 
 		double costFunctionGPU(const cuMatrix<double>& X, const cuMatrix<double>& y,const double lambda, const cuMatrix<double>& theta1, const cuMatrix<double>& theta2){
 			double result;

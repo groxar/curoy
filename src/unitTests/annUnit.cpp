@@ -44,8 +44,19 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 			sigmoid(!X3);
 		cudaDeviceSynchronize();
 		timeChrono("cuSigmoid move");
+		for(int i = 0; i < 1000;++i)
+			sigmoidGradient(X3);
+		cudaDeviceSynchronize();
+		timeChrono("sigmoidGradient move");
+
 		REQUIRE(sum(X1) == sum(X2));
 		REQUIRE(sum(X2) == sum(X3));
+		cuMatrix<double> multMat1({1000,1000},3);
+		cuMatrix<double> multMat2({1000,1000},4);
+		cuMatrix<double> multMat3({1000,1000},3);
+		timeChrono("prepare mult test");
+		mult(multMat1,multMat2);
+		timeChrono("dense");
 		//cout << sum(X1) <<endl;
 		//cout << sum(X2) <<endl;
 		//cout << sum(X3) <<endl;
