@@ -30,13 +30,17 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		startChrono();
 		for(int i = 0; i < 1000;++i)
 			sigmoidDev2(X1.m_data,X1.dim(0),X1.dim(1));
+		cudaDeviceSynchronize();
 		timeChrono("devSigmoid2: ");
 		for(int i = 0; i < 1000;++i)
 			sigmoidDev2(X2.m_data,xRows,xCols);
+		cudaDeviceSynchronize();
 		timeChrono("devSigmoid2: ");
+		printGpuMem();
 		for(int i = 0; i < 1000;++i)
 			sigmoid(!X3);
 		timeChrono("cuSigmoid: ");
+		printGpuMem();
 		cout << sum(X1) << endl;
 		cout << sum(X2) <<endl;
 		cout << sum(X3) <<endl;
@@ -49,7 +53,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		timeChrono("lambda 0");
 		printGpuMem();
 		cout << myAnn.costFunction(X,Y,1,theta1,theta2)<<endl;
-		timeChrono("lambda 0");
+		timeChrono("lambda 1");
 	}
 	SECTION("init"){
 		cuMatrix<double> myTheta1(theta1.dim(),fillMode::rnd);
@@ -63,7 +67,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		timeChrono("lambda 0");
 		printGpuMem();
 		cout << myAnn.costFunction(X,Y,1,myTheta1,myTheta2)<<endl;
-		timeChrono("lambda 0");
+		timeChrono("lambda 1");
 
 		cudaDeviceReset();
 	}

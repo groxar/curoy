@@ -52,7 +52,7 @@ namespace curoy{
 			cuMatrix<double> a1;
 			cuMatrix<double> d3;
 			cuMatrix<double> d2;
-			for(size_t i=0; i < 1; ++i){ //m iterations
+			for(size_t i=0; i < m; ++i){ //m iterations
 				yT = cuMatrix<double>({k},0);
 				yT[~y[i]]=1;
 				j+=(1.0/m)*sum(-yT*log(a3[i])-(1.0-yT)*log(1.0-a3[i]));
@@ -62,7 +62,7 @@ namespace curoy{
 			// regulization
 			j+=(lambda/(2.0*m))*(sum(theta1^2)+sum(theta2^2));
 			
-			for(size_t t = 0; t < 1; ++t){
+			for(size_t t = 0; t < m; ++t){
 				yT = cuMatrix<double>({k},0);
 				yT[~y[t]]=1;
 				a1=T(mX[t]);
