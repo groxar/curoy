@@ -16,13 +16,19 @@ void costFunctionKernel(const double* X, size_t numXRows, size_t numYCols,
 
 __global__ void sigmoidKernel(const double* X, double* result,size_t numElements){
 	int pos = B_SIZE*blockIdx.x+threadIdx.x;
+	double x = X[pos];
 	if(pos < numElements)
-	result[pos] = 1/(1+exp(X[pos]*-1));
+		result[pos] = 1/(1+exp(-1*x));
 }
 
 void sigmoidDev2(double* X, size_t numRows, size_t numCols){
 	sigmoidKernel<<<CEIL_DIV(numRows*numCols,B_SIZE),B_SIZE>>>(X,X,numRows*numCols);		
 }
+
+__global__ void sigmoidGradientKernel(){
+
+}
+
 void sigmoidDev(double* X, size_t numRows, size_t numCols){
 	mulSkalarDev(X,-1.0,X,numRows*numCols);
 	expDev(X,X,numRows*numCols);

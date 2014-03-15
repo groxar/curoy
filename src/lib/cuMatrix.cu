@@ -3,6 +3,7 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <cfloat>
+#include"mapFunc.hu"
 #include "posReduce.hu"
 
 //DEBUG ONLY
@@ -45,24 +46,31 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	
 	fillDev<size_t>(NULL,0,0);
 	sumDev<size_t>(NULL,0);
+	fillDev<float>(NULL,0,0);
+	multDev<float>(NULL,NULL,NULL,0,0,0);
 }
+
+
+	
 /**
  * MATRIX MULTIPLICATION
  */
-__global__ void matrixMultiplyKernel(const double * lhs,const double * rhs, double * result,
+
+template<typename N>
+__global__ void matrixMultiplyKernel(const N* lhs,const N* rhs, N* result,
 			             int numARows, int numAColumns,
 			             int numBRows, int numBColumns,
 			             int numCRows, int numCColumns) {
     __shared__ double ds_A[B_WIDTH][B_WIDTH];
     __shared__ double ds_B[B_WIDTH][B_WIDTH];
-    int bx = blockIdx.x;
-    int by = blockIdx.y;
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
+    int by = blockIdx.x;
+    int bx = blockIdx.y;
+    int ty = threadIdx.x;
+    int tx = threadIdx.y;
     
     int row = bx * B_WIDTH + tx;
     int col = by * B_WIDTH + ty;
-    double pValue = 0;
+    N pValue = 0;
 	for (int n = 0; n < CEIL_DIV(numAColumns,B_WIDTH); ++n){
 
 		if(row < numARows && n*B_WIDTH+ty < numAColumns)
@@ -88,100 +96,11 @@ __global__ void matrixMultiplyKernel(const double * lhs,const double * rhs, doub
 
 template<typename N>
 void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m){
-	dim3 dimGrid(CEIL_DIV(n,B_WIDTH),CEIL_DIV(m,B_WIDTH));
+	dim3 dimGrid(CEIL_DIV(m,B_WIDTH),CEIL_DIV(n,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
 	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
 }
 
-/**
- * Blockwise reduce
- * it only reduces to CEIL_DIV(len,2*B_SIZE)
- */
-template<typename FUNC, typename N>
-__device__ void funcReduce(FUNC f, const N* input, N* output, N neutralValue, size_t len){
-	__shared__ double partialSum[2*B_SIZE];
-	unsigned int t = threadIdx.x;
-	unsigned int start = 2*blockIdx.x*blockDim.x;
-
-	//load Segments into shared memory
-	start+t<len?
-		partialSum[t]=input[start+t]:
-		partialSum[t]=neutralValue;
-	start+blockDim.x+t<len?
-		partialSum[blockDim.x+t]=input[start+blockDim.x+t]:
-		partialSum[blockDim.x+t]=neutralValue;
-
-	//binary tree reduce
-	for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
-	{
-		__syncthreads();
-		if(t < stride)
-			partialSum[t] =f(partialSum[t], partialSum[t+stride]);
-	}
-
-	if(t==0){
-		output[blockIdx.x]=partialSum[0];
-	}
-}
-
-template<typename FUNC, typename N>
-void funcReduceDev(FUNC f,const N* X, N* result, size_t length){
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
-	size_t numElements;
-	N* sumX;
-
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
-
-	f<<<gridSize,dimSize>>>(X,sumX,length);
-
-	while(gridSize>1){
-		numElements = gridSize;
-		gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-		f<<<gridSize,dimSize>>>(sumX,sumX,numElements);
-	}
-	cudaMemcpy(result,sumX,sizeof(N),cudaMemcpyDeviceToDevice);
-
-	cudaFree(sumX);
-}
-
-template<typename FUNC, typename N>
-void funcColReduceDev(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	size_t numElements;
-	N* sumX;
-
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
-
-	for(size_t i = 0; i < nRows;++i){
-		f<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,nCols);
-
-		while(gridSize>1){
-			numElements = gridSize;
-			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-			f<<<gridSize,dimSize>>>(sumX,sumX,numElements);
-		}
-		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
-		gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	}
-	cudaFree(sumX);
-}
-
-// TODO remove this big overhead
-template<typename FUNC, typename N>
-N funcCompleteReduceToHostValue(FUNC f, const N* X, size_t length){
-	N result = 0;
-	N* d_result;
-
-	cudaMalloc((void**) &d_result,sizeof(N));
-	f(X,d_result,1,length);
-	
-	cudaMemcpy(&result, d_result, sizeof(N), cudaMemcpyDeviceToHost);
-	cudaFree(d_result);
-
-	return result;
-}
 
 /**
  * SUM REDUCE
@@ -193,17 +112,17 @@ __device__ inline N addFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void addReduce(const N* input, N* output, size_t len) {
-	funcReduce(&addFuncKernel<N>,input, output, (N)0,len);	
+	reduceFuncKernel(&addFuncKernel<N>,input, output, (N)0,len);	
 }	
 
 template<typename N>
 inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColReduceDev(&addReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&addReduce<N>,X,result,nRows, nCols);
 }
 
 template<typename N>
 N sumDev(const N* X, size_t length){
-	return funcCompleteReduceToHostValue(&sumColumneDev<N>,X,length);
+	return reduceFuncToHostValue(&sumColumneDev<N>,X,length);
 }
 
 /**
@@ -216,17 +135,17 @@ __device__ inline N mulFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void prodReduce(const N* input, N* output, size_t len) {
-	funcReduce(&mulFuncKernel<N>,input, output, (N)1,len);	
+	reduceFuncKernel(&mulFuncKernel<N>,input, output, (N)1,len);	
 }	
 
 template<typename N>
 inline void prodColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColReduceDev(&prodReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&prodReduce<N>,X,result,nRows, nCols);
 }
 
 template<typename N>
 N prodDev(const N* X, size_t length){
-	return funcCompleteReduceToHostValue(&prodColumneDev<N>,X,length);
+	return reduceFuncToHostValue(&prodColumneDev<N>,X,length);
 }
 
 /**
@@ -239,17 +158,17 @@ __device__ inline N maxFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void maxReduce(const N* input, N* output, size_t len) {
-	funcReduce(&maxFuncKernel<N>,input, output, DBL_MIN, len);	
+	reduceFuncKernel(&maxFuncKernel<N>,input, output, DBL_MIN, len);	
 }	
 
 template<typename N>
 void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	funcColReduceDev(&maxReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&maxReduce<N>,X,result,nRows, nCols);
 }
 
 template<typename N>
 N maxDev(const N* X, size_t length){
-	return funcCompleteReduceToHostValue(&maxColumneDev<N>,X,length);
+	return reduceFuncToHostValue(&maxColumneDev<N>,X,length);
 }
 
 
@@ -308,23 +227,6 @@ void fillDev(N* X, const N number, size_t size){
 	dim3 dimGrid(CEIL_DIV(size,B_SIZE),1,1);
 	dim3 dimBlock(B_SIZE,1,1);
 	fillKernel<<<dimGrid,dimBlock>>>(X,number,size);
-}
-
-/**
- * ZIP
- */
-template<typename FUNC, typename N> 
-__device__ void	zipFunc(FUNC f, const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=f(lhs[idx],rhs[idx]);
-}
-
-template<typename FUNC, typename N> 
-__device__ void	zipFuncSkalar(FUNC f, const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx<numElements)
-		result[idx]=f(lhs[idx],rhs);
 }
 
 /**
@@ -509,9 +411,9 @@ void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void powKernel(const N* input,const N exponent, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx < numElements)	
-		result[idx]=pow(input[idx],exponent);
+	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	if(pos < numElements)	
+		result[pos]=pow(input[pos],exponent);
 }
 
 template<typename N>
@@ -521,9 +423,9 @@ void powDev(const N* input, const N exponent,  N* result, size_t numElements){
 
 template<typename N>
 __global__ void expKernel(const N* input, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx < numElements)	
-		result[idx]=exp(input[idx]);
+	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	if(pos < numElements)	
+		result[pos]=exp(input[pos]);
 }
 
 template<typename N>
@@ -533,9 +435,9 @@ void expDev(const N* input, N* result, size_t numElements){
 
 template<typename N>
 __global__ void logKernel(const N* input, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx < numElements)	
-		result[idx]=log(input[idx]);
+	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	if(pos < numElements)	
+		result[pos]=log(input[pos]);
 }
 
 template<typename N>
@@ -545,9 +447,9 @@ void logDev(const N* input, N* result, size_t numElements){
 
 template<typename N>
 __global__ void log10Kernel(const N* input, N* result, size_t numElements){
-	int idx = (((gridDim.x * blockIdx.y) + blockIdx.x)*blockDim.x)+threadIdx.x;
-	if(idx < numElements)	
-		result[idx]=log10(input[idx]);
+	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	if(pos < numElements)	
+		result[pos]=log10(input[pos]);
 }
 
 template<typename N>
