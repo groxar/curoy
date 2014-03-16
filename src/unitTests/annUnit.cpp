@@ -67,22 +67,25 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	}
 	*/
 	SECTION("predict"){
-		ann myAnn(theta1,theta2);
+		ann myAnn(T(theta1),T(theta2));
 		startChrono();
 		REQUIRE((long)sum(myAnn.predict(X3))==22520);
 		timeChrono("predict");
 		for(int i = 0; i< 50;++i)
 			myAnn.costFunction(X,Y,0);
+		timeChrono("50 iteration");
 		cout << myAnn.costFunction(X,Y,0)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 0");
 		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
+		
 	}
 	SECTION("init"){
 		ann myAnn(400,25,10);
-
+		cout << sum(Y)<<endl;
+		cout << sum(myAnn.predict(X))<<endl;
 		startChrono();
 		cout << myAnn.costFunction(X,Y,0)<<endl;
 		cudaDeviceSynchronize();
@@ -90,6 +93,9 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
+		myAnn.gradientDescent(X,Y,1,0.2,500);
+		timeChrono("gradienDescent");
+		cout << myAnn.predict(X)<<endl;
 		cudaDeviceReset();
 	}
 }
