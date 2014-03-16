@@ -14,17 +14,12 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	typedef std::numeric_limits< double > dbl;
 	cout.precision(dbl::digits10);
 
-	ann myAnn;
 	cuMatrix<double> X3(readFile("../ml/annData/X3Data.txt"));
 	cuMatrix<double> theta1(readFile("../ml/annData/theta1.txt"));
 	cuMatrix<double> theta2 = readFile("../ml/annData/theta2.txt");
 	cuMatrix<double> X = readFile("../ml/annData/Xdata.txt");
 	cuMatrix<double> Y = readFile("../ml/annData/Ydata.txt");
-	cout << theta1.dim(0)<<endl;
-	cout << theta1.dim(1)<<endl;
-	cout << theta2.dim(0)<<endl;
-	cout << theta2.dim(1)<<endl;
-
+/*
 	SECTION("performance sigmoid"){
 		cuMatrix<double> X1(X);
 		cuMatrix<double> X2(X);
@@ -70,31 +65,31 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		//cout << sum(X2) <<endl;
 		//cout << sum(X3) <<endl;
 	}
+	*/
 	SECTION("predict"){
+		ann myAnn(theta1,theta2);
 		startChrono();
-		REQUIRE((long)sum(myAnn.predict(X3,theta1,theta2))==22520);
+		REQUIRE((long)sum(myAnn.predict(X3))==22520);
 		timeChrono("predict");
-		cout << myAnn.costFunction(X,Y,0,theta1,theta2)<<endl;
+		for(int i = 0; i< 50;++i)
+			myAnn.costFunction(X,Y,0);
+		cout << myAnn.costFunction(X,Y,0)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 0");
-		cout << myAnn.costFunction(X,Y,1,theta1,theta2)<<endl;
+		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
 	}
 	SECTION("init"){
-		cuMatrix<double> myTheta1(theta1.dim(),fillMode::rnd);
-		cuMatrix<double> myTheta2(theta2.dim(),fillMode::rnd);
-		double eps = 0.12;
-		!myTheta1*2*eps-eps;
-		!myTheta2*2*eps-eps;
+		ann myAnn(400,25,10);
+
 		startChrono();
-		cout << myAnn.costFunction(X,Y,0,myTheta1,myTheta2)<<endl;
+		cout << myAnn.costFunction(X,Y,0)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 0");
-		cout << myAnn.costFunction(X,Y,1,myTheta1,myTheta2)<<endl;
+		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
-
 		cudaDeviceReset();
 	}
 }

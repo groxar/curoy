@@ -135,13 +135,17 @@ class cuMatrix{
 			size_t size = 1;
 			size_t end = nDim();
 
-			if(firstRange[0]>firstRange[1] && dim(0)>=firstRange[1])
+			if(firstRange[0]>firstRange[1] && dim(0)>=firstRange[1]){
 				cout <<"ranges have to be ascending, invalid Input: {"<< firstRange[0]<<","<< firstRange[1]<<"}"<<endl;
+				return cuMatrix<N>();
+			}
 			newDimension.push_back(firstRange[1]-firstRange[0]+1);
 			size*=newDimension[0];
 
-			if(secondRange[0]>secondRange[1] && dim(1)>=secondRange[1])
+			if(secondRange[0]>secondRange[1] && dim(1)>=secondRange[1]){
 				cout <<"ranges have to be ascending, invalid Input: {"<< secondRange[0]<<","<< secondRange[1]<<"}"<<endl;
+				return cuMatrix<N>();
+			}
 			newDimension.push_back(secondRange[1]-secondRange[0]+1);
 			size*=newDimension[1];
 
