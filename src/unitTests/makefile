@@ -14,10 +14,10 @@ xMatrixUnit: xMatrixUnit.cpp
 
 
 ../lib/cudaMatrix.o:
-	make ../lib/makefile
+	make -C ../lib
 
 ../ml/ann.o:
-	make ../ml/makefile
+	make -C ../ml
 
 cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 

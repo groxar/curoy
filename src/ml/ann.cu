@@ -7,6 +7,21 @@
 
 namespace curoy{
 
+
+__global__ void projectMatrixKernel(const double* yVector, double* yMatrix, size_t numDataSets, size_t maxValue){
+	int pos = B_SIZE*blockIdx.x+threadIdx.x;
+
+	if(pos < numDataSets){
+		size_t value = (size_t)yVector[pos];
+		yMatrix[pos*maxValue+value]=1;
+	}
+}
+
+void projectMatrix(const double* yVector, double* yMatrix, size_t numDataSets, size_t maxValue){
+	projectMatrixKernel<<<CEIL_DIV(numDataSets,B_SIZE),B_SIZE>>>(yVector,yMatrix,numDataSets,maxValue);		
+}
+
+//stub
 void costFunctionKernel(const double* X, size_t numXRows, size_t numYCols,
 						const double* Y, size_t numY,
 						double theta1, double theta2, //output

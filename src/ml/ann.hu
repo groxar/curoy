@@ -4,5 +4,5 @@
 namespace curoy{
 	void sigmoidDev(double* X, size_t numRows, size_t numCols);
 	void sigmoidDev2(double* X, size_t numRows, size_t numCols);
-
+	void projectMatrix(const double* yVector, double* yMatrix, size_t numDataSets, size_t maxValue);
 }
