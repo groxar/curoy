@@ -4,7 +4,7 @@ NVCC = nvcc
 CUDACNFG= -arch=sm_35 -O2 -lcurand
 LIBDIR = lib/
 OBJDIR = obj/
-OPTION = -std=c++0x -pg
+OPTION = -std=c++0x -O3
 
 
 phony: cuMatrixUnit xMatrixUnit run
