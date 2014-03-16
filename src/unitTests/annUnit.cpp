@@ -20,6 +20,10 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 	cuMatrix<double> theta2 = readFile("../ml/annData/theta2.txt");
 	cuMatrix<double> X = readFile("../ml/annData/Xdata.txt");
 	cuMatrix<double> Y = readFile("../ml/annData/Ydata.txt");
+	cout << theta1.dim(0)<<endl;
+	cout << theta1.dim(1)<<endl;
+	cout << theta2.dim(0)<<endl;
+	cout << theta2.dim(1)<<endl;
 
 	SECTION("performance sigmoid"){
 		cuMatrix<double> X1(X);
@@ -48,6 +52,11 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 			sigmoidGradient(X3);
 		cudaDeviceSynchronize();
 		timeChrono("sigmoidGradient move");
+		cuMatrix<double> yt({5000,26},4);
+		for(int i = 0; i < 1000;++i)
+			sigmoidGradient(yt);
+		cudaDeviceSynchronize();
+		timeChrono("sigmoidGradient small");
 
 		REQUIRE(sum(X1) == sum(X2));
 		REQUIRE(sum(X2) == sum(X3));

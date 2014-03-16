@@ -1,5 +1,6 @@
 #pragma once
 #include "../lib/cuMatrix.hpp"
+#include "../ml/util.hpp"
 #include "ann.hu"
 
 using namespace std;
@@ -22,7 +23,21 @@ namespace curoy{
 		return move(!X*(1-!X));
 	}
 	class ann{
+	private:
+		cuMatrix<double> hTheta;
+		cuMatrix<double> oTheta;
 	public:
+		ann(){
+		}
+		//transpose thetas
+		ann(size_t numFeatures, size_t numHiddenLayer, size_t numPossibleOutputs, double epsilon = 0.12):
+			hTheta(vector<size_t>({numHiddenLayer,numFeatures+1}),fillMode::rnd), 
+			oTheta(vector<size_t>({numHiddenLayer,numPossibleOutputs+1}),fillMode::rnd)
+		{
+			!hTheta*2*epsilon-epsilon;
+			!oTheta*2*epsilon-epsilon;
+		}
+
 		cuMatrix<size_t> predict(const cuMatrix<double>& X, const cuMatrix<double>& theta1, const cuMatrix<double>& theta2){
 			cuMatrix<double> a(X);
 			a =sigmoid(mult( 1 | a, T(theta1)));
@@ -50,11 +65,12 @@ namespace curoy{
 			// cost calculation
 			cuMatrix<double> z2 = mult(mX, T(theta1));
 			cuMatrix<double> a2 = 1 | sigmoid(z2);
-			cuMatrix<double> z3 = mult(a2,T(theta2));
-			cuMatrix<double> a3 = sigmoid(z3);
+			cuMatrix<double> a3 = sigmoid(mult(a2,T(theta2)));//z3 inner mult
 			cuMatrix<double> a1;
 			cuMatrix<double> d3;
 			cuMatrix<double> d2;
+
+
 			for(size_t i=0; i < m; ++i){ //m iterations
 				yT = 0;
 				yT[~y[i]]=1;
