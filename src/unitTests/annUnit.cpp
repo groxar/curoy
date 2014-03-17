@@ -83,7 +83,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		
 	}
 	SECTION("init"){
-		ann myAnn(400,25,10);
+		ann myAnn(400,200,10);
 		cout << sum(Y)<<endl;
 		cout << sum(myAnn.predict(X))<<endl;
 		startChrono();
@@ -93,7 +93,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
-		myAnn.gradientDescent(X,Y,1,0.2,500);
+		myAnn.gradientDescent(X,Y,0.4,1,100);
 		timeChrono("gradienDescent");
 		cout << myAnn.predict(X)<<endl;
 		cudaDeviceReset();
