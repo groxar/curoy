@@ -62,6 +62,7 @@ namespace curoy{
 
 			cuMatrix<double> theta1Grad(hTheta.dim(),0);
 			cuMatrix<double> theta2Grad(oTheta.dim(),0);
+
 			// cost calculation
 			cuMatrix<double> z2 = mult(mX, hTheta);
 			cuMatrix<double> a2 = 1 | sigmoid(z2);
@@ -72,9 +73,11 @@ namespace curoy{
 
 			projectMatrix(y.m_data,yT.m_data,m,k);
 			j=(1.0/m)*sum(-yT*log(a3)-(1.0-yT)*log(1.0-a3));
-			// remove Regulation of the first element
-			// regulization
-			j+=(lambda/(2.0*m))*(sum(hTheta^2)+sum(oTheta^2));
+			cuMatrix<double> hThetaT(hTheta);
+			hThetaT[0] = 0;
+			cuMatrix<double> oThetaT(oTheta);
+			oThetaT[0] = 0;
+			j+=(lambda/(2.0*m))*(sum(hThetaT^2)+sum(oThetaT^2));
 		
 			// back propogation
 			a1=mX;
@@ -82,11 +85,10 @@ namespace curoy{
 			d2= mult(d3,T(oTheta))*sigmoidGradient( 1 | z2);
 			d2= d2({0,d2.dim(0)-1},{1,d2.dim(1)-1});
 
-			theta1Grad = mult(T(a1),d2);
-			theta2Grad = mult(T(a2),d3);
-			// remove Regulation of the first element
-			theta1Grad = (theta1Grad * (1.0/m))+(lambda/m)*hTheta;
-			theta2Grad = (theta2Grad * (1.0/m))+(lambda/m)*oTheta;
+			theta1Grad = (1.0/m) * mult(T(a1),d2);
+			theta2Grad = (1.0/m) * mult(T(a2),d3);
+			theta1Grad = theta1Grad + (lambda/m)*hThetaT;
+			theta2Grad = theta2Grad + (lambda/m)*oThetaT;
 			return j;
 		}
 		tuple<cuMatrix<double>,cuMatrix<double>,double> gradientFunction(const cuMatrix<double>& X, const cuMatrix<double>& y, const double lambda){
@@ -100,6 +102,7 @@ namespace curoy{
 
 			cuMatrix<double> theta1Grad(hTheta.dim(),0);
 			cuMatrix<double> theta2Grad(oTheta.dim(),0);
+
 			// cost calculation
 			cuMatrix<double> z2 = mult(mX, hTheta);
 			cuMatrix<double> a2 = 1 | sigmoid(z2);
@@ -110,9 +113,11 @@ namespace curoy{
 
 			projectMatrix(y.m_data,yT.m_data,m,k);
 			j=(1.0/m)*sum(-yT*log(a3)-(1.0-yT)*log(1.0-a3));
-			// remove Regulation of the first element
-			// regulization
-			j+=(lambda/(2.0*m))*(sum(hTheta^2)+sum(oTheta^2));
+			cuMatrix<double> hThetaT(hTheta);
+			hThetaT[0] = 0;
+			cuMatrix<double> oThetaT(oTheta);
+			oThetaT[0] = 0;
+			j+=(lambda/(2.0*m))*(sum(hThetaT^2)+sum(oThetaT^2));
 		
 			// back propogation
 			a1=mX;
@@ -120,15 +125,14 @@ namespace curoy{
 			d2= mult(d3,T(oTheta))*sigmoidGradient( 1 | z2);
 			d2= d2({0,d2.dim(0)-1},{1,d2.dim(1)-1});
 
-			theta1Grad = mult(T(a1),d2);
-			theta2Grad = mult(T(a2),d3);
-			// remove Regulation of the first element
-			theta1Grad = (theta1Grad * (1.0/m))+(lambda/m)*hTheta;
-			theta2Grad = (theta2Grad * (1.0/m))+(lambda/m)*oTheta;
+			theta1Grad = (1.0/m) * mult(T(a1),d2);
+			theta2Grad = (1.0/m) * mult(T(a2),d3);
+			theta1Grad = theta1Grad + (lambda/m)*hThetaT;
+			theta2Grad = theta2Grad + (lambda/m)*oThetaT;
 			return make_tuple(theta1Grad,theta2Grad,j);
 		}
 
-		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, const double alpha, const double lambda,  size_t numIterations){
+		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double alpha, const double lambda,  size_t numIterations){
 			size_t numDataSets= X.dim(0);
 
 			for(size_t i = 0; i<numIterations;++i){
