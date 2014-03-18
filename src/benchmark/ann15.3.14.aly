@@ -1,0 +1,1565 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 31.88      0.22     0.22       20    11.00    11.00  readFile(std::string)
+  8.70      0.28     0.06                             cudart::contextState::getEntryFunction(cudart::cudaEntryFunction**, void const*, cudaError)
+  5.80      0.32     0.04        4    10.00    21.25  curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&)
+  5.80      0.36     0.04                             cudart::globalState::initializeDriver()
+  4.35      0.39     0.03                             cudaConfigureCall
+  4.35      0.42     0.03                             cudaSetupArgument
+  3.62      0.45     0.03                             cudart::contextStateManager::getRuntimeContextState(cudart::contextState**, bool)
+  2.90      0.47     0.02                             cudart::configData::addArgument(void const*, unsigned long, unsigned long)
+  2.90      0.49     0.02                             cudart::threadLaunchState::pushConfig(dim3, dim3, unsigned long, CUstream_st*)
+  2.90      0.51     0.02                             cudart::cuosOnce(int*, void (*)())
+  1.45      0.52     0.01  1500266     0.00     0.00  std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&)
+  1.45      0.53     0.01   340125     0.00     0.00  std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&)
+  1.45      0.54     0.01   160030     0.00     0.00  curoy::T(curoy::cuMatrix<double> const&)
+  1.45      0.55     0.01    60010     0.00     0.00  curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&)
+  1.45      0.56     0.01                             __device_stub__ZN5curoy15transposeKernelIdEEvPKT_PS1_mm(double const*, double*, unsigned long, unsigned long)
+  1.45      0.57     0.01                             __device_stub__ZN5curoy15addSkalarKernelIdEEvPKT_S1_PS1_m(double const*, double, double*, unsigned long)
+  1.45      0.58     0.01                             void curoy::transposeKernel<double>(double const*, double*, unsigned long, unsigned long)
+  1.45      0.59     0.01                             void curoy::funcPosColReduceDev<void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double>(void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double const*, double*, unsigned long*, unsigned long, unsigned long)
+  1.45      0.60     0.01                             void curoy::expDev<double>(double const*, double*, unsigned long)
+  1.45      0.61     0.01                             cudaError (anonymous namespace)::cudaLaunch<char>(char*)
+  1.45      0.62     0.01                             cudart::contextState::applyChanges()
+  1.45      0.63     0.01                             cudart::cudaApiMalloc(void**, unsigned long)
+  1.45      0.64     0.01                             cudart::cudaApiConfigureCall(dim3, dim3, unsigned long, CUstream_st*)
+  1.45      0.65     0.01                             cudart::device::updateDeviceProperties()
+  1.45      0.66     0.01                             cudaFuncSetCacheConfig
+  1.45      0.67     0.01                             cudaLaunch
+  0.72      0.67     0.01   720204     0.00     0.00  curoy::cuMatrix<double>::~cuMatrix()
+  0.72      0.68     0.01                             cudart::driverHelper::hostGetDevicePointer(void*, void**, unsigned int)
+  0.72      0.68     0.01                             cudart::driverHelper::mallocPtr(unsigned long, void**)
+  0.72      0.69     0.01                             cudart::contextStateManager::initRuntimeContextState_nonreentrant(cudart::contextState**)
+  0.72      0.69     0.01                             Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const
+  0.00      0.69     0.00  1364309     0.00     0.00  curoy::cuMatrix<double>::size() const
+  0.00      0.69     0.00   848072     0.00     0.00  curoy::operator!(curoy::cuMatrix<double>&)
+  0.00      0.69     0.00   440144     0.00     0.00  curoy::cuMatrix<double>::rebase(unsigned long)
+  0.00      0.69     0.00   200000     0.00     0.00  curoy::cuMatrix<double>::operator[](unsigned long) const
+  0.00      0.69     0.00   160008     0.00     0.00  curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&)
+  0.00      0.69     0.00   160000     0.00     0.00  void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&)
+  0.00      0.69     0.00    41002     0.00     0.00  curoy::sigmoid(curoy::cuMatrix<double>&&)
+  0.00      0.69     0.00    20010     0.00     0.00  curoy::sigmoidGradient(curoy::cuMatrix<double>&&)
+  0.00      0.69     0.00      332     0.00     0.00  void std::vector<double, std::allocator<double> >::_M_insert_aux<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&)
+  0.00      0.69     0.00       48     0.00     0.00  Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&)
+  0.00      0.69     0.00       37     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember()
+  0.00      0.69     0.00       32     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&)
+  0.00      0.69     0.00       29     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::clone() const
+  0.00      0.69     0.00       24     0.00     0.00  Catch::(anonymous namespace)::getCurrentTicks()
+  0.00      0.69     0.00       20     0.00     0.00  Catch::TagExtracter::acceptChar(char)
+  0.00      0.69     0.00       18     0.00     0.00  Catch::getCurrentMutableContext()
+  0.00      0.69     0.00       18     0.00     0.00  Catch::Context::getResultCapture()
+  0.00      0.69     0.00       18     0.00     0.00  curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double)
+  0.00      0.69     0.00       17     0.00     0.00  Catch::getCurrentContext()
+  0.00      0.69     0.00       17     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder()
+  0.00      0.69     0.00       15     0.00     0.00  void std::vector<std::string, std::allocator<std::string> >::_M_insert_aux<std::string const&>(__gnu_cxx::__normal_iterator<std::string*, std::vector<std::string, std::allocator<std::string> > >, std::string const&)
+  0.00      0.69     0.00       14     0.00     0.00  Catch::SourceLineInfo::SourceLineInfo(char const*, unsigned long)
+  0.00      0.69     0.00       13     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember()
+  0.00      0.69     0.00       12     0.00     0.00  Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&)
+  0.00      0.69     0.00       12     0.00     0.00  Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&)
+  0.00      0.69     0.00       12     0.00     0.00  Catch::Section::~Section()
+  0.00      0.69     0.00       12     0.00     0.00  Catch::operator<<(std::ostream&, Catch::SourceLineInfo const&)
+  0.00      0.69     0.00       11     0.00     0.00  std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*)
+  0.00      0.69     0.00       10     0.00     0.00  curoy::operator|(double, curoy::cuMatrix<double> const&)
+  0.00      0.69     0.00       10     0.00     0.00  std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*)
+  0.00      0.69     0.00        9     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction()
+  0.00      0.69     0.00        9     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::clone() const
+  0.00      0.69     0.00        8     0.00     0.00  Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&)
+  0.00      0.69     0.00        8     0.00     0.00  curoy::sigmoid(curoy::cuMatrix<double>&)
+  0.00      0.69     0.00        8     0.00     0.00  Catch::SharedImpl<Catch::IConfig>::addRef() const
+  0.00      0.69     0.00        8     0.00     0.00  Catch::SharedImpl<Catch::IConfig>::release() const
+  0.00      0.69     0.00        8     0.00     0.00  Catch::Config::abortAfter() const
+  0.00      0.69     0.00        8     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::takesArg() const
+  0.00      0.69     0.00        7     0.00     0.00  timeChrono(std::string)
+  0.00      0.69     0.00        7     0.00     0.00  Catch::SectionStats::~SectionStats()
+  0.00      0.69     0.00        7     0.00     0.00  Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&)
+  0.00      0.69     0.00        7     0.00     0.00  Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&)
+  0.00      0.69     0.00        7     0.00     0.00  Catch::Timer::getElapsedSeconds() const
+  0.00      0.69     0.00        7     0.00     0.00  Catch::Config::showDurations() const
+  0.00      0.69     0.00        6     0.00     0.00  printGpuMem()
+  0.00      0.69     0.00        6     0.00     0.00  Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags)
+  0.00      0.69     0.00        6     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::clone() const
+  0.00      0.69     0.00        5     0.00     0.00  Catch::SharedImpl<Catch::ITestCase>::addRef() const
+  0.00      0.69     0.00        5     0.00     0.00  Catch::SharedImpl<Catch::ITestCase>::release() const
+  0.00      0.69     0.00        5     0.00     0.00  Catch::Config::warnAboutMissingAssertions() const
+  0.00      0.69     0.00        5     0.00     0.00  void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&)
+  0.00      0.69     0.00        4     0.00    76.25  ____C_A_T_C_H____T_E_S_T____12()
+  0.00      0.69     0.00        4     0.00    76.25  Catch::RunContext::runCurrentTest(std::string&, std::string&)
+  0.00      0.69     0.00        4     0.00     0.00  Catch::ScopedMessage::ScopedMessage(Catch::MessageBuilder const&)
+  0.00      0.69     0.00        4     0.00     0.00  Catch::getMutableRegistryHub()
+  0.00      0.69     0.00        4     0.00     0.00  Catch::TestCase::TestCase(Catch::TestCase const&)
+  0.00      0.69     0.00        4     0.00     0.00  Catch::ConsoleReporter::getPreferences() const
+  0.00      0.69     0.00        4     0.00     0.00  Catch::FreeFunctionTestCase::invoke() const
+  0.00      0.69     0.00        4     0.00     0.00  Catch::TestCase::withName(std::string const&) const
+  0.00      0.69     0.00        3     0.00     0.00  startChrono()
+  0.00      0.69     0.00        3     0.00     0.00  Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double)
+  0.00      0.69     0.00        3     0.00     0.00  Catch::(anonymous namespace)::RegistryHub::registerReporter(std::string const&, Catch::IReporterFactory*)
+  0.00      0.69     0.00        3     0.00     0.00  Catch::getRegistryHub()
+  0.00      0.69     0.00        3     0.00     0.00  Catch::AssertionResult::~AssertionResult()
+  0.00      0.69     0.00        3     0.00     0.00  Catch::SectionTracking::TrackedSection::addChild(std::string const&)
+  0.00      0.69     0.00        3     0.00     0.00  Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&)
+  0.00      0.69     0.00        3     0.00     0.00  Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction()
+  0.00      0.69     0.00        3     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction()
+  0.00      0.69     0.00        3     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction()
+  0.00      0.69     0.00        3     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::takesArg() const
+  0.00      0.69     0.00        3     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::takesArg() const
+  0.00      0.69     0.00        3     0.00     0.00  std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::SectionTracking::TrackedSection>&&)
+  0.00      0.69     0.00        3     0.00     0.00  std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_unique<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::pair<std::string, Catch::SectionTracking::TrackedSection>&&)
+  0.00      0.69     0.00        3     0.00     0.00  std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_<std::pair<std::string, Catch::IReporterFactory*> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::IReporterFactory*>&&)
+  0.00      0.69     0.00        3     0.00     0.00  std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_unique<std::pair<std::string, Catch::IReporterFactory*> >(std::pair<std::string, Catch::IReporterFactory*>&&)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::startsWith(std::string const&, std::string const&)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::(anonymous namespace)::NoColourImpl::use(Catch::Colour::Code)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::TestCaseFilters::~TestCaseFilters()
+  0.00      0.69     0.00        2     0.00     0.00  Catch::Context::setResultCapture(Catch::IResultCapture*)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::Context::setRunner(Catch::IRunner*)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::operator<<(std::ostream&, Catch::pluralise const&)
+  0.00      0.69     0.00        2     0.00     0.00  curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::SharedImpl<Catch::IStreamingReporter>::addRef() const
+  0.00      0.69     0.00        2     0.00     0.00  Catch::SharedImpl<Catch::IStreamingReporter>::release() const
+  0.00      0.69     0.00        2     0.00     0.00  Catch::TestRegistry::getAllTests() const
+  0.00      0.69     0.00        2     0.00     0.00  Catch::(anonymous namespace)::RegistryHub::getTestCaseRegistry() const
+  0.00      0.69     0.00        2     0.00     0.00  Catch::AssertionResult::isOk() const
+  0.00      0.69     0.00        2     0.00     0.00  Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::clone() const
+  0.00      0.69     0.00        2     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::clone() const
+  0.00      0.69     0.00        2     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::clone() const
+  0.00      0.69     0.00        2     0.00     0.00  void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&)
+  0.00      0.69     0.00        2     0.00     0.00  std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> >::vector(std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> > const&)
+  0.00      0.69     0.00        2     0.00     0.00  void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&)
+  0.00      0.69     0.00        2     0.00     0.00  std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector()
+  0.00      0.69     0.00        2     0.00     0.00  std::_Rb_tree_iterator<Catch::TestCase> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_<Catch::TestCase const&>(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, Catch::TestCase const&)
+  0.00      0.69     0.00        2     0.00     0.00  std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&)
+  0.00      0.69     0.00        2     0.00     0.00  std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*)
+  0.00      0.69     0.00        2     0.00     0.00  Catch::TestCaseFilters* std::__uninitialized_move_a<Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters> >(Catch::TestCaseFilters*, Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters>&)
+  0.00      0.69     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE
+  0.00      0.69     0.00        1     0.00     0.00  Catch::RunContext::assertionEnded(Catch::AssertionResult const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::RunContext::~RunContext()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TagExtracter::parse(std::string&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TagExtracter::~TagExtracter()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCaseInfo::TestCaseInfo(std::string const&, std::string const&, std::string const&, std::set<std::string, std::less<std::string>, std::allocator<std::string> > const&, bool, Catch::SourceLineInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestRegistry::registerTest(Catch::TestCase const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestRegistry::~TestRegistry()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestRunStats::~TestRunStats()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::(anonymous namespace)::RegistryHub::registerTest(Catch::TestCase const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::(anonymous namespace)::RegistryHub::~RegistryHub()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCaseStats::~TestCaseStats()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::AssertionStats::~AssertionStats()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestGroupStats::~TestGroupStats()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::AssertionResult::AssertionResult(Catch::AssertionInfo const&, Catch::AssertionResultData const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::printTotals(Catch::Totals const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::testRunEnded(Catch::TestRunStats const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::testCaseEnded(Catch::TestCaseStats const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::testGroupEnded(Catch::TestGroupStats const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::~ConsoleReporter()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ConsoleReporter::~ConsoleReporter()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCaseFilters::TestCaseFilters(Catch::TestCaseFilters const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCaseFilters::TestCaseFilters(std::string const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ReporterRegistry::~ReporterRegistry()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::~ReporterFactory()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::~ReporterFactory()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::FreeFunctionTestCase::~FreeFunctionTestCase()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::StreamingReporterBase::testRunStarting(Catch::TestRunInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::StreamingReporterBase::testCaseStarting(Catch::TestCaseInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::StreamingReporterBase::testGroupStarting(Catch::GroupInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::StreamingReporterBase::~StreamingReporterBase()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::makeCommandLineParser()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ExpressionResultBuilder::ExpressionResultBuilder(Catch::ResultWas::OfType)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::LegacyReporterRegistrar<Catch::XmlReporter>::ReporterFactory::~ReporterFactory()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::list(Catch::Config const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::Config(Catch::ConfigData const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::~Config()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::~Config()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Runner::makeReporter()
+  0.00      0.69     0.00        1     0.00   305.00  Catch::Runner::runTests()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Runner::~Runner()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::AutoReg::AutoReg(void (*)(), Catch::SourceLineInfo const&, Catch::NameAndDesc const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Context::advanceGeneratorsForCurrentTest()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Context::getRunner()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Context::~Context()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Session::applyCommandLine(int, char* const*, Catch::Session::OnUnusedOptions::DoWhat)
+  0.00      0.69     0.00        1     0.00   305.00  Catch::Session::run()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Session::~Session()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::cleanUp()
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TagParser::parse(std::string const&)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TagParser::endParse()
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Detail::NullBinder<Catch::ConfigData>::~NullBinder()
+  0.00      0.69     0.00        1     0.00     0.00  curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&)
+  0.00      0.69     0.00        1     0.00     0.00  curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long)
+  0.00      0.69     0.00        1     0.00     0.00  curoy::cuMatrix<unsigned long>::rebase(unsigned long)
+  0.00      0.69     0.00        1     0.00     0.00  Catch::RunContext::getCurrentTestName() const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::(anonymous namespace)::RegistryHub::getReporterRegistry() const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::TestCaseFilters::shouldInclude(Catch::TestCase const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::ExpressionResultBuilder::reconstructExpression(Catch::AssertionInfo const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::includeSuccessfulResults() const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::name() const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Config::stream() const
+  0.00      0.69     0.00        1     0.00     0.00  Catch::Context::getConfig() const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::populateOptions(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::populateFloatingArgs(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::set(Catch::ConfigData&, std::string const&) const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::takesArg() const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::takesArg() const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::takesArg() const
+  0.00      0.69     0.00        1     0.00     0.00  Clara::Parser::parseIntoTokens(int, char const* const*, std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> >&) const
+  0.00      0.69     0.00        1     0.00     0.00  std::set<std::string, std::less<std::string>, std::allocator<std::string> >::find(std::string const&)
+  0.00      0.69     0.00        1     0.00     0.00  std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> >::vector(std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&)
+  0.00      0.69     0.00        1     0.00     0.00  void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&)
+  0.00      0.69     0.00        1     0.00     0.00  std::vector<std::string, std::allocator<std::string> >::~vector()
+  0.00      0.69     0.00        1     0.00     0.00  std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*)
+  0.00      0.69     0.00        1     0.00     0.00  std::_Rb_tree<std::string, std::pair<std::string const, Catch::IGeneratorsForTest*>, std::_Select1st<std::pair<std::string const, Catch::IGeneratorsForTest*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IGeneratorsForTest*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IGeneratorsForTest*> >*)
+  0.00      0.69     0.00        1     0.00     0.00  std::_Rb_tree<int, std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg>, std::_Select1st<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >, std::less<int>, std::allocator<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> > >::_M_erase(std::_Rb_tree_node<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >*)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 1.45% of 0.69 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     44.2    0.00    0.31                 main [1]
+                0.00    0.31       1/1           Catch::Session::run() [5]
+                0.00    0.00       1/1           Catch::makeCommandLineParser() [330]
+                0.00    0.00       1/1           Catch::Session::applyCommandLine(int, char* const*, Catch::Session::OnUnusedOptions::DoWhat) [344]
+                0.00    0.00       1/13          Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+                0.00    0.00       1/1           Catch::Session::~Session() [345]
+-----------------------------------------------
+                0.00    0.31       4/4           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[2]     44.2    0.00    0.31       4         ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.22    0.00      20/20          readFile(std::string) [6]
+                0.04    0.04       4/4           curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+                0.00    0.00       1/1           curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00      23/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00      25/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00      25/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00       2/2           curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00    1008/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00    1000/41002       curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00      35/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00      23/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00      13/14          Catch::SourceLineInfo::SourceLineInfo(char const*, unsigned long) [223]
+                0.00    0.00      12/12          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+                0.00    0.00      12/12          Catch::Section::~Section() [227]
+                0.00    0.00       7/7           timeChrono(std::string) [238]
+                0.00    0.00       6/6           printGpuMem() [244]
+                0.00    0.00       3/3           startChrono() [257]
+                0.00    0.00       1/6           Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [245]
+                0.00    0.00       1/18          Catch::Context::getResultCapture() [219]
+                0.00    0.00       1/17          Catch::getCurrentContext() [220]
+                0.00    0.00       1/1           Catch::ExpressionResultBuilder::ExpressionResultBuilder(Catch::ResultWas::OfType) [331]
+                0.00    0.00       1/1           Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+-----------------------------------------------
+                0.00    0.31       4/4           Catch::Runner::runTests() [4]
+[3]     44.2    0.00    0.31       4         Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+                0.00    0.31       4/4           ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00       8/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+                0.00    0.00       4/7           Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [241]
+                0.00    0.00       4/6           Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [245]
+                0.00    0.00       4/24          Catch::(anonymous namespace)::getCurrentTicks() [216]
+                0.00    0.00       4/4           Catch::ConsoleReporter::getPreferences() const [254]
+                0.00    0.00       4/7           Catch::Timer::getElapsedSeconds() const [242]
+                0.00    0.00       4/7           Catch::SectionStats::~SectionStats() [239]
+                0.00    0.00       4/7           Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&) [240]
+                0.00    0.00       4/4           Catch::FreeFunctionTestCase::invoke() const [255]
+                0.00    0.00       3/5           Catch::Config::warnAboutMissingAssertions() const [249]
+-----------------------------------------------
+                0.00    0.31       1/1           Catch::Session::run() [5]
+[4]     44.2    0.00    0.31       1         Catch::Runner::runTests() [4]
+                0.00    0.31       4/4           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+                0.00    0.00       7/8           Catch::Config::abortAfter() const [236]
+                0.00    0.00       2/2           Catch::TestCaseFilters::~TestCaseFilters() [275]
+                0.00    0.00       2/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+                0.00    0.00       2/3           Catch::getRegistryHub() [260]
+                0.00    0.00       2/2           Catch::(anonymous namespace)::RegistryHub::getTestCaseRegistry() const [282]
+                0.00    0.00       2/2           Catch::TestRegistry::getAllTests() const [281]
+                0.00    0.00       2/8           Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+                0.00    0.00       2/11          std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*) [229]
+                0.00    0.00       1/1           Catch::TestCaseFilters::TestCaseFilters(std::string const&) [321]
+                0.00    0.00       1/1           Catch::Config::name() const [360]
+                0.00    0.00       1/18          Catch::getCurrentMutableContext() [218]
+                0.00    0.00       1/2           Catch::SharedImpl<Catch::IStreamingReporter>::addRef() const [279]
+                0.00    0.00       1/1           Catch::Context::getRunner() [342]
+                0.00    0.00       1/18          Catch::Context::getResultCapture() [219]
+                0.00    0.00       1/1           Catch::Context::getConfig() const [362]
+                0.00    0.00       1/2           Catch::Context::setRunner(Catch::IRunner*) [277]
+                0.00    0.00       1/3           Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&) [263]
+                0.00    0.00       1/2           Catch::Context::setResultCapture(Catch::IResultCapture*) [276]
+                0.00    0.00       1/1           Catch::StreamingReporterBase::testRunStarting(Catch::TestRunInfo const&) [326]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+                0.00    0.00       1/1           Catch::RunContext::~RunContext() [298]
+                0.00    0.00       1/1           Catch::StreamingReporterBase::testGroupStarting(Catch::GroupInfo const&) [328]
+                0.00    0.00       1/1           Catch::TestCaseFilters::shouldInclude(Catch::TestCase const&) const [354]
+                0.00    0.00       1/1           Catch::StreamingReporterBase::testCaseStarting(Catch::TestCaseInfo const&) [327]
+                0.00    0.00       1/17          Catch::getCurrentContext() [220]
+                0.00    0.00       1/1           Catch::Context::advanceGeneratorsForCurrentTest() [341]
+                0.00    0.00       1/1           Catch::ConsoleReporter::testCaseEnded(Catch::TestCaseStats const&) [315]
+                0.00    0.00       1/1           Catch::TestCaseStats::~TestCaseStats() [308]
+                0.00    0.00       1/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+                0.00    0.00       1/2           std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&) [292]
+                0.00    0.00       1/1           Catch::ConsoleReporter::testGroupEnded(Catch::TestGroupStats const&) [317]
+                0.00    0.00       1/1           Catch::TestGroupStats::~TestGroupStats() [311]
+                0.00    0.00       1/1           void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&) [374]
+-----------------------------------------------
+                0.00    0.31       1/1           main [1]
+[5]     44.2    0.00    0.31       1         Catch::Session::run() [5]
+                0.00    0.31       1/1           Catch::Runner::runTests() [4]
+                0.00    0.00       2/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+                0.00    0.00       1/1           Catch::Runner::makeReporter() [337]
+                0.00    0.00       1/1           Catch::list(Catch::Config const&) [333]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+                0.00    0.00       1/1           Catch::Runner::~Runner() [338]
+                0.00    0.00       1/1           Catch::Config::Config(Catch::ConfigData const&) [334]
+-----------------------------------------------
+                0.22    0.00      20/20          ____C_A_T_C_H____T_E_S_T____12() [2]
+[6]     31.9    0.22    0.00      20         readFile(std::string) [6]
+                0.00    0.00      20/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00     332/332         void std::vector<double, std::allocator<double> >::_M_insert_aux<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&) [211]
+-----------------------------------------------
+                0.04    0.04       4/4           ____C_A_T_C_H____T_E_S_T____12() [2]
+[7]     12.3    0.04    0.04       4         curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+                0.01    0.01  160008/160030      curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.01    0.00   60008/60010       curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [17]
+                0.01    0.00  180024/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00  720108/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00  200000/200000      curoy::cuMatrix<double>::operator[](unsigned long) const [37]
+                0.00    0.00  160008/160008      curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&) [38]
+                0.00    0.00  240032/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00       8/10          curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00       8/18          curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00       8/8           curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00  620060/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00  400016/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00  280024/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00   40000/160000      void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&) [208]
+                0.00    0.00   20000/20010       curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      8.7    0.06    0.00                 cudart::contextState::getEntryFunction(cudart::cudaEntryFunction**, void const*, cudaError) [8]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]      5.8    0.04    0.00                 cudart::globalState::initializeDriver() [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     4.3    0.03    0.00                 cudaConfigureCall [10]
+-----------------------------------------------
+                                                 <spontaneous>
+[11]     4.3    0.03    0.00                 cudaSetupArgument [11]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     3.6    0.03    0.00                 cudart::contextStateManager::getRuntimeContextState(cudart::contextState**, bool) [12]
+-----------------------------------------------
+                                                 <spontaneous>
+[13]     2.9    0.02    0.00                 cudart::configData::addArgument(void const*, unsigned long, unsigned long) [13]
+-----------------------------------------------
+                                                 <spontaneous>
+[14]     2.9    0.02    0.00                 cudart::threadLaunchState::pushConfig(dim3, dim3, unsigned long, CUstream_st*) [14]
+-----------------------------------------------
+                                                 <spontaneous>
+[15]     2.9    0.02    0.00                 cudart::cuosOnce(int*, void (*)()) [15]
+-----------------------------------------------
+                0.00    0.00       2/160030      curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00      20/160030      curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.01    0.01  160008/160030      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[16]     2.6    0.01    0.01  160030         curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.00    0.00  160030/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00  480090/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00  160030/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00  160030/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00   80000/160000      void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&) [208]
+-----------------------------------------------
+                0.00    0.00       2/60010       curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.01    0.00   60008/60010       curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[17]     1.5    0.01    0.00   60010         curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [17]
+                0.00    0.00   60010/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+-----------------------------------------------
+                0.00    0.00       2/340125      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00       2/340125      curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       8/340125      curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00      23/340125      ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00      36/340125      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00  160030/340125      curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.01    0.00  180024/340125      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[18]     1.4    0.01    0.00  340125         std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     1.4    0.01    0.00                 cudaFuncSetCacheConfig [19]
+-----------------------------------------------
+                                                 <spontaneous>
+[20]     1.4    0.01    0.00                 cudaLaunch [20]
+-----------------------------------------------
+                0.00    0.00       2/1500266     curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00       2/1500266     curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       5/1500266     curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long) [44]
+                0.00    0.00       8/1500266     curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00      20/1500266     readFile(std::string) [6]
+                0.00    0.00      20/1500266     curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00      25/1500266     ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00      36/1500266     curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00   60010/1500266     curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [17]
+                0.00    0.00  240032/1500266     curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+                0.00    0.00  320016/1500266     curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&) [38]
+                0.00    0.00  400000/1500266     curoy::cuMatrix<double>::operator[](unsigned long) const [37]
+                0.00    0.00  480090/1500266     curoy::T(curoy::cuMatrix<double> const&) [16]
+[21]     1.4    0.01    0.00 1500266         std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[22]     1.4    0.01    0.00                 __device_stub__ZN5curoy15transposeKernelIdEEvPKT_PS1_mm(double const*, double*, unsigned long, unsigned long) [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     1.4    0.01    0.00                 __device_stub__ZN5curoy15addSkalarKernelIdEEvPKT_S1_PS1_m(double const*, double, double*, unsigned long) [23]
+-----------------------------------------------
+                                                 <spontaneous>
+[24]     1.4    0.01    0.00                 void curoy::transposeKernel<double>(double const*, double*, unsigned long, unsigned long) [24]
+-----------------------------------------------
+                                                 <spontaneous>
+[25]     1.4    0.01    0.00                 void curoy::funcPosColReduceDev<void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double>(void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double const*, double*, unsigned long*, unsigned long, unsigned long) [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     1.4    0.01    0.00                 void curoy::expDev<double>(double const*, double*, unsigned long) [26]
+-----------------------------------------------
+                                                 <spontaneous>
+[27]     1.4    0.01    0.00                 cudaError (anonymous namespace)::cudaLaunch<char>(char*) [27]
+-----------------------------------------------
+                                                 <spontaneous>
+[28]     1.4    0.01    0.00                 cudart::contextState::applyChanges() [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[29]     1.4    0.01    0.00                 cudart::cudaApiMalloc(void**, unsigned long) [29]
+-----------------------------------------------
+                                                 <spontaneous>
+[30]     1.4    0.01    0.00                 cudart::cudaApiConfigureCall(dim3, dim3, unsigned long, CUstream_st*) [30]
+-----------------------------------------------
+                                                 <spontaneous>
+[31]     1.4    0.01    0.00                 cudart::device::updateDeviceProperties() [31]
+-----------------------------------------------
+                0.00    0.00       1/720204      curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long) [44]
+                0.00    0.00       8/720204      curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00      18/720204      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00      20/720204      curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00      24/720204      curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00      25/720204      ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00  720108/720204      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[32]     0.7    0.01    0.00  720204         curoy::cuMatrix<double>::~cuMatrix() [32]
+-----------------------------------------------
+                                                 <spontaneous>
+[33]     0.7    0.01    0.00                 cudart::driverHelper::hostGetDevicePointer(void*, void**, unsigned int) [33]
+-----------------------------------------------
+                                                 <spontaneous>
+[34]     0.7    0.01    0.00                 cudart::driverHelper::mallocPtr(unsigned long, void**) [34]
+-----------------------------------------------
+                                                 <spontaneous>
+[35]     0.7    0.01    0.00                 cudart::contextStateManager::initRuntimeContextState_nonreentrant(cudart::contextState**) [35]
+-----------------------------------------------
+                                                 <spontaneous>
+[36]     0.7    0.01    0.00                 Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const [36]
+-----------------------------------------------
+                0.00    0.00  200000/200000      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[37]     0.4    0.00    0.00  200000         curoy::cuMatrix<double>::operator[](unsigned long) const [37]
+                0.00    0.00  400000/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00   40000/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00   40000/160000      void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&) [208]
+-----------------------------------------------
+                0.00    0.00  160008/160008      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[38]     0.3    0.00    0.00  160008         curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&) [38]
+                0.00    0.00  320016/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00  160008/1364309     curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00       2/10          curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       8/10          curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[39]     0.0    0.00    0.00      10         curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00      20/160030      curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.00    0.00      10/18          curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00      20/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00      20/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00      10/1364309     curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00       8/18          curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+                0.00    0.00      10/18          curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+[40]     0.0    0.00    0.00      18         curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00      36/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00      36/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00      18/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00      90/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00      54/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+-----------------------------------------------
+                0.00    0.00       1/1           ____C_A_T_C_H____T_E_S_T____12() [2]
+[41]     0.0    0.00    0.00       1         curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       2/10          curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00       2/60010       curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [17]
+                0.00    0.00       2/160030      curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.00    0.00       2/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00       8/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00       1/1           curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long) [44]
+                0.00    0.00       2/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00       2/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00       2/41002       curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00       1/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00       1/1           curoy::cuMatrix<unsigned long>::rebase(unsigned long) [351]
+-----------------------------------------------
+                0.00    0.00       8/8           curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[42]     0.0    0.00    0.00       8         curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00       8/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00      24/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+                0.00    0.00       8/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00      40/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00      32/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00       8/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+-----------------------------------------------
+                0.00    0.00       2/2           ____C_A_T_C_H____T_E_S_T____12() [2]
+[43]     0.0    0.00    0.00       2         curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00       2/340125      std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&) [18]
+                0.00    0.00       2/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00       6/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00       4/440144      curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00       2/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+-----------------------------------------------
+                0.00    0.00       1/1           curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+[44]     0.0    0.00    0.00       1         curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long) [44]
+                0.00    0.00       5/1500266     std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&) [21]
+                0.00    0.00       1/720204      curoy::cuMatrix<double>::~cuMatrix() [32]
+-----------------------------------------------
+                0.00    0.00       2/1364309     curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       6/1364309     curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00      10/1364309     curoy::operator|(double, curoy::cuMatrix<double> const&) [39]
+                0.00    0.00      35/1364309     ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00      40/1364309     curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00      90/1364309     curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00   40000/1364309     curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+                0.00    0.00   40000/1364309     curoy::cuMatrix<double>::operator[](unsigned long) const [37]
+                0.00    0.00   60020/1364309     curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00  120000/1364309     curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00  160008/1364309     curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&) [38]
+                0.00    0.00  160030/1364309     curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.00    0.00  164008/1364309     curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00  620060/1364309     curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[205]    0.0    0.00    0.00 1364309         curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00       2/848072      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00      32/848072      curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00    1008/848072      ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00  160000/848072      curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+                0.00    0.00  287014/848072      curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00  400016/848072      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[206]    0.0    0.00    0.00  848072         curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00  120000/1364309     curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00       1/440144      curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00       4/440144      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [43]
+                0.00    0.00       8/440144      curoy::sigmoid(curoy::cuMatrix<double>&) [42]
+                0.00    0.00      23/440144      ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00      54/440144      curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [40]
+                0.00    0.00  160030/440144      curoy::T(curoy::cuMatrix<double> const&) [16]
+                0.00    0.00  280024/440144      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[207]    0.0    0.00    0.00  440144         curoy::cuMatrix<double>::rebase(unsigned long) [207]
+                0.00    0.00   60020/1364309     curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00   40000/160000      curoy::cuMatrix<double>::operator[](unsigned long) const [37]
+                0.00    0.00   40000/160000      curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+                0.00    0.00   80000/160000      curoy::T(curoy::cuMatrix<double> const&) [16]
+[208]    0.0    0.00    0.00  160000         void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&) [208]
+-----------------------------------------------
+                0.00    0.00       2/41002       curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+                0.00    0.00    1000/41002       ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00   40000/41002       curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+[209]    0.0    0.00    0.00   41002         curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00  287014/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00  164008/1364309     curoy::cuMatrix<double>::size() const [205]
+-----------------------------------------------
+                0.00    0.00      10/20010       void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+                0.00    0.00   20000/20010       curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [7]
+[210]    0.0    0.00    0.00   20010         curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+                0.00    0.00  160000/848072      curoy::operator!(curoy::cuMatrix<double>&) [206]
+                0.00    0.00   40000/41002       curoy::sigmoid(curoy::cuMatrix<double>&&) [209]
+                0.00    0.00   40000/1364309     curoy::cuMatrix<double>::size() const [205]
+                0.00    0.00      15/32          Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+-----------------------------------------------
+                0.00    0.00     332/332         readFile(std::string) [6]
+[211]    0.0    0.00    0.00     332         void std::vector<double, std::allocator<double> >::_M_insert_aux<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&) [211]
+-----------------------------------------------
+                0.00    0.00       1/48          Catch::AssertionResult::AssertionResult(Catch::AssertionInfo const&, Catch::AssertionResultData const&) [312]
+                0.00    0.00       1/48          Catch::ScopedMessage::ScopedMessage(Catch::MessageBuilder const&) [251]
+                0.00    0.00       1/48          Catch::TestCaseInfo::TestCaseInfo(std::string const&, std::string const&, std::string const&, std::set<std::string, std::less<std::string>, std::allocator<std::string> > const&, bool, Catch::SourceLineInfo const&) [301]
+                0.00    0.00       1/48          Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&) [309]
+                0.00    0.00       2/48          void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&) [287]
+                0.00    0.00       3/48          Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+                0.00    0.00       5/48          Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [241]
+                0.00    0.00       6/48          Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [245]
+                0.00    0.00       8/48          Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+                0.00    0.00       8/48          Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+                0.00    0.00      12/48          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+[212]    0.0    0.00    0.00      48         Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       8/37          Catch::Session::~Session() [345]
+                0.00    0.00       8/37          Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       8/37          Catch::makeCommandLineParser() [330]
+                0.00    0.00      13/37          void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+[213]    0.0    0.00    0.00      37         Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [213]
+-----------------------------------------------
+                0.00    0.00       5/32          void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+                0.00    0.00      12/32          Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00      15/32          curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+[214]    0.0    0.00    0.00      32         Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00      21/29          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::clone() const [215]
+                0.00    0.00       5/9           Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::clone() const [232]
+                0.00    0.00       3/6           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::clone() const [246]
+                0.00    0.00       1/2           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::clone() const [285]
+                0.00    0.00       1/2           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::clone() const [286]
+                0.00    0.00       1/2           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::clone() const [284]
+-----------------------------------------------
+                0.00    0.00       8/29          Catch::makeCommandLineParser() [330]
+                0.00    0.00      21/29          Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+[215]    0.0    0.00    0.00      29         Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::clone() const [215]
+-----------------------------------------------
+                0.00    0.00       1/24          Catch::getMutableRegistryHub() [252]
+                0.00    0.00       4/24          Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+                0.00    0.00       7/24          Catch::Timer::getElapsedSeconds() const [242]
+                0.00    0.00      12/24          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+[216]    0.0    0.00    0.00      24         Catch::(anonymous namespace)::getCurrentTicks() [216]
+-----------------------------------------------
+                0.00    0.00      20/20          Catch::TagParser::parse(std::string const&) [348]
+[217]    0.0    0.00    0.00      20         Catch::TagExtracter::acceptChar(char) [217]
+-----------------------------------------------
+                0.00    0.00       1/18          Catch::Runner::runTests() [4]
+                0.00    0.00      17/18          Catch::getCurrentContext() [220]
+[218]    0.0    0.00    0.00      18         Catch::getCurrentMutableContext() [218]
+-----------------------------------------------
+                0.00    0.00       1/18          ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00       1/18          Catch::Context::advanceGeneratorsForCurrentTest() [341]
+                0.00    0.00       1/18          Catch::Runner::runTests() [4]
+                0.00    0.00       3/18          Catch::Section::~Section() [227]
+                0.00    0.00      12/18          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+[219]    0.0    0.00    0.00      18         Catch::Context::getResultCapture() [219]
+-----------------------------------------------
+                0.00    0.00       1/17          ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00       1/17          Catch::Runner::runTests() [4]
+                0.00    0.00       3/17          Catch::Section::~Section() [227]
+                0.00    0.00      12/17          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+[220]    0.0    0.00    0.00      17         Catch::getCurrentContext() [220]
+                0.00    0.00      17/18          Catch::getCurrentMutableContext() [218]
+-----------------------------------------------
+                0.00    0.00      17/17          Catch::makeCommandLineParser() [330]
+[221]    0.0    0.00    0.00      17         Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00      12/32          Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       8/8           Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::takesArg() const [237]
+                0.00    0.00       8/37          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [213]
+                0.00    0.00       5/5           void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+                0.00    0.00       3/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::takesArg() const [268]
+                0.00    0.00       3/3           Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::takesArg() const [267]
+                0.00    0.00       3/9           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction() [231]
+                0.00    0.00       3/13          Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+                0.00    0.00       1/1           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::takesArg() const [369]
+                0.00    0.00       1/1           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::takesArg() const [370]
+                0.00    0.00       1/1           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::takesArg() const [368]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction() [265]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction() [266]
+                0.00    0.00       1/3           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction() [264]
+-----------------------------------------------
+                0.00    0.00      15/15          Catch::makeCommandLineParser() [330]
+[222]    0.0    0.00    0.00      15         void std::vector<std::string, std::allocator<std::string> >::_M_insert_aux<std::string const&>(__gnu_cxx::__normal_iterator<std::string*, std::vector<std::string, std::allocator<std::string> > >, std::string const&) [222]
+-----------------------------------------------
+                0.00    0.00       1/14          _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+                0.00    0.00      13/14          ____C_A_T_C_H____T_E_S_T____12() [2]
+[223]    0.0    0.00    0.00      14         Catch::SourceLineInfo::SourceLineInfo(char const*, unsigned long) [223]
+-----------------------------------------------
+                0.00    0.00       1/13          main [1]
+                0.00    0.00       2/13          void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+                0.00    0.00       3/13          Catch::Session::~Session() [345]
+                0.00    0.00       3/13          Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       4/13          Catch::makeCommandLineParser() [330]
+[224]    0.0    0.00    0.00      13         Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+-----------------------------------------------
+                0.00    0.00      12/12          Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+[225]    0.0    0.00    0.00      12         Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [225]
+                0.00    0.00      12/12          Catch::operator<<(std::ostream&, Catch::SourceLineInfo const&) [228]
+                0.00    0.00       3/7           Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [241]
+                0.00    0.00       3/3           Catch::SectionTracking::TrackedSection::addChild(std::string const&) [262]
+-----------------------------------------------
+                0.00    0.00      12/12          ____C_A_T_C_H____T_E_S_T____12() [2]
+[226]    0.0    0.00    0.00      12         Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [226]
+                0.00    0.00      12/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+                0.00    0.00      12/18          Catch::Context::getResultCapture() [219]
+                0.00    0.00      12/17          Catch::getCurrentContext() [220]
+                0.00    0.00      12/12          Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [225]
+                0.00    0.00      12/24          Catch::(anonymous namespace)::getCurrentTicks() [216]
+-----------------------------------------------
+                0.00    0.00      12/12          ____C_A_T_C_H____T_E_S_T____12() [2]
+[227]    0.0    0.00    0.00      12         Catch::Section::~Section() [227]
+                0.00    0.00       3/17          Catch::getCurrentContext() [220]
+                0.00    0.00       3/18          Catch::Context::getResultCapture() [219]
+                0.00    0.00       3/7           Catch::Timer::getElapsedSeconds() const [242]
+                0.00    0.00       3/3           Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+-----------------------------------------------
+                0.00    0.00      12/12          Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [225]
+[228]    0.0    0.00    0.00      12         Catch::operator<<(std::ostream&, Catch::SourceLineInfo const&) [228]
+-----------------------------------------------
+                                   6             std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*) [229]
+                0.00    0.00       2/11          Catch::Runner::runTests() [4]
+                0.00    0.00       9/11          Catch::SectionTracking::TrackedSection::addChild(std::string const&) [262]
+[229]    0.0    0.00    0.00      11+6       std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*) [229]
+                                   6             std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*) [229]
+-----------------------------------------------
+                0.00    0.00       1/10          Catch::TestCaseStats::~TestCaseStats() [308]
+                0.00    0.00       1/10          Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+                0.00    0.00       1/10          Catch::ConsoleReporter::testCaseEnded(Catch::TestCaseStats const&) [315]
+                0.00    0.00       1/10          Catch::Runner::runTests() [4]
+                0.00    0.00       2/10          Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+                0.00    0.00       2/10          std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector() [290]
+                0.00    0.00       2/10          std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+[230]    0.0    0.00    0.00      10         std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+-----------------------------------------------
+                0.00    0.00       3/9           Catch::Session::~Session() [345]
+                0.00    0.00       3/9           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       3/9           Catch::makeCommandLineParser() [330]
+[231]    0.0    0.00    0.00       9         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction() [231]
+-----------------------------------------------
+                0.00    0.00       4/9           Catch::makeCommandLineParser() [330]
+                0.00    0.00       5/9           Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+[232]    0.0    0.00    0.00       9         Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::clone() const [232]
+-----------------------------------------------
+                0.00    0.00       1/8           Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&) [347]
+                0.00    0.00       1/8           Catch::StreamingReporterBase::testCaseStarting(Catch::TestCaseInfo const&) [327]
+                0.00    0.00       2/8           Catch::Runner::runTests() [4]
+                0.00    0.00       4/8           Catch::TestCase::TestCase(Catch::TestCase const&) [253]
+[233]    0.0    0.00    0.00       8         Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+                0.00    0.00       8/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       1/8           Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&) [263]
+                0.00    0.00       1/8           Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const [356]
+                0.00    0.00       1/8           Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+                0.00    0.00       1/8           Catch::Runner::makeReporter() [337]
+                0.00    0.00       2/8           Catch::Runner::runTests() [4]
+                0.00    0.00       2/8           Catch::Session::run() [5]
+[234]    0.0    0.00    0.00       8         Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+-----------------------------------------------
+                0.00    0.00       1/8           Catch::StreamingReporterBase::~StreamingReporterBase() [329]
+                0.00    0.00       1/8           Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+                0.00    0.00       1/8           Catch::Runner::makeReporter() [337]
+                0.00    0.00       1/8           Catch::Session::~Session() [345]
+                0.00    0.00       1/8           Catch::Runner::runTests() [4]
+                0.00    0.00       1/8           Catch::Session::run() [5]
+                0.00    0.00       2/8           Catch::RunContext::~RunContext() [298]
+[235]    0.0    0.00    0.00       8         Catch::SharedImpl<Catch::IConfig>::release() const [235]
+-----------------------------------------------
+                0.00    0.00       1/8           Catch::RunContext::~RunContext() [298]
+                0.00    0.00       7/8           Catch::Runner::runTests() [4]
+[236]    0.0    0.00    0.00       8         Catch::Config::abortAfter() const [236]
+-----------------------------------------------
+                0.00    0.00       8/8           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[237]    0.0    0.00    0.00       8         Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::takesArg() const [237]
+-----------------------------------------------
+                0.00    0.00       7/7           ____C_A_T_C_H____T_E_S_T____12() [2]
+[238]    0.0    0.00    0.00       7         timeChrono(std::string) [238]
+-----------------------------------------------
+                0.00    0.00       3/7           Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+                0.00    0.00       4/7           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[239]    0.0    0.00    0.00       7         Catch::SectionStats::~SectionStats() [239]
+-----------------------------------------------
+                0.00    0.00       3/7           Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+                0.00    0.00       4/7           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[240]    0.0    0.00    0.00       7         Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&) [240]
+                0.00    0.00       7/7           Catch::Config::showDurations() const [243]
+-----------------------------------------------
+                0.00    0.00       3/7           Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [225]
+                0.00    0.00       4/7           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[241]    0.0    0.00    0.00       7         Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [241]
+                0.00    0.00       5/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+                0.00    0.00       2/2           void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&) [287]
+-----------------------------------------------
+                0.00    0.00       3/7           Catch::Section::~Section() [227]
+                0.00    0.00       4/7           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[242]    0.0    0.00    0.00       7         Catch::Timer::getElapsedSeconds() const [242]
+                0.00    0.00       7/24          Catch::(anonymous namespace)::getCurrentTicks() [216]
+-----------------------------------------------
+                0.00    0.00       7/7           Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&) [240]
+[243]    0.0    0.00    0.00       7         Catch::Config::showDurations() const [243]
+-----------------------------------------------
+                0.00    0.00       6/6           ____C_A_T_C_H____T_E_S_T____12() [2]
+[244]    0.0    0.00    0.00       6         printGpuMem() [244]
+-----------------------------------------------
+                0.00    0.00       1/6           ____C_A_T_C_H____T_E_S_T____12() [2]
+                0.00    0.00       1/6           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+                0.00    0.00       4/6           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[245]    0.0    0.00    0.00       6         Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [245]
+                0.00    0.00       6/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       3/6           Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       3/6           Catch::makeCommandLineParser() [330]
+[246]    0.0    0.00    0.00       6         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::clone() const [246]
+-----------------------------------------------
+                0.00    0.00       1/5           Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&) [347]
+                0.00    0.00       4/5           Catch::TestCase::TestCase(Catch::TestCase const&) [253]
+[247]    0.0    0.00    0.00       5         Catch::SharedImpl<Catch::ITestCase>::addRef() const [247]
+-----------------------------------------------
+                0.00    0.00       1/5           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+                0.00    0.00       2/5           std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector() [290]
+                0.00    0.00       2/5           std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+[248]    0.0    0.00    0.00       5         Catch::SharedImpl<Catch::ITestCase>::release() const [248]
+-----------------------------------------------
+                0.00    0.00       2/5           Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+                0.00    0.00       3/5           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[249]    0.0    0.00    0.00       5         Catch::Config::warnAboutMissingAssertions() const [249]
+-----------------------------------------------
+                0.00    0.00       5/5           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[250]    0.0    0.00    0.00       5         void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&) [250]
+                0.00    0.00      13/37          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [213]
+                0.00    0.00      10/20010       curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [210]
+                0.00    0.00       5/32          Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       2/13          Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+-----------------------------------------------
+                0.00    0.00       4/4           void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&) [287]
+[251]    0.0    0.00    0.00       4         Catch::ScopedMessage::ScopedMessage(Catch::MessageBuilder const&) [251]
+                0.00    0.00       1/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       1/4           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+                0.00    0.00       3/4           _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+[252]    0.0    0.00    0.00       4         Catch::getMutableRegistryHub() [252]
+                0.00    0.00       1/24          Catch::(anonymous namespace)::getCurrentTicks() [216]
+-----------------------------------------------
+                0.00    0.00       2/4           std::_Rb_tree_iterator<Catch::TestCase> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_<Catch::TestCase const&>(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, Catch::TestCase const&) [291]
+                0.00    0.00       2/4           void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&) [289]
+[253]    0.0    0.00    0.00       4         Catch::TestCase::TestCase(Catch::TestCase const&) [253]
+                0.00    0.00       4/8           Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+                0.00    0.00       4/5           Catch::SharedImpl<Catch::ITestCase>::addRef() const [247]
+-----------------------------------------------
+                0.00    0.00       4/4           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[254]    0.0    0.00    0.00       4         Catch::ConsoleReporter::getPreferences() const [254]
+-----------------------------------------------
+                0.00    0.00       4/4           Catch::RunContext::runCurrentTest(std::string&, std::string&) [3]
+[255]    0.0    0.00    0.00       4         Catch::FreeFunctionTestCase::invoke() const [255]
+-----------------------------------------------
+                0.00    0.00       4/4           void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&) [289]
+[256]    0.0    0.00    0.00       4         Catch::TestCase::withName(std::string const&) const [256]
+-----------------------------------------------
+                0.00    0.00       3/3           ____C_A_T_C_H____T_E_S_T____12() [2]
+[257]    0.0    0.00    0.00       3         startChrono() [257]
+-----------------------------------------------
+                0.00    0.00       3/3           Catch::Section::~Section() [227]
+[258]    0.0    0.00    0.00       3         Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [258]
+                0.00    0.00       3/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+                0.00    0.00       3/7           Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&) [240]
+                0.00    0.00       3/7           Catch::SectionStats::~SectionStats() [239]
+                0.00    0.00       2/5           Catch::Config::warnAboutMissingAssertions() const [249]
+-----------------------------------------------
+                0.00    0.00       3/3           _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+[259]    0.0    0.00    0.00       3         Catch::(anonymous namespace)::RegistryHub::registerReporter(std::string const&, Catch::IReporterFactory*) [259]
+                0.00    0.00       3/3           std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_unique<std::pair<std::string, Catch::IReporterFactory*> >(std::pair<std::string, Catch::IReporterFactory*>&&) [272]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::Runner::makeReporter() [337]
+                0.00    0.00       2/3           Catch::Runner::runTests() [4]
+[260]    0.0    0.00    0.00       3         Catch::getRegistryHub() [260]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+                0.00    0.00       1/3           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+                0.00    0.00       1/3           Catch::RunContext::~RunContext() [298]
+[261]    0.0    0.00    0.00       3         Catch::AssertionResult::~AssertionResult() [261]
+-----------------------------------------------
+                0.00    0.00       3/3           Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [225]
+[262]    0.0    0.00    0.00       3         Catch::SectionTracking::TrackedSection::addChild(std::string const&) [262]
+                0.00    0.00       9/11          std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*) [229]
+                0.00    0.00       3/3           std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_unique<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::pair<std::string, Catch::SectionTracking::TrackedSection>&&) [270]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::Runner::runTests() [4]
+                0.00    0.00       2/3           Catch::RunContext::~RunContext() [298]
+[263]    0.0    0.00    0.00       3         Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&) [263]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::Session::~Session() [345]
+                0.00    0.00       1/3           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       1/3           Catch::makeCommandLineParser() [330]
+[264]    0.0    0.00    0.00       3         Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction() [264]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::Session::~Session() [345]
+                0.00    0.00       1/3           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       1/3           Catch::makeCommandLineParser() [330]
+[265]    0.0    0.00    0.00       3         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction() [265]
+-----------------------------------------------
+                0.00    0.00       1/3           Catch::Session::~Session() [345]
+                0.00    0.00       1/3           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00       1/3           Catch::makeCommandLineParser() [330]
+[266]    0.0    0.00    0.00       3         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction() [266]
+-----------------------------------------------
+                0.00    0.00       3/3           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[267]    0.0    0.00    0.00       3         Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::takesArg() const [267]
+-----------------------------------------------
+                0.00    0.00       3/3           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[268]    0.0    0.00    0.00       3         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::takesArg() const [268]
+-----------------------------------------------
+                0.00    0.00       3/3           std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_unique<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::pair<std::string, Catch::SectionTracking::TrackedSection>&&) [270]
+[269]    0.0    0.00    0.00       3         std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::SectionTracking::TrackedSection>&&) [269]
+-----------------------------------------------
+                0.00    0.00       3/3           Catch::SectionTracking::TrackedSection::addChild(std::string const&) [262]
+[270]    0.0    0.00    0.00       3         std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_unique<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::pair<std::string, Catch::SectionTracking::TrackedSection>&&) [270]
+                0.00    0.00       3/3           std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::SectionTracking::TrackedSection>&&) [269]
+-----------------------------------------------
+                0.00    0.00       3/3           std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_unique<std::pair<std::string, Catch::IReporterFactory*> >(std::pair<std::string, Catch::IReporterFactory*>&&) [272]
+[271]    0.0    0.00    0.00       3         std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_<std::pair<std::string, Catch::IReporterFactory*> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::IReporterFactory*>&&) [271]
+-----------------------------------------------
+                0.00    0.00       3/3           Catch::(anonymous namespace)::RegistryHub::registerReporter(std::string const&, Catch::IReporterFactory*) [259]
+[272]    0.0    0.00    0.00       3         std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_unique<std::pair<std::string, Catch::IReporterFactory*> >(std::pair<std::string, Catch::IReporterFactory*>&&) [272]
+                0.00    0.00       3/3           std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_<std::pair<std::string, Catch::IReporterFactory*> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::IReporterFactory*>&&) [271]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+                0.00    0.00       1/2           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+[273]    0.0    0.00    0.00       2         Catch::startsWith(std::string const&, std::string const&) [273]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::ConsoleReporter::printTotals(Catch::Totals const&) [313]
+[274]    0.0    0.00    0.00       2         Catch::(anonymous namespace)::NoColourImpl::use(Catch::Colour::Code) [274]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::Runner::runTests() [4]
+[275]    0.0    0.00    0.00       2         Catch::TestCaseFilters::~TestCaseFilters() [275]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::RunContext::~RunContext() [298]
+                0.00    0.00       1/2           Catch::Runner::runTests() [4]
+[276]    0.0    0.00    0.00       2         Catch::Context::setResultCapture(Catch::IResultCapture*) [276]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::RunContext::~RunContext() [298]
+                0.00    0.00       1/2           Catch::Runner::runTests() [4]
+[277]    0.0    0.00    0.00       2         Catch::Context::setRunner(Catch::IRunner*) [277]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::ConsoleReporter::printTotals(Catch::Totals const&) [313]
+[278]    0.0    0.00    0.00       2         Catch::operator<<(std::ostream&, Catch::pluralise const&) [278]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::Runner::makeReporter() [337]
+                0.00    0.00       1/2           Catch::Runner::runTests() [4]
+[279]    0.0    0.00    0.00       2         Catch::SharedImpl<Catch::IStreamingReporter>::addRef() const [279]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::RunContext::~RunContext() [298]
+                0.00    0.00       1/2           Catch::Runner::~Runner() [338]
+[280]    0.0    0.00    0.00       2         Catch::SharedImpl<Catch::IStreamingReporter>::release() const [280]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::Runner::runTests() [4]
+[281]    0.0    0.00    0.00       2         Catch::TestRegistry::getAllTests() const [281]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::Runner::runTests() [4]
+[282]    0.0    0.00    0.00       2         Catch::(anonymous namespace)::RegistryHub::getTestCaseRegistry() const [282]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+                0.00    0.00       1/2           Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&) [316]
+[283]    0.0    0.00    0.00       2         Catch::AssertionResult::isOk() const [283]
+-----------------------------------------------
+                0.00    0.00       1/2           Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       1/2           Catch::makeCommandLineParser() [330]
+[284]    0.0    0.00    0.00       2         Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::clone() const [284]
+-----------------------------------------------
+                0.00    0.00       1/2           Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       1/2           Catch::makeCommandLineParser() [330]
+[285]    0.0    0.00    0.00       2         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::clone() const [285]
+-----------------------------------------------
+                0.00    0.00       1/2           Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [214]
+                0.00    0.00       1/2           Catch::makeCommandLineParser() [330]
+[286]    0.0    0.00    0.00       2         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::clone() const [286]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [241]
+[287]    0.0    0.00    0.00       2         void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&) [287]
+                0.00    0.00       4/4           Catch::ScopedMessage::ScopedMessage(Catch::MessageBuilder const&) [251]
+                0.00    0.00       2/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::TestCaseFilters::TestCaseFilters(Catch::TestCaseFilters const&) [320]
+[288]    0.0    0.00    0.00       2         std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> >::vector(std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> > const&) [288]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::TestRegistry::registerTest(Catch::TestCase const&) [302]
+[289]    0.0    0.00    0.00       2         void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&) [289]
+                0.00    0.00       4/4           Catch::TestCase::withName(std::string const&) const [256]
+                0.00    0.00       2/4           Catch::TestCase::TestCase(Catch::TestCase const&) [253]
+-----------------------------------------------
+                0.00    0.00       2/2           Catch::TestRegistry::~TestRegistry() [303]
+[290]    0.0    0.00    0.00       2         std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector() [290]
+                0.00    0.00       2/5           Catch::SharedImpl<Catch::ITestCase>::release() const [248]
+                0.00    0.00       2/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+-----------------------------------------------
+                0.00    0.00       2/2           std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&) [292]
+[291]    0.0    0.00    0.00       2         std::_Rb_tree_iterator<Catch::TestCase> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_<Catch::TestCase const&>(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, Catch::TestCase const&) [291]
+                0.00    0.00       2/4           Catch::TestCase::TestCase(Catch::TestCase const&) [253]
+-----------------------------------------------
+                0.00    0.00       1/2           Catch::TestRegistry::registerTest(Catch::TestCase const&) [302]
+                0.00    0.00       1/2           Catch::Runner::runTests() [4]
+[292]    0.0    0.00    0.00       2         std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&) [292]
+                0.00    0.00       2/2           std::_Rb_tree_iterator<Catch::TestCase> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_<Catch::TestCase const&>(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, Catch::TestCase const&) [291]
+-----------------------------------------------
+                                   2             std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+                0.00    0.00       1/2           Catch::TestRegistry::~TestRegistry() [303]
+                0.00    0.00       1/2           Catch::Runner::~Runner() [338]
+[293]    0.0    0.00    0.00       2+2       std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+                0.00    0.00       2/5           Catch::SharedImpl<Catch::ITestCase>::release() const [248]
+                0.00    0.00       2/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+                0.00    0.00       1/1           Catch::FreeFunctionTestCase::~FreeFunctionTestCase() [325]
+                                   2             std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+-----------------------------------------------
+                0.00    0.00       2/2           void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&) [374]
+[294]    0.0    0.00    0.00       2         Catch::TestCaseFilters* std::__uninitialized_move_a<Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters> >(Catch::TestCaseFilters*, Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters>&) [294]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [1667]
+[295]    0.0    0.00    0.00       1         _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+                0.00    0.00       3/4           Catch::getMutableRegistryHub() [252]
+                0.00    0.00       3/3           Catch::(anonymous namespace)::RegistryHub::registerReporter(std::string const&, Catch::IReporterFactory*) [259]
+                0.00    0.00       1/14          Catch::SourceLineInfo::SourceLineInfo(char const*, unsigned long) [223]
+                0.00    0.00       1/1           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+                0.00    0.00       1/1           Catch::AutoReg::AutoReg(void (*)(), Catch::SourceLineInfo const&, Catch::NameAndDesc const&) [340]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+[296]    0.0    0.00    0.00       1         Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+                0.00    0.00       1/1           Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&) [309]
+                0.00    0.00       1/1           Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&) [316]
+                0.00    0.00       1/3           Catch::AssertionResult::~AssertionResult() [261]
+                0.00    0.00       1/1           Catch::AssertionStats::~AssertionStats() [310]
+                0.00    0.00       1/6           Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [245]
+-----------------------------------------------
+                0.00    0.00       1/1           ____C_A_T_C_H____T_E_S_T____12() [2]
+[297]    0.0    0.00    0.00       1         Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+                0.00    0.00       1/1           Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const [357]
+                0.00    0.00       1/1           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+                0.00    0.00       1/2           Catch::AssertionResult::isOk() const [283]
+                0.00    0.00       1/3           Catch::AssertionResult::~AssertionResult() [261]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[298]    0.0    0.00    0.00       1         Catch::RunContext::~RunContext() [298]
+                0.00    0.00       2/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+                0.00    0.00       2/3           Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&) [263]
+                0.00    0.00       1/8           Catch::Config::abortAfter() const [236]
+                0.00    0.00       1/1           Catch::ConsoleReporter::testRunEnded(Catch::TestRunStats const&) [314]
+                0.00    0.00       1/1           Catch::TestRunStats::~TestRunStats() [304]
+                0.00    0.00       1/2           Catch::Context::setRunner(Catch::IRunner*) [277]
+                0.00    0.00       1/2           Catch::Context::setResultCapture(Catch::IResultCapture*) [276]
+                0.00    0.00       1/2           Catch::SharedImpl<Catch::IStreamingReporter>::release() const [280]
+                0.00    0.00       1/3           Catch::AssertionResult::~AssertionResult() [261]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+[299]    0.0    0.00    0.00       1         Catch::TagExtracter::parse(std::string&) [299]
+                0.00    0.00       1/1           Catch::TagParser::parse(std::string const&) [348]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+[300]    0.0    0.00    0.00       1         Catch::TagExtracter::~TagExtracter() [300]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+[301]    0.0    0.00    0.00       1         Catch::TestCaseInfo::TestCaseInfo(std::string const&, std::string const&, std::string const&, std::set<std::string, std::less<std::string>, std::allocator<std::string> > const&, bool, Catch::SourceLineInfo const&) [301]
+                0.00    0.00       1/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+[302]    0.0    0.00    0.00       1         Catch::TestRegistry::registerTest(Catch::TestCase const&) [302]
+                0.00    0.00       2/2           void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&) [289]
+                0.00    0.00       1/2           std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&) [292]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::(anonymous namespace)::RegistryHub::~RegistryHub() [306]
+[303]    0.0    0.00    0.00       1         Catch::TestRegistry::~TestRegistry() [303]
+                0.00    0.00       2/2           std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector() [290]
+                0.00    0.00       1/2           std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::~RunContext() [298]
+[304]    0.0    0.00    0.00       1         Catch::TestRunStats::~TestRunStats() [304]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+[305]    0.0    0.00    0.00       1         Catch::(anonymous namespace)::RegistryHub::registerTest(Catch::TestCase const&) [305]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::cleanUp() [346]
+[306]    0.0    0.00    0.00       1         Catch::(anonymous namespace)::RegistryHub::~RegistryHub() [306]
+                0.00    0.00       1/1           Catch::ReporterRegistry::~ReporterRegistry() [322]
+                0.00    0.00       1/1           Catch::TestRegistry::~TestRegistry() [303]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+[307]    0.0    0.00    0.00       1         Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+                0.00    0.00       2/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+                0.00    0.00       1/2           Catch::startsWith(std::string const&, std::string const&) [273]
+                0.00    0.00       1/1           Catch::TagExtracter::~TagExtracter() [300]
+                0.00    0.00       1/1           Catch::TagExtracter::parse(std::string&) [299]
+                0.00    0.00       1/1           std::set<std::string, std::less<std::string>, std::allocator<std::string> >::find(std::string const&) [372]
+                0.00    0.00       1/1           Catch::TestCaseInfo::TestCaseInfo(std::string const&, std::string const&, std::string const&, std::set<std::string, std::less<std::string>, std::allocator<std::string> > const&, bool, Catch::SourceLineInfo const&) [301]
+                0.00    0.00       1/1           Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&) [347]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[308]    0.0    0.00    0.00       1         Catch::TestCaseStats::~TestCaseStats() [308]
+                0.00    0.00       1/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+[309]    0.0    0.00    0.00       1         Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&) [309]
+                0.00    0.00       1/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+                0.00    0.00       1/1           std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> >::vector(std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&) [373]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+[310]    0.0    0.00    0.00       1         Catch::AssertionStats::~AssertionStats() [310]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[311]    0.0    0.00    0.00       1         Catch::TestGroupStats::~TestGroupStats() [311]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const [357]
+[312]    0.0    0.00    0.00       1         Catch::AssertionResult::AssertionResult(Catch::AssertionInfo const&, Catch::AssertionResultData const&) [312]
+                0.00    0.00       1/48          Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [212]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ConsoleReporter::testRunEnded(Catch::TestRunStats const&) [314]
+[313]    0.0    0.00    0.00       1         Catch::ConsoleReporter::printTotals(Catch::Totals const&) [313]
+                0.00    0.00       2/2           Catch::(anonymous namespace)::NoColourImpl::use(Catch::Colour::Code) [274]
+                0.00    0.00       2/2           Catch::operator<<(std::ostream&, Catch::pluralise const&) [278]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::~RunContext() [298]
+[314]    0.0    0.00    0.00       1         Catch::ConsoleReporter::testRunEnded(Catch::TestRunStats const&) [314]
+                0.00    0.00       1/1           Catch::ConsoleReporter::printTotals(Catch::Totals const&) [313]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[315]    0.0    0.00    0.00       1         Catch::ConsoleReporter::testCaseEnded(Catch::TestCaseStats const&) [315]
+                0.00    0.00       1/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [296]
+[316]    0.0    0.00    0.00       1         Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&) [316]
+                0.00    0.00       1/1           Catch::Config::includeSuccessfulResults() const [359]
+                0.00    0.00       1/2           Catch::AssertionResult::isOk() const [283]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[317]    0.0    0.00    0.00       1         Catch::ConsoleReporter::testGroupEnded(Catch::TestGroupStats const&) [317]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::~Runner() [338]
+[318]    0.0    0.00    0.00       1         Catch::ConsoleReporter::~ConsoleReporter() [318]
+                0.00    0.00       1/1           Catch::StreamingReporterBase::~StreamingReporterBase() [329]
+                0.00    0.00       1/1           Catch::ConsoleReporter::~ConsoleReporter() [319]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ConsoleReporter::~ConsoleReporter() [318]
+[319]    0.0    0.00    0.00       1         Catch::ConsoleReporter::~ConsoleReporter() [319]
+-----------------------------------------------
+                0.00    0.00       1/1           void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&) [374]
+[320]    0.0    0.00    0.00       1         Catch::TestCaseFilters::TestCaseFilters(Catch::TestCaseFilters const&) [320]
+                0.00    0.00       2/2           std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> >::vector(std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> > const&) [288]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[321]    0.0    0.00    0.00       1         Catch::TestCaseFilters::TestCaseFilters(std::string const&) [321]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::(anonymous namespace)::RegistryHub::~RegistryHub() [306]
+[322]    0.0    0.00    0.00       1         Catch::ReporterRegistry::~ReporterRegistry() [322]
+                0.00    0.00       1/1           Catch::LegacyReporterRegistrar<Catch::XmlReporter>::ReporterFactory::~ReporterFactory() [332]
+                0.00    0.00       1/1           Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::~ReporterFactory() [323]
+                0.00    0.00       1/1           Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::~ReporterFactory() [324]
+                0.00    0.00       1/1           std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*) [376]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ReporterRegistry::~ReporterRegistry() [322]
+[323]    0.0    0.00    0.00       1         Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::~ReporterFactory() [323]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ReporterRegistry::~ReporterRegistry() [322]
+[324]    0.0    0.00    0.00       1         Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::~ReporterFactory() [324]
+-----------------------------------------------
+                0.00    0.00       1/1           std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+[325]    0.0    0.00    0.00       1         Catch::FreeFunctionTestCase::~FreeFunctionTestCase() [325]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[326]    0.0    0.00    0.00       1         Catch::StreamingReporterBase::testRunStarting(Catch::TestRunInfo const&) [326]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[327]    0.0    0.00    0.00       1         Catch::StreamingReporterBase::testCaseStarting(Catch::TestCaseInfo const&) [327]
+                0.00    0.00       1/8           Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[328]    0.0    0.00    0.00       1         Catch::StreamingReporterBase::testGroupStarting(Catch::GroupInfo const&) [328]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ConsoleReporter::~ConsoleReporter() [318]
+[329]    0.0    0.00    0.00       1         Catch::StreamingReporterBase::~StreamingReporterBase() [329]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[330]    0.0    0.00    0.00       1         Catch::makeCommandLineParser() [330]
+                0.00    0.00      17/17          Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+                0.00    0.00      15/15          void std::vector<std::string, std::allocator<std::string> >::_M_insert_aux<std::string const&>(__gnu_cxx::__normal_iterator<std::string*, std::vector<std::string, std::allocator<std::string> > >, std::string const&) [222]
+                0.00    0.00       8/29          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::clone() const [215]
+                0.00    0.00       8/37          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [213]
+                0.00    0.00       4/9           Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::clone() const [232]
+                0.00    0.00       4/13          Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+                0.00    0.00       3/6           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::clone() const [246]
+                0.00    0.00       3/9           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction() [231]
+                0.00    0.00       1/1           Clara::Detail::NullBinder<Catch::ConfigData>::~NullBinder() [350]
+                0.00    0.00       1/2           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::clone() const [284]
+                0.00    0.00       1/3           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction() [264]
+                0.00    0.00       1/2           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::clone() const [286]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction() [266]
+                0.00    0.00       1/2           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::clone() const [285]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction() [265]
+-----------------------------------------------
+                0.00    0.00       1/1           ____C_A_T_C_H____T_E_S_T____12() [2]
+[331]    0.0    0.00    0.00       1         Catch::ExpressionResultBuilder::ExpressionResultBuilder(Catch::ResultWas::OfType) [331]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ReporterRegistry::~ReporterRegistry() [322]
+[332]    0.0    0.00    0.00       1         Catch::LegacyReporterRegistrar<Catch::XmlReporter>::ReporterFactory::~ReporterFactory() [332]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::run() [5]
+[333]    0.0    0.00    0.00       1         Catch::list(Catch::Config const&) [333]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::run() [5]
+[334]    0.0    0.00    0.00       1         Catch::Config::Config(Catch::ConfigData const&) [334]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::~Session() [345]
+[335]    0.0    0.00    0.00       1         Catch::Config::~Config() [335]
+                0.00    0.00       1/1           Catch::Config::~Config() [336]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Config::~Config() [335]
+[336]    0.0    0.00    0.00       1         Catch::Config::~Config() [336]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::run() [5]
+[337]    0.0    0.00    0.00       1         Catch::Runner::makeReporter() [337]
+                0.00    0.00       1/1           Catch::(anonymous namespace)::RegistryHub::getReporterRegistry() const [353]
+                0.00    0.00       1/3           Catch::getRegistryHub() [260]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+                0.00    0.00       1/1           Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+                0.00    0.00       1/2           Catch::SharedImpl<Catch::IStreamingReporter>::addRef() const [279]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::run() [5]
+[338]    0.0    0.00    0.00       1         Catch::Runner::~Runner() [338]
+                0.00    0.00       1/2           std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*) [293]
+                0.00    0.00       1/1           Catch::ConsoleReporter::~ConsoleReporter() [318]
+                0.00    0.00       1/2           Catch::SharedImpl<Catch::IStreamingReporter>::release() const [280]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+[339]    0.0    0.00    0.00       1         Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [339]
+                0.00    0.00       1/4           Catch::getMutableRegistryHub() [252]
+                0.00    0.00       1/2           Catch::startsWith(std::string const&, std::string const&) [273]
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+                0.00    0.00       1/1           Catch::TestRegistry::registerTest(Catch::TestCase const&) [302]
+                0.00    0.00       1/1           Catch::(anonymous namespace)::RegistryHub::registerTest(Catch::TestCase const&) [305]
+                0.00    0.00       1/5           Catch::SharedImpl<Catch::ITestCase>::release() const [248]
+                0.00    0.00       1/10          std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*) [230]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [295]
+[340]    0.0    0.00    0.00       1         Catch::AutoReg::AutoReg(void (*)(), Catch::SourceLineInfo const&, Catch::NameAndDesc const&) [340]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[341]    0.0    0.00    0.00       1         Catch::Context::advanceGeneratorsForCurrentTest() [341]
+                0.00    0.00       1/18          Catch::Context::getResultCapture() [219]
+                0.00    0.00       1/1           Catch::RunContext::getCurrentTestName() const [352]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[342]    0.0    0.00    0.00       1         Catch::Context::getRunner() [342]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::cleanUp() [346]
+[343]    0.0    0.00    0.00       1         Catch::Context::~Context() [343]
+                0.00    0.00       1/1           std::_Rb_tree<std::string, std::pair<std::string const, Catch::IGeneratorsForTest*>, std::_Select1st<std::pair<std::string const, Catch::IGeneratorsForTest*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IGeneratorsForTest*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IGeneratorsForTest*> >*) [377]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[344]    0.0    0.00    0.00       1         Catch::Session::applyCommandLine(int, char* const*, Catch::Session::OnUnusedOptions::DoWhat) [344]
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const [366]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[345]    0.0    0.00    0.00       1         Catch::Session::~Session() [345]
+                0.00    0.00       8/37          Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [213]
+                0.00    0.00       3/9           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction() [231]
+                0.00    0.00       3/13          Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [224]
+                0.00    0.00       1/1           Catch::cleanUp() [346]
+                0.00    0.00       1/1           Catch::Config::~Config() [335]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+                0.00    0.00       1/1           std::_Rb_tree<int, std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg>, std::_Select1st<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >, std::less<int>, std::allocator<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> > >::_M_erase(std::_Rb_tree_node<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >*) [378]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction() [265]
+                0.00    0.00       1/3           Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction() [266]
+                0.00    0.00       1/3           Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction() [264]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::~Session() [345]
+[346]    0.0    0.00    0.00       1         Catch::cleanUp() [346]
+                0.00    0.00       1/1           Catch::(anonymous namespace)::RegistryHub::~RegistryHub() [306]
+                0.00    0.00       1/1           Catch::Context::~Context() [343]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+[347]    0.0    0.00    0.00       1         Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&) [347]
+                0.00    0.00       1/8           Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [233]
+                0.00    0.00       1/5           Catch::SharedImpl<Catch::ITestCase>::addRef() const [247]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::TagExtracter::parse(std::string&) [299]
+[348]    0.0    0.00    0.00       1         Catch::TagParser::parse(std::string const&) [348]
+                0.00    0.00      20/20          Catch::TagExtracter::acceptChar(char) [217]
+                0.00    0.00       1/1           Catch::TagParser::endParse() [349]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::TagParser::parse(std::string const&) [348]
+[349]    0.0    0.00    0.00       1         Catch::TagParser::endParse() [349]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeCommandLineParser() [330]
+[350]    0.0    0.00    0.00       1         Clara::Detail::NullBinder<Catch::ConfigData>::~NullBinder() [350]
+-----------------------------------------------
+                0.00    0.00       1/1           curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [41]
+[351]    0.0    0.00    0.00       1         curoy::cuMatrix<unsigned long>::rebase(unsigned long) [351]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Context::advanceGeneratorsForCurrentTest() [341]
+[352]    0.0    0.00    0.00       1         Catch::RunContext::getCurrentTestName() const [352]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::makeReporter() [337]
+[353]    0.0    0.00    0.00       1         Catch::(anonymous namespace)::RegistryHub::getReporterRegistry() const [353]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[354]    0.0    0.00    0.00       1         Catch::TestCaseFilters::shouldInclude(Catch::TestCase const&) const [354]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::makeReporter() [337]
+[355]    0.0    0.00    0.00       1         Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+                0.00    0.00       1/1           Catch::Config::stream() const [361]
+                0.00    0.00       1/1           Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const [356]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::release() const [235]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+[356]    0.0    0.00    0.00       1         Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const [356]
+                0.00    0.00       1/8           Catch::SharedImpl<Catch::IConfig>::addRef() const [234]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [297]
+[357]    0.0    0.00    0.00       1         Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const [357]
+                0.00    0.00       1/1           Catch::ExpressionResultBuilder::reconstructExpression(Catch::AssertionInfo const&) const [358]
+                0.00    0.00       1/1           Catch::AssertionResult::AssertionResult(Catch::AssertionInfo const&, Catch::AssertionResultData const&) [312]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const [357]
+[358]    0.0    0.00    0.00       1         Catch::ExpressionResultBuilder::reconstructExpression(Catch::AssertionInfo const&) const [358]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&) [316]
+[359]    0.0    0.00    0.00       1         Catch::Config::includeSuccessfulResults() const [359]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[360]    0.0    0.00    0.00       1         Catch::Config::name() const [360]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const [355]
+[361]    0.0    0.00    0.00       1         Catch::Config::stream() const [361]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[362]    0.0    0.00    0.00       1         Catch::Context::getConfig() const [362]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [365]
+[363]    0.0    0.00    0.00       1         Clara::CommandLine<Catch::ConfigData>::populateOptions(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [363]
+                0.00    0.00       1/1           std::vector<std::string, std::allocator<std::string> >::~vector() [375]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [365]
+[364]    0.0    0.00    0.00       1         Clara::CommandLine<Catch::ConfigData>::populateFloatingArgs(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [364]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const [366]
+[365]    0.0    0.00    0.00       1         Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [365]
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populateOptions(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [363]
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populateFloatingArgs(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [364]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::applyCommandLine(int, char* const*, Catch::Session::OnUnusedOptions::DoWhat) [344]
+[366]    0.0    0.00    0.00       1         Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const [366]
+                0.00    0.00       1/1           Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::set(Catch::ConfigData&, std::string const&) const [367]
+                0.00    0.00       1/1           Clara::Parser::parseIntoTokens(int, char const* const*, std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> >&) const [371]
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [365]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const [366]
+[367]    0.0    0.00    0.00       1         Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::set(Catch::ConfigData&, std::string const&) const [367]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[368]    0.0    0.00    0.00       1         Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::takesArg() const [368]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[369]    0.0    0.00    0.00       1         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::takesArg() const [369]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [221]
+[370]    0.0    0.00    0.00       1         Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::takesArg() const [370]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const [366]
+[371]    0.0    0.00    0.00       1         Clara::Parser::parseIntoTokens(int, char const* const*, std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> >&) const [371]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [307]
+[372]    0.0    0.00    0.00       1         std::set<std::string, std::less<std::string>, std::allocator<std::string> >::find(std::string const&) [372]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&) [309]
+[373]    0.0    0.00    0.00       1         std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> >::vector(std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&) [373]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Runner::runTests() [4]
+[374]    0.0    0.00    0.00       1         void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&) [374]
+                0.00    0.00       2/2           Catch::TestCaseFilters* std::__uninitialized_move_a<Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters> >(Catch::TestCaseFilters*, Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters>&) [294]
+                0.00    0.00       1/1           Catch::TestCaseFilters::TestCaseFilters(Catch::TestCaseFilters const&) [320]
+-----------------------------------------------
+                0.00    0.00       1/1           Clara::CommandLine<Catch::ConfigData>::populateOptions(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const [363]
+[375]    0.0    0.00    0.00       1         std::vector<std::string, std::allocator<std::string> >::~vector() [375]
+-----------------------------------------------
+                                   3             std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*) [376]
+                0.00    0.00       1/1           Catch::ReporterRegistry::~ReporterRegistry() [322]
+[376]    0.0    0.00    0.00       1+3       std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*) [376]
+                                   3             std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*) [376]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Context::~Context() [343]
+[377]    0.0    0.00    0.00       1         std::_Rb_tree<std::string, std::pair<std::string const, Catch::IGeneratorsForTest*>, std::_Select1st<std::pair<std::string const, Catch::IGeneratorsForTest*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IGeneratorsForTest*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IGeneratorsForTest*> >*) [377]
+-----------------------------------------------
+                0.00    0.00       1/1           Catch::Session::~Session() [345]
+[378]    0.0    0.00    0.00       1         std::_Rb_tree<int, std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg>, std::_Select1st<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >, std::less<int>, std::allocator<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> > >::_M_erase(std::_Rb_tree_node<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >*) [378]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+ [295] _GLOBAL__sub_I__ZN5Catch7Session19alreadyInstantiatedE [4] Catch::Runner::runTests() [353] Catch::(anonymous namespace)::RegistryHub::getReporterRegistry() const
+ [238] timeChrono(std::string) [338] Catch::Runner::~Runner() [282] Catch::(anonymous namespace)::RegistryHub::getTestCaseRegistry() const
+ [244] printGpuMem()         [339] Catch::AutoReg::registerTestCase(Catch::ITestCase*, char const*, Catch::NameAndDesc const&, Catch::SourceLineInfo const&) [283] Catch::AssertionResult::isOk() const
+ [257] startChrono()         [340] Catch::AutoReg::AutoReg(void (*)(), Catch::SourceLineInfo const&, Catch::NameAndDesc const&) [254] Catch::ConsoleReporter::getPreferences() const
+   [6] readFile(std::string) [219] Catch::Context::getResultCapture() [354] Catch::TestCaseFilters::shouldInclude(Catch::TestCase const&) const
+   [2] ____C_A_T_C_H____T_E_S_T____12() [276] Catch::Context::setResultCapture(Catch::IResultCapture*) [355] Catch::ReporterRegistry::create(std::string const&, Catch::Ptr<Catch::IConfig> const&) const
+  [22] __device_stub__ZN5curoy15transposeKernelIdEEvPKT_PS1_mm(double const*, double*, unsigned long, unsigned long) [341] Catch::Context::advanceGeneratorsForCurrentTest() [36] Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const
+  [23] __device_stub__ZN5curoy15addSkalarKernelIdEEvPKT_S1_PS1_m(double const*, double, double*, unsigned long) [342] Catch::Context::getRunner() [356] Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::create(Catch::ReporterConfig const&) const
+ [258] Catch::RunContext::sectionEnded(Catch::SectionInfo const&, Catch::Counts const&, double) [263] Catch::Context::setConfig(Catch::Ptr<Catch::IConfig const> const&) [255] Catch::FreeFunctionTestCase::invoke() const
+ [296] Catch::RunContext::assertionEnded(Catch::AssertionResult const&) [277] Catch::Context::setRunner(Catch::IRunner*) [357] Catch::ExpressionResultBuilder::buildResult(Catch::AssertionInfo const&) const
+   [3] Catch::RunContext::runCurrentTest(std::string&, std::string&) [343] Catch::Context::~Context() [358] Catch::ExpressionResultBuilder::reconstructExpression(Catch::AssertionInfo const&) const
+ [225] Catch::RunContext::sectionStarted(Catch::SectionInfo const&, Catch::Counts&) [226] Catch::Section::Section(Catch::SourceLineInfo const&, std::string const&, std::string const&) [242] Catch::Timer::getElapsedSeconds() const
+ [297] Catch::RunContext::acceptExpression(Catch::ExpressionResultBuilder const&, Catch::AssertionInfo const&) [227] Catch::Section::~Section() [236] Catch::Config::abortAfter() const
+ [298] Catch::RunContext::~RunContext() [344] Catch::Session::applyCommandLine(int, char* const*, Catch::Session::OnUnusedOptions::DoWhat) [243] Catch::Config::showDurations() const
+ [273] Catch::startsWith(std::string const&, std::string const&) [5] Catch::Session::run() [359] Catch::Config::includeSuccessfulResults() const
+ [239] Catch::SectionStats::~SectionStats() [345] Catch::Session::~Session() [249] Catch::Config::warnAboutMissingAssertions() const
+ [217] Catch::TagExtracter::acceptChar(char) [346] Catch::cleanUp() [360] Catch::Config::name() const
+ [299] Catch::TagExtracter::parse(std::string&) [347] Catch::TestCase::TestCase(Catch::ITestCase*, Catch::TestCaseInfo const&) [361] Catch::Config::stream() const
+ [300] Catch::TagExtracter::~TagExtracter() [253] Catch::TestCase::TestCase(Catch::TestCase const&) [362] Catch::Context::getConfig() const
+ [233] Catch::TestCaseInfo::TestCaseInfo(Catch::TestCaseInfo const&) [348] Catch::TagParser::parse(std::string const&) [256] Catch::TestCase::withName(std::string const&) const
+ [301] Catch::TestCaseInfo::TestCaseInfo(std::string const&, std::string const&, std::string const&, std::set<std::string, std::less<std::string>, std::allocator<std::string> > const&, bool, Catch::SourceLineInfo const&) [349] Catch::TagParser::endParse() [363] Clara::CommandLine<Catch::ConfigData>::populateOptions(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+ [302] Catch::TestRegistry::registerTest(Catch::TestCase const&) [228] Catch::operator<<(std::ostream&, Catch::SourceLineInfo const&) [364] Clara::CommandLine<Catch::ConfigData>::populateFloatingArgs(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+ [303] Catch::TestRegistry::~TestRegistry() [278] Catch::operator<<(std::ostream&, Catch::pluralise const&) [365] Clara::CommandLine<Catch::ConfigData>::populate(std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> > const&, Catch::ConfigData&) const
+ [304] Catch::TestRunStats::~TestRunStats() [214] Clara::CommandLine<Catch::ConfigData>::Arg::Arg(Clara::CommandLine<Catch::ConfigData>::Arg const&) [366] Clara::CommandLine<Catch::ConfigData>::parseInto(int, char const* const*, Catch::ConfigData&) const
+ [305] Catch::(anonymous namespace)::RegistryHub::registerTest(Catch::TestCase const&) [221] Clara::CommandLine<Catch::ConfigData>::ArgBinder::~ArgBinder() [367] Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::set(Catch::ConfigData&, std::string const&) const
+ [259] Catch::(anonymous namespace)::RegistryHub::registerReporter(std::string const&, Catch::IReporterFactory*) [350] Clara::Detail::NullBinder<Catch::ConfigData>::~NullBinder() [232] Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::clone() const
+ [306] Catch::(anonymous namespace)::RegistryHub::~RegistryHub() [224] Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::~BoundDataMember() [267] Clara::Detail::BoundDataMember<Catch::ConfigData, std::string>::takesArg() const
+ [274] Catch::(anonymous namespace)::NoColourImpl::use(Catch::Colour::Code) [213] Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::~BoundDataMember() [215] Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::clone() const
+ [216] Catch::(anonymous namespace)::getCurrentTicks() [264] Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::~BoundUnaryFunction() [237] Clara::Detail::BoundDataMember<Catch::ConfigData, bool>::takesArg() const
+ [307] Catch::makeTestCase(Catch::ITestCase*, std::string const&, std::string const&, std::string const&, Catch::SourceLineInfo const&) [231] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::~BoundBinaryFunction() [284] Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::clone() const
+ [245] Catch::AssertionInfo::AssertionInfo(std::string const&, Catch::SourceLineInfo const&, std::string const&, Catch::ResultDisposition::Flags) [265] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::~BoundBinaryFunction() [368] Clara::Detail::BoundUnaryFunction<Catch::ConfigData>::takesArg() const
+ [251] Catch::ScopedMessage::ScopedMessage(Catch::MessageBuilder const&) [266] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::~BoundBinaryFunction() [246] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::clone() const
+ [308] Catch::TestCaseStats::~TestCaseStats() [210] curoy::sigmoidGradient(curoy::cuMatrix<double>&&) [268] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, std::string const&>::takesArg() const
+ [309] Catch::AssertionStats::AssertionStats(Catch::AssertionResult const&, std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&, Catch::Totals const&) [24] void curoy::transposeKernel<double>(double const*, double*, unsigned long, unsigned long) [285] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::clone() const
+ [310] Catch::AssertionStats::~AssertionStats() [25] void curoy::funcPosColReduceDev<void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double>(void (*)(double const*, double*, unsigned long*, unsigned long), void (*)(double const*, double*, unsigned long*, unsigned long), double const*, double*, unsigned long*, unsigned long, unsigned long) [369] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, bool>::takesArg() const
+ [223] Catch::SourceLineInfo::SourceLineInfo(char const*, unsigned long) [16] curoy::T(curoy::cuMatrix<double> const&) [286] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::clone() const
+ [212] Catch::SourceLineInfo::SourceLineInfo(Catch::SourceLineInfo const&) [7] curoy::ann::costFunction(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, double, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [370] Clara::Detail::BoundBinaryFunction<Catch::ConfigData, int>::takesArg() const
+ [311] Catch::TestGroupStats::~TestGroupStats() [41] curoy::ann::predict(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [371] Clara::Parser::parseIntoTokens(int, char const* const*, std::vector<Clara::Parser::Token, std::allocator<Clara::Parser::Token> >&) const
+ [260] Catch::getRegistryHub() [17] curoy::mult(curoy::cuMatrix<double> const&, curoy::cuMatrix<double> const&) [205] curoy::cuMatrix<double>::size() const
+ [312] Catch::AssertionResult::AssertionResult(Catch::AssertionInfo const&, Catch::AssertionResultData const&) [26] void curoy::expDev<double>(double const*, double*, unsigned long) [37] curoy::cuMatrix<double>::operator[](unsigned long) const
+ [261] Catch::AssertionResult::~AssertionResult() [44] curoy::maxPos(curoy::cuMatrix<double> const&, unsigned long) [372] std::set<std::string, std::less<std::string>, std::allocator<std::string> >::find(std::string const&)
+ [313] Catch::ConsoleReporter::printTotals(Catch::Totals const&) [38] curoy::cuMatrix<double>&& curoy::mapFunc<void (*)(double const*, double const*, double*, unsigned long)>(void (*)(double const*, double const*, double*, unsigned long), curoy::cuMatrix<double>&&, curoy::cuMatrix<double> const&) [373] std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> >::vector(std::vector<Catch::MessageInfo, std::allocator<Catch::MessageInfo> > const&)
+ [240] Catch::ConsoleReporter::sectionEnded(Catch::SectionStats const&) [209] curoy::sigmoid(curoy::cuMatrix<double>&&) [287] void std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> >::_M_insert_aux<Catch::SectionInfo const&>(__gnu_cxx::__normal_iterator<Catch::SectionInfo*, std::vector<Catch::SectionInfo, std::allocator<Catch::SectionInfo> > >, Catch::SectionInfo const&)
+ [314] Catch::ConsoleReporter::testRunEnded(Catch::TestRunStats const&) [42] curoy::sigmoid(curoy::cuMatrix<double>&) [288] std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> >::vector(std::vector<Catch::TestCaseFilter, std::allocator<Catch::TestCaseFilter> > const&)
+ [315] Catch::ConsoleReporter::testCaseEnded(Catch::TestCaseStats const&) [207] curoy::cuMatrix<double>::rebase(unsigned long) [374] void std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> >::_M_insert_aux<Catch::TestCaseFilters const&>(__gnu_cxx::__normal_iterator<Catch::TestCaseFilters*, std::vector<Catch::TestCaseFilters, std::allocator<Catch::TestCaseFilters> > >, Catch::TestCaseFilters const&)
+ [316] Catch::ConsoleReporter::assertionEnded(Catch::AssertionStats const&) [43] curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, curoy::fillMode) [289] void std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::_M_insert_aux<Catch::TestCase const&>(__gnu_cxx::__normal_iterator<Catch::TestCase*, std::vector<Catch::TestCase, std::allocator<Catch::TestCase> > >, Catch::TestCase const&)
+ [317] Catch::ConsoleReporter::testGroupEnded(Catch::TestGroupStats const&) [40] curoy::cuMatrix<double>::cuMatrix(std::vector<unsigned long, std::allocator<unsigned long> >, double) [290] std::vector<Catch::TestCase, std::allocator<Catch::TestCase> >::~vector()
+ [241] Catch::ConsoleReporter::sectionStarting(Catch::SectionInfo const&) [32] curoy::cuMatrix<double>::~cuMatrix() [250] void std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> >::_M_insert_aux<Clara::CommandLine<Catch::ConfigData>::Arg const&>(__gnu_cxx::__normal_iterator<Clara::CommandLine<Catch::ConfigData>::Arg*, std::vector<Clara::CommandLine<Catch::ConfigData>::Arg, std::allocator<Clara::CommandLine<Catch::ConfigData>::Arg> > >, Clara::CommandLine<Catch::ConfigData>::Arg const&)
+ [318] Catch::ConsoleReporter::~ConsoleReporter() [351] curoy::cuMatrix<unsigned long>::rebase(unsigned long) [222] void std::vector<std::string, std::allocator<std::string> >::_M_insert_aux<std::string const&>(__gnu_cxx::__normal_iterator<std::string*, std::vector<std::string, std::allocator<std::string> > >, std::string const&)
+ [319] Catch::ConsoleReporter::~ConsoleReporter() [206] curoy::operator!(curoy::cuMatrix<double>&) [375] std::vector<std::string, std::allocator<std::string> >::~vector()
+ [262] Catch::SectionTracking::TrackedSection::addChild(std::string const&) [39] curoy::operator|(double, curoy::cuMatrix<double> const&) [211] void std::vector<double, std::allocator<double> >::_M_insert_aux<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&)
+ [320] Catch::TestCaseFilters::TestCaseFilters(Catch::TestCaseFilters const&) [27] cudaError (anonymous namespace)::cudaLaunch<char>(char*) [208] void std::vector<unsigned long, std::allocator<unsigned long> >::_M_insert_aux<unsigned long>(__gnu_cxx::__normal_iterator<unsigned long*, std::vector<unsigned long, std::allocator<unsigned long> > >, unsigned long&&)
+ [321] Catch::TestCaseFilters::TestCaseFilters(std::string const&) [13] cudart::configData::addArgument(void const*, unsigned long, unsigned long) [21] std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&)
+ [275] Catch::TestCaseFilters::~TestCaseFilters() [9] cudart::globalState::initializeDriver() [18] std::vector<unsigned long, std::allocator<unsigned long> >::operator=(std::vector<unsigned long, std::allocator<unsigned long> > const&)
+ [322] Catch::ReporterRegistry::~ReporterRegistry() [28] cudart::contextState::applyChanges() [291] std::_Rb_tree_iterator<Catch::TestCase> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_<Catch::TestCase const&>(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, Catch::TestCase const&)
+ [323] Catch::ReporterRegistrar<Catch::JunitReporter>::ReporterFactory::~ReporterFactory() [8] cudart::contextState::getEntryFunction(cudart::cudaEntryFunction**, void const*, cudaError) [292] std::pair<std::_Rb_tree_iterator<Catch::TestCase>, bool> std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_insert_unique<Catch::TestCase const&>(Catch::TestCase const&)
+ [324] Catch::ReporterRegistrar<Catch::ConsoleReporter>::ReporterFactory::~ReporterFactory() [33] cudart::driverHelper::hostGetDevicePointer(void*, void**, unsigned int) [293] std::_Rb_tree<Catch::TestCase, Catch::TestCase, std::_Identity<Catch::TestCase>, std::less<Catch::TestCase>, std::allocator<Catch::TestCase> >::_M_erase(std::_Rb_tree_node<Catch::TestCase>*)
+ [220] Catch::getCurrentContext() [34] cudart::driverHelper::mallocPtr(unsigned long, void**) [230] std::_Rb_tree<std::string, std::string, std::_Identity<std::string>, std::less<std::string>, std::allocator<std::string> >::_M_erase(std::_Rb_tree_node<std::string>*)
+ [325] Catch::FreeFunctionTestCase::~FreeFunctionTestCase() [29] cudart::cudaApiMalloc(void**, unsigned long) [269] std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::SectionTracking::TrackedSection>&&)
+ [326] Catch::StreamingReporterBase::testRunStarting(Catch::TestRunInfo const&) [14] cudart::threadLaunchState::pushConfig(dim3, dim3, unsigned long, CUstream_st*) [270] std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_insert_unique<std::pair<std::string, Catch::SectionTracking::TrackedSection> >(std::pair<std::string, Catch::SectionTracking::TrackedSection>&&)
+ [327] Catch::StreamingReporterBase::testCaseStarting(Catch::TestCaseInfo const&) [12] cudart::contextStateManager::getRuntimeContextState(cudart::contextState**, bool) [229] std::_Rb_tree<std::string, std::pair<std::string const, Catch::SectionTracking::TrackedSection>, std::_Select1st<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::SectionTracking::TrackedSection> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::SectionTracking::TrackedSection> >*)
+ [328] Catch::StreamingReporterBase::testGroupStarting(Catch::GroupInfo const&) [35] cudart::contextStateManager::initRuntimeContextState_nonreentrant(cudart::contextState**) [271] std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> > std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_<std::pair<std::string, Catch::IReporterFactory*> >(std::_Rb_tree_node_base const*, std::_Rb_tree_node_base const*, std::pair<std::string, Catch::IReporterFactory*>&&)
+ [329] Catch::StreamingReporterBase::~StreamingReporterBase() [30] cudart::cudaApiConfigureCall(dim3, dim3, unsigned long, CUstream_st*) [272] std::pair<std::_Rb_tree_iterator<std::pair<std::string const, Catch::IReporterFactory*> >, bool> std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_insert_unique<std::pair<std::string, Catch::IReporterFactory*> >(std::pair<std::string, Catch::IReporterFactory*>&&)
+ [252] Catch::getMutableRegistryHub() [31] cudart::device::updateDeviceProperties() [376] std::_Rb_tree<std::string, std::pair<std::string const, Catch::IReporterFactory*>, std::_Select1st<std::pair<std::string const, Catch::IReporterFactory*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IReporterFactory*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IReporterFactory*> >*)
+ [330] Catch::makeCommandLineParser() [15] cudart::cuosOnce(int*, void (*)()) [377] std::_Rb_tree<std::string, std::pair<std::string const, Catch::IGeneratorsForTest*>, std::_Select1st<std::pair<std::string const, Catch::IGeneratorsForTest*> >, std::less<std::string>, std::allocator<std::pair<std::string const, Catch::IGeneratorsForTest*> > >::_M_erase(std::_Rb_tree_node<std::pair<std::string const, Catch::IGeneratorsForTest*> >*)
+ [331] Catch::ExpressionResultBuilder::ExpressionResultBuilder(Catch::ResultWas::OfType) [352] Catch::RunContext::getCurrentTestName() const [378] std::_Rb_tree<int, std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg>, std::_Select1st<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >, std::less<int>, std::allocator<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> > >::_M_erase(std::_Rb_tree_node<std::pair<int const, Clara::CommandLine<Catch::ConfigData>::Arg> >*)
+ [332] Catch::LegacyReporterRegistrar<Catch::XmlReporter>::ReporterFactory::~ReporterFactory() [279] Catch::SharedImpl<Catch::IStreamingReporter>::addRef() const [294] Catch::TestCaseFilters* std::__uninitialized_move_a<Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters> >(Catch::TestCaseFilters*, Catch::TestCaseFilters*, Catch::TestCaseFilters*, std::allocator<Catch::TestCaseFilters>&)
+ [218] Catch::getCurrentMutableContext() [280] Catch::SharedImpl<Catch::IStreamingReporter>::release() const [10] cudaConfigureCall
+ [333] Catch::list(Catch::Config const&) [234] Catch::SharedImpl<Catch::IConfig>::addRef() const [19] cudaFuncSetCacheConfig
+ [334] Catch::Config::Config(Catch::ConfigData const&) [235] Catch::SharedImpl<Catch::IConfig>::release() const [20] cudaLaunch
+ [335] Catch::Config::~Config() [247] Catch::SharedImpl<Catch::ITestCase>::addRef() const [11] cudaSetupArgument
+ [336] Catch::Config::~Config() [248] Catch::SharedImpl<Catch::ITestCase>::release() const
+ [337] Catch::Runner::makeReporter() [281] Catch::TestRegistry::getAllTests() const
