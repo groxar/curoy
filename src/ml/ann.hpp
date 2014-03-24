@@ -127,16 +127,19 @@ namespace curoy{
 
 			theta1Grad = (1.0/m) * mult(T(a1),d2);
 			theta2Grad = (1.0/m) * mult(T(a2),d3);
-			theta1Grad = theta1Grad + (lambda/m)*hThetaT;
-			theta2Grad = theta2Grad + (lambda/m)*oThetaT;
+			!theta1Grad + (lambda/m)*hThetaT;
+			!theta2Grad + (lambda/m)*oThetaT;
 			return make_tuple(theta1Grad,theta2Grad,j);
 		}
 
-		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double alpha, const double lambda,  size_t numIterations){
+		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const alpha, const double lambda,  size_t numIterations){
 			size_t numDataSets= X.dim(0);
+			double stepSize;
+			double prevE=4;
 
 			for(size_t i = 0; i<numIterations;++i){
-				auto gradient= gradientFunction(X,y,lambda);
+				auto gradient = gradientFunction(X,y,lambda);
+				prevE = get<2>(gradient);
 				hTheta =hTheta- alpha * get<0>(gradient);
 				oTheta =oTheta- alpha * get<1>(gradient);
 				cout << get<2>(gradient)<<endl;
