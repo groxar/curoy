@@ -93,9 +93,15 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
-		myAnn.gradientDescent(X,Y,0.4,1,100);
+		myAnn.gradientDescent(X,Y,0.5,3,50);
 		timeChrono("gradienDescent");
 		cout << myAnn.predict(X)<<endl;
+		printGpuMem();
+		cuMatrix<double> asd ({5000,5000},fillMode::rnd);
+		cudaDeviceSynchronize();
+		timeChrono("start Matrix");
+		mult(asd,asd);
+		timeChrono("end Matrix");
 		cudaDeviceReset();
 	}
 }

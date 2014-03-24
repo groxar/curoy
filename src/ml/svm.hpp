@@ -6,6 +6,9 @@ using namespace std;
 
 namespace curoy{
 	class svm{
+		void trainSVM(){
+
+		}
 	}
 
 	private:

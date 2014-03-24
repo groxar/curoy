@@ -7,15 +7,15 @@
 /**
  * MAP
  */
-template<typename FUNC, typename N>
-__device__ void mapFuncKernel(FUNC f, const N* input, N* output, size_t len){
+template<typename FUNC,typename M, typename N>
+__device__ void mapFuncKernel(FUNC f, const M* input, N* output, size_t len){
 	int pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < len)
 		output[pos] = f(input[pos]);
 }
 
-template<typename FUNC, typename N>
-void mapFunc(FUNC f, const N* input, N* output, size_t len){
+template<typename FUNC,typename M, typename N>
+void mapFunc(FUNC f, const M* input, N* output, size_t len){
 	f<<<CEIL_DIV(len,B_SIZE),B_SIZE>>>(input,output,len);
 }
 

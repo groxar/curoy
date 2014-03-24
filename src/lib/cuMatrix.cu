@@ -41,7 +41,9 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	expDev<double>(NULL,NULL,0);
 	logDev<double>(NULL,NULL,0);
 	log10Dev<double>(NULL,NULL,0);
-	//exetern
+	castDev<double,size_t>(NULL,NULL,0);
+	castDev<size_t,double>(NULL,NULL,0);
+	//extern
 	maxPosColumneDev<double>(NULL,NULL,NULL,0, 0);
 	
 	fillDev<size_t>(NULL,0,0);
@@ -216,19 +218,36 @@ void transposeDev(const N* input, N* result, size_t nRows, size_t nCols){
 
 
 template<typename N>
-__global__ void fillKernel(N* X, const N number, size_t size){
+__global__ void fillKernel(N* X, const N number, size_t numElements){
 	int pos = blockIdx.x * B_SIZE + threadIdx.x;
-	if(pos < size)
+	if(pos < numElements)
 		X[pos]= number;
 }
 
 template<typename N>
-void fillDev(N* X, const N number, size_t size){
-	dim3 dimGrid(CEIL_DIV(size,B_SIZE),1,1);
+void fillDev(N* X, const N number, size_t numElements){
+	dim3 dimGrid(CEIL_DIV(numElements,B_SIZE),1,1);
 	dim3 dimBlock(B_SIZE,1,1);
-	fillKernel<<<dimGrid,dimBlock>>>(X,number,size);
+	fillKernel<<<dimGrid,dimBlock>>>(X,number,numElements);
 }
 
+/**
+ * CAST
+ */
+template<typename M, typename N>
+__device__ N castFuncKernel(M value){
+	return (N) value; 
+}
+
+template<typename M, typename N>
+__global__ void	castKernel(const M* X, N* result, size_t numElements){
+	mapFuncKernel(&castFuncKernel<M,N>,X,result,numElements);
+}
+
+template<typename M, typename N>
+void castDev(const M* X, N* result, size_t numElements){
+	mapFunc(&castKernel<M,N>,X,result,numElements);
+}
 /**
  * ADDITION
  */

@@ -71,6 +71,7 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 		REQUIRE(eq((dMatrix1==0)==(dMatrix1!=0),cuMatrix<double>(dMatrix1.dim(),0)));
 		REQUIRE(eq((dMatrix1==0)!=(dMatrix1!=0),cuMatrix<double>(dMatrix1.dim(),1)));
 		cout << exp(-cuMatrix<double>({{1,2,3},{4,5,6},{0,2,3}})) << endl;
+		REQUIRE(eq(cuMatrix<double>({{1,3},{5,6},{3,7}}), (cuMatrix<double>) cuMatrix<size_t>({{1,3},{5,6},{3,7}})));
 	}
 
 	SECTION("Math operation"){

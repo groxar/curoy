@@ -222,7 +222,17 @@ class cuMatrix{
 			fillDev(this->m_data,value,this->size());
 			return *this;
 		}
+
+		/**
+		 * CAST
+		 */
 		
+		template<typename M>
+		operator cuMatrix<M>(){
+			cuMatrix<M> result(this->m_vecDim,fillMode::none);
+			castDev(this->m_data,result.m_data,this->size());
+			return result;
+		}
 		/**
 		 * MATRIX FILL
 		 */
@@ -241,12 +251,11 @@ class cuMatrix{
 			matrix.rebase(matrix.size());	
 			return move(fillRnd(!matrix));
 		}
-
 		friend cuMatrix<N>&& fillRnd(cuMatrix<N>&& matrix){
 			curandGenerator_t gen;
 			curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
 			curandSetPseudoRandomGeneratorSeed(gen, 4651635983ULL);
-			curandGenerateUniformDouble(gen, matrix.m_data, matrix.size());
+			curandGenerateUniformDouble(gen, (double*) matrix.m_data, matrix.size()); // TODO FIX (double*)
 			return move(matrix);
 		}
 
