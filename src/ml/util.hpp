@@ -44,11 +44,11 @@ xMatrix<double> readFile(string filename){
 //2D only
 void writeFile(xMatrix<double> matrix, string filename){
 	ofstream os(filename);
-	size_t numRows = matrix.dim(0);
-	size_t numCols = matrix.dim(1);
+	size_t numRows = matrix.dim(1);
+	size_t numCols = matrix.dim(0);
 	for(size_t y = 0; y < numCols;++y){
 		for(size_t x = 0; x < numRows;++x){
-			os << " "<<matrix.m_data[y*numCols+x];
+			os << " "<< (matrix.m_data[y*numRows+x]);
 		}
 		os << endl;
 	}

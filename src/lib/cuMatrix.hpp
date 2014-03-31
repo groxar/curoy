@@ -309,7 +309,7 @@ class cuMatrix{
 		template<typename FUNC>
 		friend cuMatrix<N> mapFunc(FUNC f,const cuMatrix<N>& lhs, const cuMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0){
-				cout << "mapFunc Failed"<<endl;
+				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return lhs;
 			}
 			size_t numElements = lhs.size();
@@ -322,7 +322,7 @@ class cuMatrix{
 		template<typename FUNC>
 		friend cuMatrix<N>&& mapFunc(FUNC f, cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0){
-				cout << "mapFunc Failed"<<endl;
+				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return move(lhs);
 			}
 			size_t numElements = lhs.size();
