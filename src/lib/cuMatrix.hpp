@@ -125,6 +125,7 @@ class cuMatrix{
 
 			return result;
 		}
+
 		//2D only
 		cuMatrix<N> operator()(vector<size_t> firstRange,vector<size_t> secondRange){
 			if(firstRange.size() == nDim() == secondRange.size()==2){
@@ -151,7 +152,7 @@ class cuMatrix{
 
 			cuMatrix<N> result(newDimension,fillMode::none);
 
-			for(int i = firstRange[0]; i <= firstRange[1];++i){
+			for(int i = firstRange[0]; i <= firstRange[1]; ++i){
 				cudaMemcpy(&(result.m_data[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
 			}
 			return result;
