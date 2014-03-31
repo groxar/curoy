@@ -16,9 +16,9 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 
 	cuMatrix<double> X3(readFile("../ml/annData/X3Data.txt"));
 	cuMatrix<double> theta1(readFile("../ml/annData/theta1.txt"));
-	cuMatrix<double> theta2 = readFile("../ml/annData/theta2.txt");
-	cuMatrix<double> X = readFile("../ml/annData/Xdata.txt");
-	cuMatrix<double> Y = readFile("../ml/annData/Ydata.txt");
+	cuMatrix<double> theta2(readFile("../ml/annData/theta2.txt"));
+	cuMatrix<double> X(readFile("../ml/annData/Xdata.txt"));
+	cuMatrix<double> Y(readFile("../ml/annData/Ydata.txt"));
 /*
 	SECTION("performance sigmoid"){
 		cuMatrix<double> X1(X);
@@ -67,41 +67,28 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 	}
 	*/
 	SECTION("predict"){
-		ann myAnn(T(theta1),T(theta2));
+		ann myAnn({T(theta1),T(theta2)});
 		startChrono();
 		REQUIRE((long)sum(myAnn.predict(X3))==22520);
 		timeChrono("predict");
-		for(int i = 0; i< 50;++i)
-			myAnn.costFunction(X,Y,0);
-		timeChrono("50 iteration");
-		cout << myAnn.costFunction(X,Y,0)<<endl;
+		myAnn.gradientDescent(X,Y,0.2,1,1);
+		
 		cudaDeviceSynchronize();
-		timeChrono("lambda 0");
-		cout << myAnn.costFunction(X,Y,1)<<endl;
-		cudaDeviceSynchronize();
-		timeChrono("lambda 1");
 		
 	}
 	SECTION("init"){
-		ann myAnn(400,25,10);
+		ann myAnn(400,10,{200});
 		cout << sum(Y)<<endl;
-		cout << sum(myAnn.predict(X))<<endl;
 		startChrono();
-		cout << myAnn.costFunction(X,Y,0)<<endl;
-		cudaDeviceSynchronize();
-		timeChrono("lambda 0");
-		cout << myAnn.costFunction(X,Y,1)<<endl;
-		cudaDeviceSynchronize();
-		timeChrono("lambda 1");
-		myAnn.gradientDescent(X,Y,0.2,1,1000);
+		myAnn.gradientDescent(X,Y,0.3,1,200);
 		timeChrono("gradienDescent");
+		xMatrix<double> out;
+		out << myAnn.hiddenLayerVec[0];
+		writeFile(out,"hl0");
+		out << myAnn.hiddenLayerVec[1];
+		writeFile(out,"hl1");
 		cout << myAnn.predict(X)<<endl;
 		printGpuMem();
-		xMatrix<double> outMatrix;
-		outMatrix<< myAnn.hTheta;
-		writeFile(outMatrix,"hTheta");
-		outMatrix<< myAnn.oTheta;
-		writeFile(outMatrix,"oTheta");
 
 		cudaDeviceReset();
 	}
