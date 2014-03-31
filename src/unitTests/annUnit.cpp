@@ -9,7 +9,7 @@
 using namespace std;
 using namespace curoy;
 
-TEST_CASE("[gradient]", "cuda gradientDescent"){ 
+TEST_CASE("[ann]", "cuda artifical neural network"){ 
 	//increases double print precision
 	typedef std::numeric_limits< double > dbl;
 	cout.precision(dbl::digits10);
@@ -83,7 +83,7 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		
 	}
 	SECTION("init"){
-		ann myAnn(400,200,10);
+		ann myAnn(400,25,10);
 		cout << sum(Y)<<endl;
 		cout << sum(myAnn.predict(X))<<endl;
 		startChrono();
@@ -93,15 +93,16 @@ TEST_CASE("[gradient]", "cuda gradientDescent"){
 		cout << myAnn.costFunction(X,Y,1)<<endl;
 		cudaDeviceSynchronize();
 		timeChrono("lambda 1");
-		myAnn.gradientDescent(X,Y,0.5,3,50);
+		myAnn.gradientDescent(X,Y,0.2,1,1000);
 		timeChrono("gradienDescent");
 		cout << myAnn.predict(X)<<endl;
 		printGpuMem();
-		cuMatrix<double> asd ({5000,5000},fillMode::rnd);
-		cudaDeviceSynchronize();
-		timeChrono("start Matrix");
-		mult(asd,asd);
-		timeChrono("end Matrix");
+		xMatrix<double> outMatrix;
+		outMatrix<< myAnn.hTheta;
+		writeFile(outMatrix,"hTheta");
+		outMatrix<< myAnn.oTheta;
+		writeFile(outMatrix,"oTheta");
+
 		cudaDeviceReset();
 	}
 }

@@ -25,9 +25,9 @@ namespace curoy{
 	}
 	class ann{
 	private:
+	public:
 		cuMatrix<double> hTheta;
 		cuMatrix<double> oTheta;
-	public:
 
 		ann(){
 		}
@@ -100,8 +100,8 @@ namespace curoy{
 			cuMatrix<double> yT({m,k},0);
 			cuMatrix<double> xT;
 
-			cuMatrix<double> theta1Grad(hTheta.dim(),0);
-			cuMatrix<double> theta2Grad(oTheta.dim(),0);
+			cuMatrix<double> theta1Grad(hTheta.dim(),fillMode::none);
+			cuMatrix<double> theta2Grad(oTheta.dim(),fillMode::none);
 
 			// cost calculation
 			cuMatrix<double> z2 = mult(mX, hTheta);
@@ -122,24 +122,19 @@ namespace curoy{
 			// back propogation
 			a1=mX;
 			d3=a3-yT;
-			d2= mult(d3,T(oTheta))*sigmoidGradient( 1 | z2);
+			d2= mult(d3,T(oTheta))*sigmoidGradient( 1.0 | z2);
 			d2= d2({0,d2.dim(0)-1},{1,d2.dim(1)-1});
 
-			theta1Grad = (1.0/m) * mult(T(a1),d2);
-			theta2Grad = (1.0/m) * mult(T(a2),d3);
-			!theta1Grad + (lambda/m)*hThetaT;
-			!theta2Grad + (lambda/m)*oThetaT;
+			theta1Grad = (1.0/m) * mult(T(a1),d2) + (lambda/m)*hThetaT;
+			theta2Grad = (1.0/m) * mult(T(a2),d3) + (lambda/m)*oThetaT;
 			return make_tuple(theta1Grad,theta2Grad,j);
 		}
 
 		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const alpha, const double lambda,  size_t numIterations){
 			size_t numDataSets= X.dim(0);
-			double stepSize;
-			double prevE=4;
 
 			for(size_t i = 0; i<numIterations;++i){
 				auto gradient = gradientFunction(X,y,lambda);
-				prevE = get<2>(gradient);
 				hTheta =hTheta- alpha * get<0>(gradient);
 				oTheta =oTheta- alpha * get<1>(gradient);
 				cout << get<2>(gradient)<<endl;
