@@ -9,8 +9,9 @@
 using namespace std;
 using namespace curoy;
 
-xMatrix<double> readFile(string path){
-	ifstream is(path);
+//2D only
+xMatrix<double> readFile(string filename){
+	ifstream is(filename);
 	double* data_ptr;
 	int number_of_rows = 0; 
 	int number_of_cols = 0; 
@@ -38,6 +39,20 @@ xMatrix<double> readFile(string path){
 		data_ptr[i]=vf[i];
 
 	return xMatrix<double>(data_ptr,vector<size_t>({(size_t)number_of_rows,(size_t)number_of_cols}),memPermission::owner);
+}
+
+//2D only
+void writeFile(xMatrix<double> matrix, string filename){
+	ofstream os(filename);
+	size_t numRows = matrix.dim(1);
+	size_t numCols = matrix.dim(0);
+	for(size_t y = 0; y < numCols;++y){
+		for(size_t x = 0; x < numRows;++x){
+			os << " "<< (matrix.m_data[y*numRows+x]);
+		}
+		os << endl;
+	}
+	os.close();
 }
 
 static std::chrono::time_point<std::chrono::high_resolution_clock> start;
