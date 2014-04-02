@@ -15,5 +15,3 @@ xMatrixFileAdapter.o: xMatrixFileAdapter.cpp
 example: example.cpp xMatrixRedisStringAdapter.o xMatrixRedisBinaryAdapter.o xMatrixFileAdapter.o
 	clang++ $(OPTION) $(LIBOPTION) -o $@ $+
 
-mysql: mysqlconnector.cpp
-	clang++ -I/usr/include/mysql -l/usr/lib64/libmysqlcppconn -o $@ $+

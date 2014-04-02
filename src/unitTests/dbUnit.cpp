@@ -8,7 +8,7 @@
 using namespace curoy;
 
 TEST_CASE( "[db]", "io adapter unit test"){
-    SECTION(){
+    SECTION("store and load data to and from redis"){
         double data[2][3] = {{1.0,2.0,3.0},{4.0,5.0,6.0}};
         xMatrix<double> matrix((double*) data, {2,3});
         IxMatrixIOAdapter *redisAdapter = new xMatrixRedisBinaryAdapter("/tmp/redis.sock");
