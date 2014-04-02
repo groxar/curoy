@@ -125,6 +125,7 @@ class cuMatrix{
 
 			return result;
 		}
+
 		//2D only
 		cuMatrix<N> operator()(vector<size_t> firstRange,vector<size_t> secondRange){
 			if(firstRange.size() == nDim() == secondRange.size()==2){
@@ -151,7 +152,7 @@ class cuMatrix{
 
 			cuMatrix<N> result(newDimension,fillMode::none);
 
-			for(int i = firstRange[0]; i <= firstRange[1];++i){
+			for(int i = firstRange[0]; i <= firstRange[1]; ++i){
 				cudaMemcpy(&(result.m_data[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
 			}
 			return result;
@@ -308,7 +309,7 @@ class cuMatrix{
 		template<typename FUNC>
 		friend cuMatrix<N> mapFunc(FUNC f,const cuMatrix<N>& lhs, const cuMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0){
-				cout << "mapFunc Failed"<<endl;
+				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return lhs;
 			}
 			size_t numElements = lhs.size();
@@ -321,7 +322,7 @@ class cuMatrix{
 		template<typename FUNC>
 		friend cuMatrix<N>&& mapFunc(FUNC f, cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){
 			if(dimCompare(lhs.dim(),rhs.dim())!=0){
-				cout << "mapFunc Failed"<<endl;
+				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return move(lhs);
 			}
 			size_t numElements = lhs.size();

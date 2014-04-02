@@ -27,6 +27,11 @@ annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
 	@echo "\n\nANNUNIT"
 	./annUnit
 
+svmUnit: svmUnit.cpp ../lib/cudaMatrix.o 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	@echo "\n\nSVMUNIT"
+	./svmUnit
+
 powerANN: powerANN.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 	@echo "\n\nANN"
