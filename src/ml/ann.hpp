@@ -74,13 +74,13 @@ namespace curoy{
 			tuple<deque<cuMatrix<double>>,double> result;
 
 			if(layerPos+1 == hiddenLayerVec.size()){
-				//cost calculation
+				// cost calculation
 				size_t k = max(y)+1;
-				cuMatrix<double> yT({m,k},0);
-				projectMatrix(y.m_data,yT.m_data,m,k);
-				double j=(1.0/m)*sum((-yT*log(an))-((1.0-yT)*log(1.0-an)));
+				cuMatrix<double> yP({m,k},0);
+				projectMatrix(y.m_data,yP.m_data,m,k);
+				double j=(1.0/m)*sum((-yP*log(an))-((1.0-yP)*log(1.0-an)));
 
-				//regulization
+				// cost regulization
 				cuMatrix<double> thetaTemp;
 				for(auto layer : hiddenLayerVec){
 					thetaTemp = layer;
@@ -89,7 +89,9 @@ namespace curoy{
 				}
 				// back propogation
 				deque<cuMatrix<double>> gradientVector;
-				cuMatrix<double> d = an-yT;
+				cuMatrix<double> d = an-yP;
+
+				// regulization
 				cuMatrix<double> regulizedLayer = hiddenLayerVec[layerPos];
 				regulizedLayer[0] = 0;
 				gradientVector.push_front((1.0/m)*mult(T(a),d)+(lambda/m)*regulizedLayer);
@@ -102,6 +104,8 @@ namespace curoy{
 				cuMatrix<double> dn = get<0>(result)[0];
 				cuMatrix<double> d = mult(dn,T(hiddenLayerVec[layerPos+1]))*sigmoidGradient(1 | z);
 				d = d({0,d.dim(0)-1},{1,d.dim(1)-1});
+
+				// regulization
 				cuMatrix<double> regulizedLayer = hiddenLayerVec[layerPos];
 				regulizedLayer[0] = 0;
 				get<0>(result)[0] = (1.0/m) * mult(T(a),d) + (lambda/m)*regulizedLayer;
@@ -112,6 +116,18 @@ namespace curoy{
 		}
 
 		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const alpha, const double lambda,  size_t numIterations){
+			size_t numDataSets= X.dim(0);
+				tuple<deque<cuMatrix<double>>,double> gradient;
+
+			for(size_t n = 0; n<numIterations;++n){
+				gradient = gradientFunction(X,y,lambda);
+				for(size_t i = hiddenLayerVec.size()-1; i > 0;--i){
+					hiddenLayerVec[i] = hiddenLayerVec[i] - (alpha * get<0>(gradient)[i]);
+				}
+				cout << get<1>(gradient)<<endl;
+			}
+		}
+		void conjugateDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const alpha, const double lambda,  size_t numIterations){
 			size_t numDataSets= X.dim(0);
 				tuple<deque<cuMatrix<double>>,double> gradient;
 
