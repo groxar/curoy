@@ -5,7 +5,7 @@ CUDACNFG= -arch=sm_20 -O2 -lcurand
 LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -O3
-
+DBLIBOPTION = -lhiredis -L/usr/local/lib -I/usr/local/include/hiredis
 
 phony: cuMatrixUnit xMatrixUnit run
 
@@ -46,6 +46,9 @@ featureNormalizeUnit: featureNormalizeUnit.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 	@echo "\n\nFeatureNormalize"
 	./featureNormalizeUnit
+
+dbUnitTest: dbUnit.cpp ../db/xMatrixFileAdapter.o ../db/xMatrixRedisBinaryAdapter.o
+	$(CXX) $(OPTION) $(DBLIBOPTION) -o $@ $+
 
 clean:
 	rm xMatrixUnit cuMatrixUnit
