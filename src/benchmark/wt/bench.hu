@@ -1,0 +1,10 @@
+#pragma once
+#include <stddef.h>
+
+namespace curoy{
+class cuBench
+{
+    public:
+        double* doTransform(const double* data, int length);
+};
+}
