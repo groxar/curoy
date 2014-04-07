@@ -39,7 +39,7 @@ namespace curoy{
 			
 			size_t prevLayerSize = numFeatures; 
 			for(size_t numNeurons : hiddenLayerSize){
-				hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numNeurons},fillMode::rnd)*2*epsilon-epsilon);
+				hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numNeurons},fillMode::rnd)*epsilon*2-epsilon);
 				prevLayerSize = numNeurons;
 			}
 			hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numPossibleOutputs},fillMode::rnd));
@@ -127,16 +127,41 @@ namespace curoy{
 				cout << get<1>(gradient)<<endl;
 			}
 		}
-		void conjugateDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const alpha, const double lambda,  size_t numIterations){
-			size_t numDataSets= X.dim(0);
-				tuple<deque<cuMatrix<double>>,double> gradient;
+		void conjugateDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double alpha, const double lambda,  size_t numIterations){
+			size_t numDataSets = X.dim(0);
+			size_t numHL = hiddenLayerVec.size();
 
+			auto gj = gradientFunction(X,y,lambda);
+			auto g = get<0>(gj);
+			auto gn = get<0>(gj);
+			auto d = get<0>(gj);
+			double j;
+			
+			cuMatrix<double> e; // eucliean norm
+			double beta;	
+			
+			//line search variables
+			
+			for(size_t i = numHL; i --> 0;)
+				d[i] = -g[i];
+
+			cout <<"inital cost: "<< get<1>(gj) << endl;
 			for(size_t n = 0; n<numIterations;++n){
-				gradient = gradientFunction(X,y,lambda);
-				for(size_t i = hiddenLayerVec.size()-1; i > 0;--i){
-					hiddenLayerVec[i] = hiddenLayerVec[i] - (alpha * get<0>(gradient)[i]);
+				for(size_t i = numHL; i --> 0;)
+					hiddenLayerVec[i] = hiddenLayerVec[i] + alpha * d[i]; 		//update theta
+
+				gj = gradientFunction(X,y,lambda);								//get new gradient i+1
+				gn = get<0>(gj);
+				j=get<1>(gj);
+				cout << j<< endl;
+				
+				for(size_t i = numHL; i --> 0;){ 
+					e = gn[i]-g[i]; 
+					//beta = (gn[i] * e) / (-d[i]*g[i]);							//Liu and Storey
+					beta = sum(pow(gn[i],2))/sum(d[i]*e);							//Dai and Yuan
+					d[i] = -g[i]+beta*d[i];
 				}
-				cout << get<1>(gradient)<<endl;
+				g = gn;
 			}
 		}
 	};
