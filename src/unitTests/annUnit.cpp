@@ -66,23 +66,24 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		//cout << sum(X3) <<endl;
 	}
 	*/
+	/*
 	SECTION("predict"){
 		ann myAnn({T(theta1),T(theta2)});
 		startChrono();
 		REQUIRE((long)sum(myAnn.predict(X3))==22520);
 		timeChrono("predict");
-		myAnn.gradientDescent(X,Y,1,1,600);
+		myAnn.conjugateDescent(X,Y,1,1,600);
 		
 		cudaDeviceSynchronize();
 		cout << myAnn.predict(X)<<endl;
 		
 	}
-	/*
+	*/
 	SECTION("init"){
-		ann myAnn(400,10,{200});
+		ann myAnn(400,10,{25});
 		cout << sum(Y)<<endl;
 		startChrono();
-		myAnn.conjugateDescent(X,Y,0.01,1,200);
+		myAnn.conjugateDescent(X,Y,1,4000);
 		timeChrono("gradienDescent");
 		xMatrix<double> out;
 		out << myAnn.hiddenLayerVec[0];
@@ -92,7 +93,7 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		cout << myAnn.predict(X)<<endl;
 		printGpuMem();
 
+
 		cudaDeviceReset();
 	}
-	*/
 }
