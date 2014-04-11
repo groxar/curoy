@@ -43,7 +43,7 @@ namespace curoy{
 				hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numNeurons},fillMode::rnd)*epsilon*2-epsilon);
 				prevLayerSize = numNeurons;
 			}
-			hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numPossibleOutputs},fillMode::rnd));
+			hiddenLayerVec.push_back(cuMatrix<double>({prevLayerSize+1,numPossibleOutputs},fillMode::rnd)*epsilon*2-epsilon);
 		}
 
 		ann(const vector<cuMatrix<double>>& hiddenLayerVec):
@@ -90,28 +90,30 @@ namespace curoy{
 				}
 				// back propogation
 				deque<cuMatrix<double>> gradientVector;
-				cuMatrix<double> d = an-yP;
+				cuMatrix<double> dn = an-yP;
+				//cout <<"dn: "<< sum(dn,1)<<endl;
 
 				// regulization
 				cuMatrix<double> regulizedLayer = hl[layerPos];
 				regulizedLayer[0] = 0;
-				gradientVector.push_front((1.0/m)*mult(T(a),d)+(lambda/m)*regulizedLayer);
-				gradientVector.push_front(d);
+				gradientVector.push_front((1.0/m)*mult(T(a),dn)+(lambda/m)*regulizedLayer);
+				gradientVector.push_front(dn);
 				result = make_tuple(gradientVector,j);
+				//cout <<"last gradient: "<< sum(gradientVector[1],1)<<endl;
 			}
 			else{
 				result = gradientFunction(an,hl,y,lambda, layerPos+1);
 				// back propogation
-				cuMatrix<double> dn = get<0>(result)[0];
-				cuMatrix<double> d = mult(dn,T(hl[layerPos+1]))*sigmoidGradient(1 | z);
-				d = d({0,d.dim(0)-1},{1,d.dim(1)-1});
+				cuMatrix<double> dnn = get<0>(result)[0];
+				cuMatrix<double> dn = mult(dnn,T(hl[layerPos+1]))*sigmoidGradient(1 | z);
+				dn = dn({0,dn.dim(0)-1},{1,dn.dim(1)-1});
 
 				// regulization
 				cuMatrix<double> regulizedLayer = hl[layerPos];
 				regulizedLayer[0] = 0;
-				get<0>(result)[0] = (1.0/m) * mult(T(a),d) + (lambda/m)*regulizedLayer;
+				get<0>(result)[0] = (1.0/m) * mult(T(a),dn) + (lambda/m)*regulizedLayer;
 				if(layerPos > 0)
-					get<0>(result).push_front(d);
+					get<0>(result).push_front(dn);
 			}
 			return result;
 		}
@@ -122,7 +124,7 @@ namespace curoy{
 
 			for(size_t n = 0; n<numIterations;++n){
 				gj = gradientFunction(X,hiddenLayerVec,y,lambda);
-				for(size_t i = hiddenLayerVec.size()-1; i > 0;--i){
+				for(size_t i = 0; i < hiddenLayerVec.size();++i){
 					hiddenLayerVec[i] = hiddenLayerVec[i] - (alpha * get<0>(gj)[i]);
 				}
 				cout << get<1>(gj)<<endl;
@@ -149,35 +151,38 @@ namespace curoy{
 			auto hl = hiddenLayerVec;
 			auto hln= hiddenLayerVec;
 			
-			for(size_t i = numHL; i --> 0;)
+			for(size_t i = 0; i<numHL;++i)
 				d[i] = -gn[i];
 
 			cout <<"inital cost: "<< get<1>(gj) << endl;
 			for(size_t n = 0; n<numIterations;++n){
-				for(size_t i = numHL-1; i > 0;--i)
+				for(size_t i = 0; i<numHL;++i)
 					hln[i] = hl[i] + (alpha * d[i]); 		//update theta
 
 				gj = gradientFunction(X,hln,y,lambda);								//get new gradient i+1
 				gn = get<0>(gj);
 				jn = get<1>(gj);
+
 				cout << jn<< endl;
 				
 				//step calculation
-				for(size_t i = numHL-1; i > 0; --i){ 
-					hl[i]=hln[i];
+				for(size_t i = 0; i<numHL;++i){
 
 					e = gn[i]-g[i]; 
 					beta = (gn[i] * e) / (-d[i]*g[i]);							//Liu and Storey
 					//dyBeta = sqrt(sum(pow(gn[i],2)))/sum(d[i]*e);					//Dai and Yuan
 					//beta = pow(gn[i],2)/(d[i]*e);								//Dai and Yuan Matrix
 					//dyBeta = sum(e - 2*d[i]*sum(pow(e,2))/sum(d[i]*e)*(gn[i]/sum(d[i]*e)));
-					d[i] = -gn[i]+beta*d[i];	
+					d[i]  = -gn[i]+beta*d[i];	
+
+					// preparation i+1
+					g[i]  =  gn[i];
+					hl[i] = hln[i];
 				}
 				j = jn;
-				g = gn;
 			}
-			for(size_t i = numHL-1;i>0;--i)
-				hiddenLayerVec[i] = hln[i];
+			for(size_t i = 0; i<numHL;++i)
+				hiddenLayerVec[i] = hl[i];
 		}
 	};
 
