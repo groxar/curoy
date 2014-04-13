@@ -32,9 +32,11 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
 	maxDev<double>(NULL,0);
+	minDev<double>(NULL,0);
 	sumColumneDev<double>(NULL,NULL,0,0);
 	prodColumneDev<double>(NULL,NULL,0,0);
 	maxColumneDev<double>(NULL,NULL,0,0);
+	minColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
@@ -45,6 +47,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	castDev<size_t,double>(NULL,NULL,0);
 	//extern
 	maxPosColumneDev<double>(NULL,NULL,NULL,0, 0);
+	minPosColumneDev<double>(NULL,NULL,NULL,0, 0);
 	
 	fillDev<size_t>(NULL,0,0);
 	sumDev<size_t>(NULL,0);
@@ -171,6 +174,29 @@ void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
 template<typename N>
 N maxDev(const N* X, size_t length){
 	return reduceFuncToHostValue(&maxColumneDev<N>,X,length);
+}
+
+/**
+ * MIN REDUCE
+ */
+template<typename N>
+__device__ inline N minFuncKernel(const N lhs, const N rhs){
+	return lhs<rhs? lhs : rhs;
+}
+
+template<typename N>
+__global__ void minReduce(const N* input, N* output, size_t len) {
+	reduceFuncKernel(&minFuncKernel<N>,input, output, DBL_MAX, len);	
+}	
+
+template<typename N>
+void minColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
+	reduceColFunc(&minReduce<N>,X,result,nRows, nCols);
+}
+
+template<typename N>
+N minDev(const N* X, size_t length){
+	return reduceFuncToHostValue(&minColumneDev<N>,X,length);
 }
 
 

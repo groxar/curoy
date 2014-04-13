@@ -507,6 +507,9 @@ class cuMatrix{
 			return cuMatrix<N> (temp,tempV,memPermission::owner);
 		}
 
+		/*
+		 * MAX
+		 */
 		friend N max(const cuMatrix<N>& matrix){
 			return maxDev(matrix.m_data,matrix.size());
 		}
@@ -542,7 +545,49 @@ class cuMatrix{
 			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),
 							  cuMatrix<size_t>(posTemp,tempV,memPermission::owner));
 		}
+		
+		/*
+		 * MIN
+		 */
+		friend N min(const cuMatrix<N>& matrix){
+			return minDev(matrix.m_data,matrix.size());
+		}
+		//2D dimension min, rework after implementing align(Transpose with any dimesions)
+		friend cuMatrix<N> min(const cuMatrix<N>& matrix, size_t dimension){
+			N* temp;
+			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
+			vector<size_t> tempV(matrix.m_vecDim);
+			tempV[dimension]=1;
 
+			if(dimension == 1)
+				minColumneDev(matrix.m_data,temp,matrix.dim(0),matrix.dim(1));
+			else
+				minColumneDev(T(matrix).m_data,temp,matrix.dim(1),matrix.dim(0));
+
+			return cuMatrix<N> (temp,tempV,memPermission::owner);
+		}
+		//2D dimension minPos, rework after implementing align(Transpose with any dimesions)
+		friend tuple<cuMatrix<N>,cuMatrix<size_t>> minPos(const cuMatrix<N>& matrix, size_t dimension){
+			N* temp;
+			size_t* posTemp;
+			size_t position;
+			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
+			cudaMalloc((void**) &posTemp,matrix.dim((dimension+1)%2)*sizeof(N));
+			vector<size_t> tempV(matrix.m_vecDim);
+			tempV[dimension]=1;
+
+			if(dimension == 1)
+				minPosColumneDev(matrix.m_data,temp,posTemp,matrix.dim(0),matrix.dim(1));
+			else
+				minPosColumneDev(T(matrix).m_data,temp,posTemp,matrix.dim(1),matrix.dim(0));
+
+			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),
+							  cuMatrix<size_t>(posTemp,tempV,memPermission::owner));
+		}
+
+		/*
+		 * ELEMENTWISE
+		 */
 		friend N prod(const cuMatrix<N>& matrix){
 			return prodDev(matrix.m_data,matrix.size());
 		}
