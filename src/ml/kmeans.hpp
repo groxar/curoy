@@ -147,7 +147,7 @@ namespace curoy{
 			double dyBeta;
 			
 			//line search variables
-			double alpha = 0.2;
+			double alpha = 1;
 			auto hl = hiddenLayerVec;
 			auto hln= hiddenLayerVec;
 			
@@ -168,14 +168,14 @@ namespace curoy{
 				//step calculation
 				for(size_t i = 0; i<numHL;++i){
 
-					e = gn[i]-g[i]; 
-					beta = (gn[i] * e) / (-d[i]*g[i]);							//Liu and Storey
+					//e = gn[i]-g[i]; 
+					//beta = (gn[i] * e) / (-d[i]*g[i]);							//Liu and Storey
 					//dyBeta = sqrt(sum(pow(gn[i],2)))/sum(d[i]*e);					//Dai and Yuan
 					//beta = pow(gn[i],2)/(d[i]*e);								//Dai and Yuan Matrix
 					//dyBeta = sum(e - 2*d[i]*sum(pow(e,2))/sum(d[i]*e)*(gn[i]/sum(d[i]*e)));
 					
-					d[i]  = -gn[i]+beta*d[i];	
-					//d[i] = -((hln[i]-hl[i])/(gn[i]-g[i]))*gn[i]; //pseudo Newton doesnt work!!
+					//d[i]  = -gn[i]+beta*d[i];	
+					d[i] = -((hln[i]-hl[i])/(gn[i]-g[i]))*gn[i];
 
 					// preparation i+1
 					g[i]  =  gn[i];

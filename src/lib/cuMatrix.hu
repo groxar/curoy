@@ -28,6 +28,9 @@ N prodDev(const N* X, size_t length);
 template<typename N>
 N maxDev(const N* X, size_t length);
 
+template<typename N>
+N minDev(const N* X, size_t length);
+
 /**
  * REDUCE Columnewise Operation
  */
@@ -43,6 +46,32 @@ void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
 template<typename N>
 void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
 
+template<typename N>
+void minColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void minPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
+
+/**
+ * REDUCE Columnewise Operation
+ */
+template<typename N>
+void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void prodColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
+
+template<typename N>
+void minColumneDev(const N* X, N* result, size_t nRows, size_t nCols);
+
+template<typename N>
+void minPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
 /**
  * ELEMENTWISE Operations
  */

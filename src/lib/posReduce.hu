@@ -147,5 +147,24 @@ template<typename N>
 void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
 	funcPosColReduceDev(&maxFirstPosReduce<N>,&maxPosReduce<N>,X,result,position,nRows, nCols);
 }
+/**
+ * MIN REDUCE
+ */
+template<typename N>
+__device__ inline bool stFuncKernel(const N lhs, const N rhs){
+	return lhs<rhs;
+}
+template<typename N>
+__global__ void minFirstPosReduce(const N* input, N* output,size_t* position, size_t len) {
+	funcFirstPosReduce(&stFuncKernel<N>,input, output,position, DBL_MAX, len);	
+}	
+template<typename N>
+__global__ void minPosReduce(const N* input, N* output,size_t* position, size_t len) {
+	funcPosReduce(&gtFuncKernel<N>,input, output,position, DBL_MAX, len);	
+}	
 
+template<typename N>
+void minPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
+	funcPosColReduceDev(&minFirstPosReduce<N>,&maxPosReduce<N>,X,result,position,nRows, nCols);
+}
 }
