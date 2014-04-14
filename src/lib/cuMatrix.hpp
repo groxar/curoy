@@ -193,7 +193,7 @@ class cuMatrix{
 		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){
 
 			if( m_perm == memPermission::diver){
-				if(dimCompare(this->dim(),rhs.dim()) != 0)
+				if(dimCompareIgnore1(this->dim(),rhs.dim()) != 0)
 					cout << "cant assign that to diver" << endl;
 				else{
 					cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
@@ -214,7 +214,7 @@ class cuMatrix{
 		//rework
 		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){
 			if( m_perm == memPermission::diver){
-				if(dimCompare(this->dim(),rhs.dim()) != 0){
+				if(dimCompareIgnore1(this->dim(),rhs.dim()) != 0){
 					cout << "cant assign that to diver" << endl;
 					return *this;
 				} else{
@@ -487,7 +487,7 @@ class cuMatrix{
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> mult (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			if(lhs.m_vecDim[1]!=rhs.dim(0) || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
-				cout << "DIMENSIONS DONT FIT" << endl;
+				cout << "DIMENSIONS DONT FIT MULTIPLICATION" << endl;
 				return lhs;
 			}
 
