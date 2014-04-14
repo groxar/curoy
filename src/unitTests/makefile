@@ -21,11 +21,17 @@ xMatrixUnit: xMatrixUnit.cpp
 
 cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	./cuMatrixUnit
 
 annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
 	@echo "\n\nANNUNIT"
 	./annUnit
+
+kmeansUnit: kmeansUnit.cpp ../lib/cudaMatrix.o 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	@echo "\n\nKMEANSUNIT"
+	./kmeansUnit
 
 svmUnit: svmUnit.cpp ../lib/cudaMatrix.o 
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 

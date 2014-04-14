@@ -83,20 +83,15 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		ann myAnn(400,10,{25});
 		cout << sum(Y)<<endl;
 		startChrono();
-		myAnn.conjugateDescent(X,Y,1,50);
+		myAnn.conjugateDescent(X,Y,1,500);
 		//myAnn.gradientDescent(X,Y,0.2,1,500);
 		timeChrono("gradienDescent");
 		xMatrix<double> out;
 		out << myAnn.hiddenLayerVec[0];
-		writeFile(out,"hl0");
+		//writeFile(out,"hl0");
 		out << myAnn.hiddenLayerVec[1];
-		writeFile(out,"hl1");
-		cout << myAnn.predict(X)<<endl;
-		cout <<min(Y)<< endl;		
-		cout << min(Y,0)<<endl;
-		cout << max(Y,0)<<endl;
-		cout << get<0>(minPos(X,1))<<endl;
-		cout << get<1>(minPos(X,1))<<endl;
+		//writeFile(out,"hl1");
+		//cout << myAnn.predict(X)<<endl;
 
 		cudaDeviceReset();
 	}
