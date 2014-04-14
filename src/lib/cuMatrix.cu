@@ -11,6 +11,7 @@
 using namespace std;
 
 namespace curoy{
+	//find a beatiful way for that BS
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	addDev<int>(NULL,NULL,NULL,0);
 	addDev<long>(NULL,NULL,NULL,0);
@@ -21,6 +22,8 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	divDev<double>(NULL,NULL,NULL,0);
 	eqDev<double>(NULL,NULL,NULL,0);
 	neqDev<double>(NULL,NULL,NULL,0);
+	eqDev<size_t>(NULL,NULL,NULL,0);
+	neqDev<size_t>(NULL,NULL,NULL,0);
 	addSkalarDev<double>(NULL,0,NULL,0);
 	subSkalarDev<double>(NULL,0,NULL,0);
 	mulSkalarDev<double>(NULL,0,NULL,0);
@@ -28,6 +31,8 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	divReverseSkalarDev<double>(NULL,0,NULL,0);
 	eqSkalarDev<double>(NULL,0,NULL,0);
 	neqSkalarDev<double>(NULL,0,NULL,0);
+	eqSkalarDev<size_t>(NULL,0,NULL,0);
+	neqSkalarDev<size_t>(NULL,0,NULL,0);
 	multDev<double>(NULL,NULL,NULL,0,0,0);
 	prodDev<double>(NULL,0);
 	sumDev<double>(NULL,0);
