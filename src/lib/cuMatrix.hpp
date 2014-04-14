@@ -190,14 +190,27 @@ class cuMatrix{
 		/**
 		 * ASSIGNMENT
 		 */
+		// rework 
 		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){
 
-			if(m_perm==memPermission::owner)
-				cudaFree(m_data);
-			m_data = rhs.m_data;
-			m_vecDim = move(rhs.m_vecDim);
-			m_perm = rhs.m_perm;
-			rhs.m_data = nullptr;
+			if( m_perm == memPermission::diver){
+				if(dimCompare(this->dim(),rhs.dim()) != 0)
+					cout << "cant assign that to diver" << endl;
+				else{
+					cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+					m_vecDim = move(rhs.m_vecDim);
+				}
+			}
+			else{
+				if(m_data!=rhs.m_data){
+					if(m_perm == memPermission::owner)
+						cudaFree(m_data);
+					m_data = rhs.m_data;
+					rhs.m_data = nullptr;
+					m_perm = rhs.m_perm;
+					m_vecDim = move(rhs.m_vecDim);
+				}
+			}
 			return *this;
 		}
 		
@@ -218,8 +231,10 @@ class cuMatrix{
 			return *this;
 		}
 
+		// rework 
 		cuMatrix<N>& operator= (const N value){
-			this->rebase(this->size());
+			if(m_perm == memPermission::user)
+				rebase(this->size());
 			fillDev(this->m_data,value,this->size());
 			return *this;
 		}

@@ -38,6 +38,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	maxColumneDev<double>(NULL,NULL,0,0);
 	minColumneDev<double>(NULL,NULL,0,0);
 	transposeDev<double>(NULL, NULL, 0, 0);
+	transposeDev<size_t>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
 	expDev<double>(NULL,NULL,0);
