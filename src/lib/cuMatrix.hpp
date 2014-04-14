@@ -190,7 +190,6 @@ class cuMatrix{
 		/**
 		 * ASSIGNMENT
 		 */
-		// rework 
 		cuMatrix<N>& operator= (cuMatrix<N>&& rhs){
 
 			if( m_perm == memPermission::diver){
@@ -201,37 +200,36 @@ class cuMatrix{
 					m_vecDim = move(rhs.m_vecDim);
 				}
 			}
-			else{
-				if(m_data!=rhs.m_data){
-					if(m_perm == memPermission::owner)
-						cudaFree(m_data);
-					m_data = rhs.m_data;
-					rhs.m_data = nullptr;
-					m_perm = rhs.m_perm;
-					m_vecDim = move(rhs.m_vecDim);
-				}
+			else if(m_data!=rhs.m_data){
+				if(m_perm == memPermission::owner)
+					cudaFree(m_data);
+				m_data = rhs.m_data;
+				rhs.m_data = nullptr;
+				m_perm = rhs.m_perm;
+				m_vecDim = move(rhs.m_vecDim);
 			}
 			return *this;
 		}
 		
+		//rework
 		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){
-			if(m_data != rhs.m_data){
-				if(m_perm == memPermission::diver){
-					if(dimCompare(this->dim(),rhs.dim()) != 0){
-						cout << "cant assign that to diver" << endl;
-						return *this;
-					}
+			if( m_perm == memPermission::diver){
+				if(dimCompare(this->dim(),rhs.dim()) != 0){
+					cout << "cant assign that to diver" << endl;
+					return *this;
+				} else{
+					cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+					m_vecDim = rhs.m_vecDim;
 				}
-				else
-					rebase(rhs.size());	
-				m_vecDim = rhs.m_vecDim;
-				cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
 			}
-
+			else if(m_data!=rhs.m_data){
+				rebase(rhs.size());
+				cudaMemcpy(m_data,rhs.m_data, rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
+				m_vecDim = rhs.m_vecDim;
+			}
 			return *this;
 		}
 
-		// rework 
 		cuMatrix<N>& operator= (const N value){
 			if(m_perm == memPermission::user)
 				rebase(this->size());
