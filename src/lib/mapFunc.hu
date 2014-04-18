@@ -9,7 +9,7 @@
  */
 template<typename FUNC,typename M, typename N>
 __device__ void mapFuncKernel(FUNC f, const M* input, N* output, size_t len){
-	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < len)
 		output[pos] = f(input[pos]);
 }
@@ -24,9 +24,9 @@ void mapFunc(FUNC f, const M* input, N* output, size_t len){
  */
 template<typename FUNC, typename N>
 __device__ void reduceFuncKernel(FUNC f, const N* input, N* output, N neutralValue, size_t len){
-	__shared__ double partialSum[2*B_SIZE];
-	unsigned int t = threadIdx.x;
-	unsigned int start = 2*blockIdx.x*blockDim.x;
+	__shared__ N partialSum[2*B_SIZE];
+	size_t t = threadIdx.x;
+	size_t start = 2*blockIdx.x*blockDim.x;
 
 	//load Segments into shared memory
 	start+t<len?
@@ -37,7 +37,7 @@ __device__ void reduceFuncKernel(FUNC f, const N* input, N* output, N neutralVal
 		partialSum[blockDim.x+t]=neutralValue;
 
 	//binary tree reduce
-	for(unsigned int stride = blockDim.x; stride>=1; stride >>=1)
+	for(size_t stride = blockDim.x; stride>=1; stride >>=1)
 	{
 		__syncthreads();
 		if(t < stride)
@@ -71,7 +71,7 @@ void reduceFunc(FUNC f,const N* X, N* result, size_t length){
 }
 
 template<typename FUNC, typename N>
-void reduceColFunc(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
+void reduceColFunc(FUNC f,const N* X, N* result, N neutralValue, size_t nRows, size_t nCols){
 	size_t dimSize = B_SIZE;
 	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
 	size_t numElements;
@@ -80,12 +80,12 @@ void reduceColFunc(FUNC f,const N* X, N* result, size_t nRows, size_t nCols){
 	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
 
 	for(size_t i = 0; i < nRows;++i){
-		f<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,nCols);
+		f<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,neutralValue,nCols);
 
 		while(gridSize>1){
 			numElements = gridSize;
 			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-			f<<<gridSize,dimSize>>>(sumX,sumX,numElements);
+			f<<<gridSize,dimSize>>>(sumX,sumX,neutralValue,numElements);
 		}
 		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
 		gridSize = CEIL_DIV(nCols,B_SIZE*2);
@@ -113,14 +113,14 @@ N reduceFuncToHostValue(FUNC f, const N* X, size_t length){
  */
 template<typename FUNC, typename N> 
 __device__ void	zipFunc(FUNC f, const N* lhs, const N* rhs, N* result, size_t numElements){
-	int idx = B_SIZE*blockIdx.x+threadIdx.x;
+	size_t idx = B_SIZE*blockIdx.x+threadIdx.x;
 	if(idx<numElements)
 		result[idx]=f(lhs[idx],rhs[idx]);
 }
 
 template<typename FUNC, typename N> 
 __device__ void	zipFuncSkalar(FUNC f, const N* lhs, const N rhs, N* result, size_t numElements){
-	int idx = B_SIZE*blockIdx.x+threadIdx.x;
+	size_t idx = B_SIZE*blockIdx.x+threadIdx.x;
 	if(idx<numElements)
 		result[idx]=f(lhs[idx],rhs);
 }

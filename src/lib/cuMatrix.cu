@@ -5,63 +5,66 @@
 #include <cfloat>
 #include"mapFunc.hu"
 #include "posReduce.hu"
+#include <limits>
 
 //DEBUG ONLY
 #include <iostream>
-using namespace std;
 
 namespace curoy{
 	//find a beatiful way for that BS
+
+template<typename N>
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
-	addDev<int>(NULL,NULL,NULL,0);
-	addDev<long>(NULL,NULL,NULL,0);
-	addDev<float>(NULL,NULL,NULL,0);
-	addDev<double>(NULL,NULL,NULL,0);
-	subDev<double>(NULL,NULL,NULL,0);
-	mulDev<double>(NULL,NULL,NULL,0);
-	divDev<double>(NULL,NULL,NULL,0);
-	eqDev<double>(NULL,NULL,NULL,0);
-	neqDev<double>(NULL,NULL,NULL,0);
-	eqDev<size_t>(NULL,NULL,NULL,0);
-	neqDev<size_t>(NULL,NULL,NULL,0);
-	addSkalarDev<double>(NULL,0,NULL,0);
-	subSkalarDev<double>(NULL,0,NULL,0);
-	mulSkalarDev<double>(NULL,0,NULL,0);
-	divSkalarDev<double>(NULL,0,NULL,0);
-	divReverseSkalarDev<double>(NULL,0,NULL,0);
-	eqSkalarDev<double>(NULL,0,NULL,0);
-	neqSkalarDev<double>(NULL,0,NULL,0);
-	eqSkalarDev<size_t>(NULL,0,NULL,0);
-	neqSkalarDev<size_t>(NULL,0,NULL,0);
-	multDev<double>(NULL,NULL,NULL,0,0,0);
-	prodDev<double>(NULL,0);
-	sumDev<double>(NULL,0);
-	maxDev<double>(NULL,0);
-	minDev<double>(NULL,0);
-	sumColumneDev<double>(NULL,NULL,0,0);
-	prodColumneDev<double>(NULL,NULL,0,0);
-	maxColumneDev<double>(NULL,NULL,0,0);
-	minColumneDev<double>(NULL,NULL,0,0);
-	transposeDev<double>(NULL, NULL, 0, 0);
-	transposeDev<size_t>(NULL, NULL, 0, 0);
-	fillDev<double>(NULL,0,0);
-	fillIdentityDev<double>(NULL,0,0);
-	powDev<double>(NULL,0,NULL,0);
-	expDev<double>(NULL,NULL,0);
-	logDev<double>(NULL,NULL,0);
-	log10Dev<double>(NULL,NULL,0);
-	castDev<double,size_t>(NULL,NULL,0);
-	castDev<size_t,double>(NULL,NULL,0);
+	addDev<N>(NULL,NULL,NULL,0);
+	subDev<N>(NULL,NULL,NULL,0);
+	mulDev<N>(NULL,NULL,NULL,0);
+	divDev<N>(NULL,NULL,NULL,0);
+	eqDev<N>(NULL,NULL,NULL,0);
+	neqDev<N>(NULL,NULL,NULL,0);
+	addSkalarDev<N>(NULL,0,NULL,0);
+	subSkalarDev<N>(NULL,0,NULL,0);
+	mulSkalarDev<N>(NULL,0,NULL,0);
+	divSkalarDev<N>(NULL,0,NULL,0);
+	divReverseSkalarDev<N>(NULL,0,NULL,0);
+	eqSkalarDev<N>(NULL,0,NULL,0);
+	neqSkalarDev<N>(NULL,0,NULL,0);
+	multDev<N>(NULL,NULL,NULL,0,0,0);
+	prodDev<N>(NULL,0);
+	sumDev<N>(NULL,0);
+	maxDev<N>(NULL,0);
+	minDev<N>(NULL,0);
+	sumColumneDev<N>(NULL,NULL,0,0);
+	prodColumneDev<N>(NULL,NULL,0,0);
+	maxColumneDev<N>(NULL,NULL,0,0);
+	minColumneDev<N>(NULL,NULL,0,0);
+	transposeDev<N>(NULL, NULL, 0, 0);
+	fillDev<N>(NULL,0,0);
+	fillIdentityDev<N>(NULL,0,0);
+
+	castDev<N,size_t>(NULL,NULL,0);
+	castDev<size_t,N>(NULL,NULL,0);
 	//extern
-	maxPosColumneDev<double>(NULL,NULL,NULL,0, 0);
-	minPosColumneDev<double>(NULL,NULL,NULL,0, 0);
-	
-	fillDev<size_t>(NULL,0,0);
-	sumDev<size_t>(NULL,0);
-	fillDev<float>(NULL,0,0);
-	multDev<float>(NULL,NULL,NULL,0,0,0);
+	maxPosColumneDev<N>(NULL,NULL,NULL,0, 0);
+	minPosColumneDev<N>(NULL,NULL,NULL,0, 0);
 }
 
+template<typename N>
+void pseudoUndefinedNonFloatingPoint(){
+	powDev<N>(NULL,0,NULL,0);
+	expDev<N>(NULL,NULL,0);
+	logDev<N>(NULL,NULL,0);
+	log10Dev<N>(NULL,NULL,0);
+}
+void pseudoPseudoFoo(){
+	pseudoWorkAroundFunctionToInitiallizeAddDev<double>();
+	pseudoWorkAroundFunctionToInitiallizeAddDev<float>();
+	pseudoWorkAroundFunctionToInitiallizeAddDev<size_t>();
+	pseudoWorkAroundFunctionToInitiallizeAddDev<long>();
+	pseudoWorkAroundFunctionToInitiallizeAddDev<int>();
+
+	pseudoUndefinedNonFloatingPoint<double>();
+	pseudoUndefinedNonFloatingPoint<float>();
+}
 
 	
 /**
@@ -70,20 +73,20 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 
 template<typename N>
 __global__ void matrixMultiplyKernel(const N* lhs,const N* rhs, N* result,
-			             int numARows, int numAColumns,
-			             int numBRows, int numBColumns,
-			             int numCRows, int numCColumns) {
-    __shared__ double ds_A[B_WIDTH][B_WIDTH];
-    __shared__ double ds_B[B_WIDTH][B_WIDTH];
-    int by = blockIdx.x;
-    int bx = blockIdx.y;
-    int ty = threadIdx.x;
-    int tx = threadIdx.y;
+			             size_t numARows, size_t numAColumns,
+			             size_t numBRows, size_t numBColumns,
+			             size_t numCRows, size_t numCColumns) {
+    __shared__ N ds_A[B_WIDTH][B_WIDTH];
+    __shared__ N ds_B[B_WIDTH][B_WIDTH];
+    size_t by = blockIdx.x;
+    size_t bx = blockIdx.y;
+    size_t ty = threadIdx.x;
+    size_t tx = threadIdx.y;
     
-    int row = bx * B_WIDTH + tx;
-    int col = by * B_WIDTH + ty;
+    size_t row = bx * B_WIDTH + tx;
+    size_t col = by * B_WIDTH + ty;
     N pValue = 0;
-	for (int n = 0; n < CEIL_DIV(numAColumns,B_WIDTH); ++n){
+	for (size_t n = 0; n < CEIL_DIV(numAColumns,B_WIDTH); ++n){
 
 		if(row < numARows && n*B_WIDTH+ty < numAColumns)
 			ds_A[tx][ty] = lhs[(row*numAColumns)+ (n*B_WIDTH+ty)];
@@ -96,7 +99,7 @@ __global__ void matrixMultiplyKernel(const N* lhs,const N* rhs, N* result,
 			ds_B[tx][ty] = 0;
 
 		__syncthreads();
-		for(int k = 0;k < B_WIDTH; ++k){
+		for(size_t k = 0;k < B_WIDTH; ++k){
 			pValue += ds_A[tx][k] * ds_B[k][ty];
 		}
 		__syncthreads();
@@ -123,13 +126,13 @@ __device__ inline N addFuncKernel(const N lhs, const N rhs){
 }
 
 template<typename N>
-__global__ void addReduce(const N* input, N* output, size_t len) {
-	reduceFuncKernel(&addFuncKernel<N>,input, output, (N)0,len);	
+__global__ void addReduce(const N* input, N* output,N neutralValue, size_t len) {
+	reduceFuncKernel(&addFuncKernel<N>,input, output,neutralValue,len);	
 }	
 
 template<typename N>
 inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	reduceColFunc(&addReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&addReduce<N>,X,result, (N)0, nRows, nCols);
 }
 
 template<typename N>
@@ -146,13 +149,13 @@ __device__ inline N mulFuncKernel(const N lhs, const N rhs){
 }
 
 template<typename N>
-__global__ void prodReduce(const N* input, N* output, size_t len) {
-	reduceFuncKernel(&mulFuncKernel<N>,input, output, (N)1,len);	
+__global__ void prodReduce(const N* input, N* output,N neutralValue, size_t len) {
+	reduceFuncKernel(&mulFuncKernel<N>,input, output,neutralValue,len);	
 }	
 
 template<typename N>
 inline void prodColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	reduceColFunc(&prodReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&prodReduce<N>,X,result,(N)1,nRows, nCols);
 }
 
 template<typename N>
@@ -169,13 +172,13 @@ __device__ inline N maxFuncKernel(const N lhs, const N rhs){
 }
 
 template<typename N>
-__global__ void maxReduce(const N* input, N* output, size_t len) {
-	reduceFuncKernel(&maxFuncKernel<N>,input, output, DBL_MIN, len);	
+__global__ void maxReduce(const N* input, N* output,N neutralValue, size_t len) {
+	reduceFuncKernel(&maxFuncKernel<N>,input, output,neutralValue, len);	
 }	
 
 template<typename N>
 void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	reduceColFunc(&maxReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&maxReduce<N>,X,result,std::numeric_limits<N>::min(),nRows, nCols);
 }
 
 template<typename N>
@@ -192,13 +195,13 @@ __device__ inline N minFuncKernel(const N lhs, const N rhs){
 }
 
 template<typename N>
-__global__ void minReduce(const N* input, N* output, size_t len) {
-	reduceFuncKernel(&minFuncKernel<N>,input, output, DBL_MAX, len);	
+__global__ void minReduce(const N* input, N* output,N neutralValue, size_t len) {
+	reduceFuncKernel(&minFuncKernel<N>,input, output,neutralValue, len);	
 }	
 
 template<typename N>
 void minColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
-	reduceColFunc(&minReduce<N>,X,result,nRows, nCols);
+	reduceColFunc(&minReduce<N>,X,result,std::numeric_limits<N>::max(),nRows, nCols);
 }
 
 template<typename N>
@@ -210,15 +213,15 @@ N minDev(const N* X, size_t length){
 template<typename N>
 __global__ void transposeSharedKernel(const N* input, N* output,size_t nRows, size_t nCols){
 	__shared__ N sInput[B_WIDTH][B_WIDTH];
-	int bx = blockIdx.x;
-    int by = blockIdx.y;
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
+	size_t bx = blockIdx.x;
+    size_t by = blockIdx.y;
+    size_t tx = threadIdx.x;
+    size_t ty = threadIdx.y;
 
-    int row = bx * B_WIDTH + tx;
-    int col = by * B_WIDTH + ty;
-	int pos = row * nCols + col;
-	int Tpos = col * nRows + row;
+    size_t row = bx * B_WIDTH + tx;
+    size_t col = by * B_WIDTH + ty;
+	size_t pos = row * nCols + col;
+	size_t Tpos = col * nRows + row;
 
 	if(row < nRows && col < nCols)
 		sInput[tx][ty] = input[pos];
@@ -229,14 +232,14 @@ __global__ void transposeSharedKernel(const N* input, N* output,size_t nRows, si
 
 template<typename N>
 __global__ void transposeKernel(const N* input, N* output,size_t nRows, size_t nCols){
-	int bx = blockIdx.x;
-    int by = blockIdx.y;
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
+	size_t bx = blockIdx.x;
+    size_t by = blockIdx.y;
+    size_t tx = threadIdx.x;
+    size_t ty = threadIdx.y;
 
-    int row = bx * B_WIDTH + tx;
-    int col = by * B_WIDTH + ty;
-	int pos = row * nCols + col;
+    size_t row = bx * B_WIDTH + tx;
+    size_t col = by * B_WIDTH + ty;
+	size_t pos = row * nCols + col;
 
 	if(row < nRows && col < nCols)
 		output[col * nRows + row] = input[pos];
@@ -252,7 +255,7 @@ void transposeDev(const N* input, N* result, size_t nRows, size_t nCols){
 
 template<typename N>
 __global__ void fillKernel(N* X, const N number, size_t numElements){
-	int pos = blockIdx.x * B_SIZE + threadIdx.x;
+	size_t pos = blockIdx.x * B_SIZE + threadIdx.x;
 	if(pos < numElements)
 		X[pos]= number;
 }
@@ -267,14 +270,14 @@ void fillDev(N* X, const N number, size_t numElements){
 
 template<typename N>
 __global__ void fillIdentityKernel(N* X, size_t nRows, size_t nCols){
-	int bx = blockIdx.x;
-    int by = blockIdx.y;
-    int tx = threadIdx.x;
-    int ty = threadIdx.y;
+	size_t bx = blockIdx.x;
+    size_t by = blockIdx.y;
+    size_t tx = threadIdx.x;
+    size_t ty = threadIdx.y;
 
-    int row = bx * B_WIDTH + tx;
-    int col = by * B_WIDTH + ty;
-	int pos = row * nCols + col;
+    size_t row = bx * B_WIDTH + tx;
+    size_t col = by * B_WIDTH + ty;
+	size_t pos = row * nCols + col;
 	if(row < nRows && col < nCols)
 		X[pos] = (col==row?1:0);
 }
@@ -484,7 +487,7 @@ void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 
 template<typename N>
 __global__ void powKernel(const N* input,const N exponent, N* result, size_t numElements){
-	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < numElements)	
 		result[pos]=pow(input[pos],exponent);
 }
@@ -496,7 +499,7 @@ void powDev(const N* input, const N exponent,  N* result, size_t numElements){
 
 template<typename N>
 __global__ void expKernel(const N* input, N* result, size_t numElements){
-	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < numElements)	
 		result[pos]=exp(input[pos]);
 }
@@ -508,7 +511,7 @@ void expDev(const N* input, N* result, size_t numElements){
 
 template<typename N>
 __global__ void logKernel(const N* input, N* result, size_t numElements){
-	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < numElements)	
 		result[pos]=log(input[pos]);
 }
@@ -520,7 +523,7 @@ void logDev(const N* input, N* result, size_t numElements){
 
 template<typename N>
 __global__ void log10Kernel(const N* input, N* result, size_t numElements){
-	int pos = B_SIZE * blockIdx.x + threadIdx.x;
+	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
 	if(pos < numElements)	
 		result[pos]=log10(input[pos]);
 }
