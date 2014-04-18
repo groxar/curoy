@@ -45,6 +45,7 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	transposeDev<double>(NULL, NULL, 0, 0);
 	transposeDev<size_t>(NULL, NULL, 0, 0);
 	fillDev<double>(NULL,0,0);
+	fillIdentityDev<double>(NULL,0,0);
 	powDev<double>(NULL,0,NULL,0);
 	expDev<double>(NULL,NULL,0);
 	logDev<double>(NULL,NULL,0);
@@ -261,6 +262,27 @@ void fillDev(N* X, const N number, size_t numElements){
 	dim3 dimGrid(CEIL_DIV(numElements,B_SIZE),1,1);
 	dim3 dimBlock(B_SIZE,1,1);
 	fillKernel<<<dimGrid,dimBlock>>>(X,number,numElements);
+}
+
+
+template<typename N>
+__global__ void fillIdentityKernel(N* X, size_t nRows, size_t nCols){
+	int bx = blockIdx.x;
+    int by = blockIdx.y;
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    int row = bx * B_WIDTH + tx;
+    int col = by * B_WIDTH + ty;
+	int pos = row * nCols + col;
+	if(row < nRows && col < nCols)
+		X[pos] = (col==row?1:0);
+}
+template<typename N>
+void fillIdentityDev(N* X, size_t nRows, size_t nCols){
+	dim3 dimGrid(CEIL_DIV(nRows,B_WIDTH),CEIL_DIV(nCols,B_WIDTH),1);
+	dim3 dimBlock(B_WIDTH,B_WIDTH,1);
+	fillIdentityKernel<<<dimGrid,dimBlock>>>(X,nRows,nCols);
 }
 
 /**

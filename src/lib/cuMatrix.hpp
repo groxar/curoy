@@ -32,9 +32,17 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr),m_perm(memPermission::user){}
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(vector<size_t> dim, enum fillMode mode):m_data(nullptr){m_perm=memPermission::user;resize(dim);if(mode==fillMode::rnd){fillRnd(*this);}}
-		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
+		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(!*this,value);}
 		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+
+		cuMatrix(vector<size_t> dim, enum fillMode mode):m_data(nullptr){
+			m_perm=memPermission::user;
+			resize(dim);
+			if(mode==fillMode::rnd)
+				fillRnd(!*this);
+			else if (mode == fillMode::identity)
+				fillIdentity(!*this);
+		}
 
 		cuMatrix(const cuMatrix<N>& matrix){
 			m_perm = memPermission::user;
@@ -56,7 +64,6 @@ class cuMatrix{
 					cout << cudaGetErrorString(err)<<endl;	
 			}
 		}
-
 
 		/**
 		 * Matrix information
@@ -265,11 +272,21 @@ class cuMatrix{
 			matrix.rebase(matrix.size());	
 			return move(fillRnd(!matrix));
 		}
+
 		friend cuMatrix<N>&& fillRnd(cuMatrix<N>&& matrix){
 			curandGenerator_t gen;
 			curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
 			curandSetPseudoRandomGeneratorSeed(gen, 4651635983ULL);
 			curandGenerateUniformDouble(gen, (double*) matrix.m_data, matrix.size()); // TODO FIX (double*)
+			return move(matrix);
+		}
+		
+		friend cuMatrix<N>&& fillIdentity(cuMatrix<N>& matrix){
+			return move(fillIdentity(!matrix));
+		}
+
+		friend cuMatrix<N>&& fillIdentity(cuMatrix<N>&& matrix){
+			fillIdentityDev(matrix.m_data,matrix.dim(0),matrix.dim(1));
 			return move(matrix);
 		}
 
