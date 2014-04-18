@@ -13,6 +13,9 @@ void transposeDev(const N* input, N* result, size_t nRows, size_t nCols);
 template<typename N>
 void fillDev(N* X, const N number, size_t numElements);
 
+template<typename N>
+void fillIdentityDev(N* X, const size_t nRows, const size_t nCols);
+
 template<typename M,typename N>
 void castDev(const M* X, N* result, size_t numElements);
 
