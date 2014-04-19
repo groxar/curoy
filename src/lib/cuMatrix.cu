@@ -41,8 +41,11 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	fillDev<N>(NULL,0,0);
 	fillIdentityDev<N>(NULL,0,0);
 
+	castDev<N,double>(NULL,NULL,0);
+	castDev<N,float>(NULL,NULL,0);
 	castDev<N,size_t>(NULL,NULL,0);
-	castDev<size_t,N>(NULL,NULL,0);
+	castDev<N,int>(NULL,NULL,0);
+	castDev<N,long>(NULL,NULL,0);
 	//extern
 	maxPosColumneDev<N>(NULL,NULL,NULL,0, 0);
 	minPosColumneDev<N>(NULL,NULL,NULL,0, 0);
@@ -114,6 +117,24 @@ void multDev(const N* lhs, const N* rhs, N* result, size_t n, size_t k, size_t m
 	dim3 dimGrid(CEIL_DIV(m,B_WIDTH),CEIL_DIV(n,B_WIDTH));
 	dim3 dimBlock(B_WIDTH,B_WIDTH);
 	matrixMultiplyKernel<<<dimGrid,dimBlock>>>(lhs,rhs,result,n,k,k,m,n,m);
+}
+
+template<typename N>
+__global__ void isDiagonalElementZero(const N* input, char* result, size_t nWidth){
+	size_t pos = B_SIZE*blockIdx.x+threadIdx.x;
+	if(pos < nWidth)
+		result[pos] = (input[pos*nWidth*2+pos] == 0);
+}
+
+template<typename N>
+void invertRow(const N* input, N* result, size_t nWidth){
+	
+}
+
+template<typename N>
+void invDev(const N* input, N* result, size_t nWidth){
+	dim3 dimGrid(CEIL_DIV(nWidth,B_WIDTH),CEIL_DIV(nWidth*2,B_WIDTH));
+	dim3 dimBlock(B_WIDTH,B_WIDTH);
 }
 
 
