@@ -20,7 +20,7 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		kmeans myKmeans(centroids);
 		myKmeans.train(X);
 		cout <<myKmeans.predict(X)<<endl;
-		cout << cuMatrix<double>({5,5},fillMode::identity)<<endl;
+		cout << (cuMatrix<double>({5,5},fillMode::rnd)|cuMatrix<double>({5,5},fillMode::identity))<<endl;
 		cout << cuMatrix<double>({33,17},fillMode::identity)<<endl;
 	}
 }
