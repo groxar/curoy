@@ -300,7 +300,7 @@ class cuMatrix{
 			}
 			vector<size_t>  vecDim = lhs.dim(); 
 			vecDim[0] = lhs.dim(0) + rhs.dim(0);
-			cuMatrix<N> result(vecDim);
+			cuMatrix<N> result(vecDim,fillMode::none);
 			cudaMemcpy(result.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
 			cudaMemcpy(&(result.m_data[lhs.size()]),rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
 
