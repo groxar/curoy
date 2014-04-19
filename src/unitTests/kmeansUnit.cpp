@@ -22,5 +22,8 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		cout <<myKmeans.predict(X)<<endl;
 		cout << (cuMatrix<double>({5,5},fillMode::rnd)|cuMatrix<double>({5,5},fillMode::identity))<<endl;
 		cout << cuMatrix<double>({33,17},fillMode::identity)<<endl;
+		cout << inv(cuMatrix<double>({{1,2,3},{4,5,6},{7,8,9}}))<<endl;
+		cout << inv(cuMatrix<double>({3,3},fillMode::identity))<<endl;
+		cout << inv(cuMatrix<double>({3,3},fillMode::identity)==0)<<endl;
 	}
 }

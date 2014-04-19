@@ -295,7 +295,7 @@ class cuMatrix{
 		 */	
 		friend cuMatrix<N> operator& (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			if(!((dimCompare(lhs.dim(),rhs.dim())==1&&lhs.dim(0)!=rhs.dim(0) )||dimCompare(lhs.dim(),rhs.dim())==0)){
-				cout << "concatination error"<<endl;
+				cout << "concatination dimension error"<<endl;
 				return lhs;
 			}
 			vector<size_t>  vecDim = lhs.dim(); 
@@ -338,7 +338,7 @@ class cuMatrix{
 		 */
 		template<typename FUNC>
 		friend cuMatrix<N> mapFunc(FUNC f,const cuMatrix<N>& lhs, const cuMatrix<N>& rhs){
-			if(dimCompare(lhs.dim(),rhs.dim())!=0){
+			if(dimCompareIgnore1(lhs.dim(),rhs.dim())!=0){ //IGNORE 1 change
 				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return lhs;
 			}
@@ -351,7 +351,7 @@ class cuMatrix{
 
 		template<typename FUNC>
 		friend cuMatrix<N>&& mapFunc(FUNC f, cuMatrix<N>&& lhs, const cuMatrix<N>& rhs){
-			if(dimCompare(lhs.dim(),rhs.dim())!=0){
+			if(dimCompareIgnore1(lhs.dim(),rhs.dim())!=0){
 				cout << "mapFunc Failed {"<< lhs.dim(0)<<","<<lhs.dim(1)<<"}  {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<<endl;
 				return move(lhs);
 			}
@@ -641,10 +641,33 @@ class cuMatrix{
 			return sum(lhs==rhs) == lhs.size();
 		}
 
-		// TODO IMPLEMENT
-		friend cuMatrix<N> pinv(const cuMatrix<N>& matrix){
-			cout << "pinv() is unimplemented"<<endl;
-			return matrix;
+		//move methode
+		friend cuMatrix<N> inv(const cuMatrix<N>& matrix){
+			size_t nWidth = matrix.dim(0);
+			if(nWidth!=matrix.dim(1) || matrix.nDim()!=2){
+				cout << "inversion is only defined on 2 dimensional square matrices"<<endl;
+				return matrix;
+			}
+			cuMatrix<N> result(cuMatrix<N>(matrix)|cuMatrix<N>(matrix.dim(),fillMode::identity));
+			//preparation step: diagonal elements have to be != 0
+			cuMatrix<N> dia(mult(cuMatrix<N>(matrix.dim(),fillMode::identity)*matrix,cuMatrix<N>({nWidth,1},1))==0);
+
+			if(sum(dia)!=nWidth){
+				tuple<cuMatrix<N>,cuMatrix<size_t>> maxC;
+				maxC = maxPos(matrix,0);
+
+				// no replacement found for atleast one columne || row check =?
+				if(sum(get<0>(maxC)==0)>0){
+					cout << "matrix is not invertable"<<endl;
+					return matrix;
+				}
+
+			}
+
+			cout <<"diagonal"<< dia<<endl;
+			
+			//invDev(result.m_data,result.m_data,matrix.dim(0));
+			return result;
 		}
 
 		//simple Transpose only for 2D Matrix tested
