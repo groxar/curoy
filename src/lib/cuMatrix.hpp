@@ -60,8 +60,11 @@ class cuMatrix{
 			cudaError_t err = cudaSuccess;
 			if(m_perm == memPermission::owner){
 				err =cudaFree(m_data);
-				if(err!=cudaSuccess)
-					cout << cudaGetErrorString(err)<<endl;	
+				if(err!=cudaSuccess){
+					cudaGetErrorString(err);
+					cout <<".";
+				}
+					//cout << cudaGetErrorString(err)<<endl;	
 			}
 		}
 
@@ -503,8 +506,8 @@ class cuMatrix{
 		 */
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend cuMatrix<N> mult (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
-			if(lhs.m_vecDim[1]!=rhs.dim(0) || lhs.m_vecDim.size()!=2 || rhs.m_vecDim.size()!=2){
-				cout << "DIMENSIONS DONT FIT MULTIPLICATION" << endl;
+			if(lhs.dim(1)!=rhs.dim(0) || lhs.m_vecDim.size()>2 || rhs.m_vecDim.size()>2){
+				cout << "dimensions dont fit matrix multiplication: {" <<lhs.dim(0)<<","<<lhs.dim(1)<<"} {"<<rhs.dim(0)<<","<<rhs.dim(1)<<"}"<< endl;
 				return lhs;
 			}
 
