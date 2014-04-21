@@ -36,7 +36,7 @@ namespace curoy{
 		}
 		//transpose thetas
 		ann(size_t numFeatures, size_t numPossibleOutputs, vector<size_t> hiddenLayerSize, double epsilon = 0.12){
-			hiddenLayerVec.reserve(hiddenLayerSize.size());
+			hiddenLayerVec.reserve(hiddenLayerSize.size()+1);
 			
 			size_t prevLayerSize = numFeatures; 
 			for(size_t numNeurons : hiddenLayerSize){
@@ -130,6 +130,7 @@ namespace curoy{
 				cout << get<1>(gj)<<endl;
 			}
 		}
+		
 		void conjugateDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, const double lambda, const size_t numIterations){
 			size_t numDataSets = X.dim(0);
 			size_t numHL = hiddenLayerVec.size();

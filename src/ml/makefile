@@ -1,7 +1,7 @@
 CC = gcc
 CXX = clang++
 NVCC = nvcc
-CUDACNFG= -arch=sm_20
+CUDACNFG= -arch=sm_35
 LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -g
