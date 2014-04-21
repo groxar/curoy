@@ -16,7 +16,7 @@ int main(int argc, const char *argv[]) {
 	auto yMap = redisAdapter->LoadAll("*y:dim");
 	auto xMap = redisAdapter->LoadAll("*x:dim");
 	//cuMatrix<double> X({xMap.size(),24},fillMode::none);
-	cuMatrix<double> X({100,24},fillMode::none);
+	cuMatrix<double> X({1000,24},fillMode::none);
 
 	size_t counter = 0;
 	cuMatrix<double> temp;
@@ -38,7 +38,7 @@ int main(int argc, const char *argv[]) {
 		X[counter] = mean; 
 		mapKeyToRow[entry.first]=counter;
 
-		if(counter ==99)
+		if(counter == 999)
 			break;
 		++counter;
 	}
@@ -58,9 +58,11 @@ int main(int argc, const char *argv[]) {
 	myKmeans.train(X);
 	
 	timeChrono("kmeans");
+	xMatrix<double> cenTemp;
+	cenTemp << myKmeans.getCentroids();
+	writeFile(cenTemp,"centroids");
 
 	cout << myKmeans.predict(X)<<endl;
-	cudaDeviceReset();
 
 	return 0;
 }

@@ -32,11 +32,11 @@ class cuMatrix{
 		cuMatrix():m_data(nullptr),m_perm(memPermission::user){}
 		cuMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
 		cuMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		cuMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(!*this,value);}
-		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
+		cuMatrix(vector<size_t> dim, N value){m_perm=memPermission::user;resize(dim);fill(!*this,value);}
+		cuMatrix(cuMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;matrix.m_perm = memPermission::user;}
 
-		cuMatrix(vector<size_t> dim, enum fillMode mode):m_data(nullptr){
-			m_perm=memPermission::user;
+		cuMatrix(vector<size_t> dim, enum fillMode mode){
+			m_perm = memPermission::user;
 			resize(dim);
 			if(mode==fillMode::rnd)
 				fillRnd(!*this);
@@ -53,18 +53,17 @@ class cuMatrix{
 		cuMatrix(const xMatrix<N>& matrix){
 			m_perm = memPermission::user;
 			resize(matrix.dim());
-			cudaMemcpy(m_data, matrix.m_data, matrix.size() * sizeof(N), cudaMemcpyHostToDevice);
+			cudaError_t err = cudaMemcpy(m_data,matrix.m_data,matrix.size()*sizeof(N),cudaMemcpyHostToDevice);
+			if(err!=cudaSuccess)
+				cout << cudaGetErrorString(err)<<endl;
 		}
 
 		~cuMatrix(){ 
 			cudaError_t err = cudaSuccess;
 			if(m_perm == memPermission::owner){
-				err =cudaFree(m_data);
-				if(err!=cudaSuccess){
-					cudaGetErrorString(err);
-					cout <<".";
-				}
-					//cout << cudaGetErrorString(err)<<endl;	
+				err = cudaFree(m_data);
+				if(err!=cudaSuccess)
+					cout << cudaGetErrorString(err)<<" "<< size()<<endl;	
 			}
 		}
 
@@ -77,9 +76,8 @@ class cuMatrix{
 				return 0;
 
 			size_t numElements = 1;
-			auto end = this->m_vecDim.end();
-			for(auto i = this->m_vecDim.begin(); i != end; ++i)
-				numElements*= *i;
+			for(auto i : m_vecDim)
+				numElements*= i;
 			return numElements;
 		}
 		vector<size_t> dim() const{return m_vecDim;}
@@ -97,13 +95,17 @@ class cuMatrix{
 		 */
 		friend cuMatrix<N>& operator>> (const xMatrix<N>& lhs, cuMatrix<N>& rhs){
 			rhs.resize(lhs.dim());
-			cudaMemcpy(rhs.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyHostToDevice);
+			cudaError_t err = cudaMemcpy(rhs.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyHostToDevice);
+			if(err!=cudaSuccess)
+				cout << cudaGetErrorString(err)<<endl;
 			return rhs;
 		}
 		
 		friend xMatrix<N>& operator<< (xMatrix<N>& lhs, const cuMatrix<N>& rhs){
 			lhs.resize(rhs.dim());
-			cudaMemcpy(lhs.m_data,rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToHost);
+			cudaError_t err = cudaMemcpy(lhs.m_data,rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToHost);
+			if(err!=cudaSuccess)
+				cout << cudaGetErrorString(err)<<endl;
 			return lhs;
 		}
 
@@ -214,8 +216,9 @@ class cuMatrix{
 				if(m_perm == memPermission::owner)
 					cudaFree(m_data);
 				m_data = rhs.m_data;
-				rhs.m_data = nullptr;
 				m_perm = rhs.m_perm;
+				rhs.m_data = nullptr;
+				rhs.m_perm = memPermission::user;
 				m_vecDim = move(rhs.m_vecDim);
 			}
 			return *this;
@@ -699,8 +702,8 @@ class cuMatrix{
 		}
 
 		N* m_data;//-> to private after tests
-	private:
 		enum memPermission m_perm;
+	private:
 		vector<size_t> m_vecDim;
 		
 		void rebase(size_t numElements){
@@ -714,11 +717,11 @@ class cuMatrix{
 				err = cudaMalloc((void**)&m_data,numElements*sizeof(N));
 			}
 
-			if(m_data == NULL || err != 0){
+			if(m_data == NULL || err != cudaSuccess){
 				cout << "GPU allocation error"<< endl;	
 				if(m_data == NULL)
 					cout << "M Data is NULL"<<endl;
-				if(err != 0)
+				if(err != cudaSuccess)
 					cout << cudaGetErrorString(err)<<endl;
 				cout << "numElements: "<< numElements<<endl;
 				cout << "size: "<< size()<<endl;

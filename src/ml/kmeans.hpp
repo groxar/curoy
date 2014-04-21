@@ -43,5 +43,8 @@ namespace curoy{
 			}
 			centroids = cn;
 		}
+		cuMatrix<double> getCentroids(){
+			return centroids;
+		}
 	};
 }
