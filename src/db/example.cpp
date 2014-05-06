@@ -16,10 +16,13 @@ int main(int argc, char **argv)
 {
     IxMatrixIOAdapter *ioAdapter = new xMatrixFileAdapter();
     IxMatrixIOAdapter *redisAdapter = new xMatrixRedisBinaryAdapter("/tmp/redis.sock");
-    xMatrix<double> matrixX = ioAdapter->Load("../../Xdata.txt");
-    xMatrix<double> matrixY = ioAdapter->Load("../../Ydata.txt");
-    redisAdapter->Save("xdata", matrixX);
-    redisAdapter->Save("ydata", matrixY);
-    cout << "finished" << endl;
+    xMatrix<double> devices = ioAdapter->Load("data/devices.txt");
+    redisAdapter->Save("devices", devices);
+    //redisAdapter->Save("xdata", matrixX);
+    //redisAdapter->Save("ydata", matrixY);
+    for(int i = 0; i < devices.dim(0); ++i)
+    {
+        cout << devices.m_data[i] << endl;
+    }
     delete ioAdapter;
 }

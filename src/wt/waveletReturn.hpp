@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 #include <vector>
+#include <iostream>
 
 namespace curoy{
 class WaveletReturn
@@ -12,6 +13,14 @@ class WaveletReturn
 
         //getWaveletCoefficients(ofLevel)
         //getLevelOfTransform()
-        //~xWaveletTransform() -> delete everything
+
+        WaveletReturn(){
+            data = 0;
+        }
+        ~WaveletReturn(){
+            if(data)
+                delete[] data;
+
+        }
 };
 }
