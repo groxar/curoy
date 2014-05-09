@@ -1,7 +1,9 @@
 #include "xWaveletTransform.hpp"
 #include <math.h>
+#include <memory.h>
 #include <iostream>
 #include <vector>
+#include <assert.h>
 
 using namespace std;
 namespace curoy{
@@ -101,8 +103,9 @@ namespace curoy{
                 hiFilterSum += preparedData[(k + j)] * filter.hiFilterCoeff[j];
             }
 
-            result[i] = loFilterSum / sqrt(2.0);
-            result[i + half] = hiFilterSum / sqrt(2.0);
+            //TODO: warum durch sqrt(2) teilen?
+            result[i] = loFilterSum;// / sqrt(2.0);
+            result[i + half] = hiFilterSum;// / sqrt(2.0);
         }
 
         delete[] preparedData;
@@ -115,5 +118,86 @@ namespace curoy{
         waveletReturn->levelLengths = lengths;
 
         return waveletReturn;
+    }
+
+    double* xWaveletTransform::doWaveletReconstruction(const double *data, vector<size_t> levelLengths, xFilter filter)
+    {
+        vector<size_t>::iterator it = levelLengths.begin();
+        size_t lastLength = *it;
+        size_t currentDataIndex = lastLength;
+        double *lastData = new double[lastLength];
+        copy(data, data + lastLength, lastData);
+        ++it;
+        for(;(it + 1) != levelLengths.end(); ++it)
+        {
+            size_t currentLength = *it;
+
+            assert(currentLength <= lastLength);
+
+            double *currentLevelData = new double[2 * currentLength](); //init with zeros
+
+            convolutionAndUpsampling(lastData, currentLevelData, filter.loFilterCoeff, lastLength, 2 * currentLength, filter.length);
+
+            /*cout << "1st" << endl;
+            for(int k = 0; k < 2 * currentLength; ++k)
+            {
+                cout << currentLevelData[k] << ", ";
+            }
+            cout << endl;*/
+
+            convolutionAndUpsampling(data + currentDataIndex, currentLevelData, filter.hiFilterCoeff, currentLength, 2 * currentLength, filter.length);
+
+
+            /*cout << "2nd" << endl;
+            for(int k = 0; k < 2 * currentLength; ++k)
+            {
+                cout << currentLevelData[k] << ", ";
+            }
+            cout << endl;*/
+
+
+            delete[] lastData;
+            lastData = currentLevelData;
+            currentLevelData = 0;
+
+            currentDataIndex += currentLength;
+            lastLength = 2 * currentLength;
+        }
+        size_t totalLength = *it;
+        double *toReturn = new double[totalLength];
+        copy(lastData, lastData + totalLength, toReturn);
+        delete[] lastData;
+        return toReturn;
+    }
+
+    void xWaveletTransform::convolutionAndUpsampling(const double *data, double* out, double* filterCoeff, size_t inputLength, size_t outLength, size_t filterLength)
+    {
+        //Only filters with even length are allowed
+        assert(filterLength % 2 == 0);
+
+        size_t f_2 = filterLength >> 1;
+        const double* dataPtr = data + f_2 - 1;
+
+        for(size_t i = 0; i < inputLength -(f_2 - 1); ++i)
+        {
+            double sumEven = 0;
+            double sumOdd = 0;
+
+            for(int j = 0; j < f_2; ++j)
+            {
+                sumEven += filterCoeff[2 * j] * dataPtr[i-j];
+                sumOdd += filterCoeff[2 * j + 1] * dataPtr[i-j];
+            }
+
+            if(outLength > 2 * i + 1)
+            {
+                out[2 * i + 1] += sumOdd;
+                out[2 * i] += sumEven;
+            }
+            else if(outLength > 2 * i)
+            {
+                out[2 * i] += sumEven;
+            }
+        }
     }
 }
