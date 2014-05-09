@@ -19,7 +19,9 @@ class WaveletReturn
         }
         ~WaveletReturn(){
             if(data)
+            {
                 delete[] data;
+            }
 
         }
 };
