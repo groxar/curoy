@@ -4,9 +4,17 @@
 #include <iostream>
 #include <vector>
 #include <assert.h>
+#include <string>
 
 using namespace std;
 namespace curoy{
+    WaveletReturn* xWaveletTransform::doWaveletTransform(const double* data, size_t length, size_t level, string waveletName)
+    {
+        xFilter filter(waveletName);
+
+        return doWaveletTransform(data, length, level, filter);
+    }
+
     WaveletReturn* xWaveletTransform::doWaveletTransform(const double* data, size_t length, size_t level, xFilter filter)
     {
         size_t totalLength = 0;
@@ -119,6 +127,14 @@ namespace curoy{
 
         return waveletReturn;
     }
+
+
+    double* xWaveletTransform::doWaveletReconstruction(const double *data, vector<size_t> levelLengths, string waveletName)
+    {
+        xFilter filter(waveletName);
+        return doWaveletReconstruction(data, levelLengths, filter);
+    }
+
 
     double* xWaveletTransform::doWaveletReconstruction(const double *data, vector<size_t> levelLengths, xFilter filter)
     {
