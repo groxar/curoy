@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     //double data[] = {1,2,3,1,2,3,4,0};
     xWaveletTransform transformator;
 
-    WaveletReturn* transformedData = transformator.doWaveletTransform(data, 24, 3, "db6");
+    WaveletReturn* transformedData = transformator.doWaveletTransform(data, 24, 3, "sym20");
 
 
     for(vector<size_t>::iterator it = transformedData->levelLengths.begin(); it != transformedData->levelLengths.end(); it++){
@@ -30,10 +30,10 @@ int main(int argc, char **argv)
     cout << endl;
     cout << endl;
 
-    double *reconstructedData = transformator.doWaveletReconstruction(transformedData->data, transformedData->levelLengths, "db6");
+    double *reconstructedData = transformator.doWaveletReconstruction(transformedData->data, transformedData->levelLengths, "sym20");
     for(int i = 0; i < 24; ++i)
     {
-        cout << ((abs(reconstructedData[i] - data[i]) <= 0.00001) ? "true" : "false") << ", ";
+        cout << ((abs(reconstructedData[i] - data[i]) <= 0.00001) ? 0 : reconstructedData[i] - data[i]) << ", ";
     }
     cout << endl;
 }
