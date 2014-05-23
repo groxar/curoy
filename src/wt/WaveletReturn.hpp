@@ -11,9 +11,6 @@ class WaveletReturn
         size_t totalLength;
         double* data;
 
-        //getWaveletCoefficients(ofLevel)
-        //getLevelOfTransform()
-
         WaveletReturn(){
             data = 0;
         }

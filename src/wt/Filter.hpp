@@ -3,11 +3,11 @@
 #include <string>
 
 namespace curoy{
-class xFilter
+class Filter
 {
     public:
-        xFilter();
-        xFilter(std::string);
+        Filter();
+        Filter(std::string);
 
         double* loFilterCoeff;
         double* hiFilterCoeff;

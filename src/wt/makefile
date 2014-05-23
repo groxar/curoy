@@ -2,11 +2,11 @@ OPTION = -g -std=c++0x
 
 phony: example
 
-xFilter.o: xFilter.cpp
+Filter.o: Filter.cpp
 	clang++ $(OPTION) -o $@ -c $+
 
-xWaveletTransform.o: xWaveletTransform.cpp xFilter.o
+WaveletTransformator.o: WaveletTransformator.cpp Filter.o
 	clang++ $(OPTION) -o $@ -c $+
 
-example: example.cpp xWaveletTransform.o xFilter.o
+example: example.cpp WaveletTransformator.o Filter.o
 	clang++ $(OPTION) -o $@ $+

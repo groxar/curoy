@@ -1,4 +1,4 @@
-#include "xWaveletTransform.hpp"
+#include "WaveletTransformator.hpp"
 #include <math.h>
 #include <memory.h>
 #include <iostream>
@@ -8,14 +8,14 @@
 
 using namespace std;
 namespace curoy{
-    WaveletReturn* xWaveletTransform::doWaveletTransform(const double* data, size_t length, size_t level, string waveletName)
+    WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, string waveletName)
     {
-        xFilter filter(waveletName);
+        Filter filter(waveletName);
 
-        return doWaveletTransform(data, length, level, filter);
+        return waveletDecomposition(data, length, level, filter);
     }
 
-    WaveletReturn* xWaveletTransform::doWaveletTransform(const double* data, size_t length, size_t level, xFilter filter)
+    WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, Filter filter)
     {
         size_t totalLength = 0;
         vector<WaveletReturn*> waveletReturns;
@@ -29,7 +29,7 @@ namespace curoy{
         size_t currentLength = length;
         for(size_t curLevel = 0; curLevel < level; curLevel++)
         {
-            WaveletReturn *waveletReturn = doOneLevelWaveletTransform(temp, currentLength, filter);
+            WaveletReturn *waveletReturn = oneLevelWaveletDecomposition(temp, currentLength, filter);
             waveletReturns.insert(waveletReturns.begin(), waveletReturn);
 
             temp = waveletReturn->data;
@@ -75,7 +75,7 @@ namespace curoy{
         return toReturn;
     }
 
-    WaveletReturn* xWaveletTransform::doOneLevelWaveletTransform(const double* data, size_t length, xFilter filter)
+    WaveletReturn* WaveletTransformator::oneLevelWaveletDecomposition(const double* data, size_t length, Filter filter)
     {
         size_t resultLength = ((length + length % 2) / 2 + filter.length / 2 - 1) * 2;
         double* preparedData = new double[resultLength + filter.length - 2];
@@ -129,14 +129,14 @@ namespace curoy{
     }
 
 
-    double* xWaveletTransform::doWaveletReconstruction(const double *data, vector<size_t> levelLengths, string waveletName)
+    double* WaveletTransformator::waveletReconstruction(const double *data, vector<size_t> levelLengths, string waveletName)
     {
-        xFilter filter(waveletName);
-        return doWaveletReconstruction(data, levelLengths, filter);
+        Filter filter(waveletName);
+        return waveletReconstruction(data, levelLengths, filter);
     }
 
 
-    double* xWaveletTransform::doWaveletReconstruction(const double *data, vector<size_t> levelLengths, xFilter filter)
+    double* WaveletTransformator::waveletReconstruction(const double *data, vector<size_t> levelLengths, Filter filter)
     {
         vector<size_t>::iterator it = levelLengths.begin();
         size_t lastLength = *it;
@@ -186,7 +186,7 @@ namespace curoy{
         return toReturn;
     }
 
-    void xWaveletTransform::convolutionAndUpsampling(const double *data, double* out, double* filterCoeff, size_t inputLength, size_t outLength, size_t filterLength)
+    void WaveletTransformator::convolutionAndUpsampling(const double *data, double* out, double* filterCoeff, size_t inputLength, size_t outLength, size_t filterLength)
     {
         //Only filters with even length are allowed
         assert(filterLength % 2 == 0);

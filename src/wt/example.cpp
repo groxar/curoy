@@ -1,6 +1,6 @@
-#include "xWaveletTransform.hpp"
-#include "xFilter.hpp"
-#include "waveletReturn.hpp"
+#include "WaveletTransformator.hpp"
+#include "Filter.hpp"
+#include "WaveletReturn.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -8,32 +8,43 @@
 using namespace curoy;
 using namespace std;
 
-
-int main(int argc, char **argv)
+///This function prints the levelLenghts, totalLenghts and  data from a waveletReturnobject to std::out
+void printWaveletReturn(WaveletReturn *waveletReturn)
 {
-
-    double data[] = {345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6};
-    //double data[] = {1,2,3,1,2,3,4,0};
-    xWaveletTransform transformator;
-
-    WaveletReturn* transformedData = transformator.doWaveletTransform(data, 24, 3, "sym20");
-
-
-    for(vector<size_t>::iterator it = transformedData->levelLengths.begin(); it != transformedData->levelLengths.end(); it++){
+    for(vector<size_t>::iterator it = waveletReturn->levelLengths.begin(); it != waveletReturn->levelLengths.end(); it++){
         cout << *it << " ";
     }
     cout << endl;
-    cout << transformedData->totalLength << ": ";
-    for(int i=0; i<transformedData->totalLength; ++i){
-    	cout << transformedData->data[i] << ", ";
+    cout << waveletReturn->totalLength << ": ";
+    for(int i=0; i<waveletReturn->totalLength; ++i){
+        cout << waveletReturn->data[i] << ", ";
     }
     cout << endl;
     cout << endl;
+}
+//example for the usage of the wavelettransformator class
+int main(int argc, char **argv)
+{
+    //create the instance of the WaveletTransformator
+    WaveletTransformator transformator;
 
-    double *reconstructedData = transformator.doWaveletReconstruction(transformedData->data, transformedData->levelLengths, "sym20");
-    for(int i = 0; i < 24; ++i)
+    //call the waveletdecomposition on some example signal by specifiing the wavelet by name.
+    //Alternatively you can always specify a filter (Filter.hpp) by yourself and call the transformator with both a high and a low-pass filter
+    double data[] = {345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6};
+    WaveletReturn* transformedData = transformator.waveletDecomposition(data, 23, 3, "sym14");
+
+    //print out the result
+    printWaveletReturn(transformedData);
+
+    //reconstruct the original signal from the transformed data, the information about the levels (-> In Matlab this is the L returned from [C, L] = wavedec(...)).
+    double *reconstructedData = transformator.waveletReconstruction(transformedData->data, transformedData->levelLengths, "sym14");
+
+
+    //print out if the reconstructed signal equals (difference < 0.00001) the original signal
+    for(int i = 0; i < 23; ++i)
     {
-        cout << ((abs(reconstructedData[i] - data[i]) <= 0.00001) ? 0 : reconstructedData[i] - data[i]) << ", ";
+        cout << ((abs(reconstructedData[i] - data[i]) <= 0.00001) ? "True" : "False") << ", ";
     }
     cout << endl;
 }
+
