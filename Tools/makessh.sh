@@ -2,7 +2,7 @@
 
 #config
 #change this to your username@address.com
-host=teco 
+host=
 
 #script
 directory=$(readlink -fn -- "$(pwd)")
