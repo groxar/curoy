@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <string>
 
+#include "SymetricPadding.hpp"
+
 using namespace std;
 namespace curoy{
     WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, string waveletName)
@@ -77,24 +79,20 @@ namespace curoy{
 
     WaveletReturn* WaveletTransformator::oneLevelWaveletDecomposition(const double* data, size_t length, Filter filter)
     {
+        //length of the resulting transformed signal
         size_t resultLength = ((length + length % 2) / 2 + filter.length / 2 - 1) * 2;
+        //prepared data must be larger than transformed data -> filter.legtn -2 longer
         double* preparedData = new double[resultLength + filter.length - 2];
         //prepare Data
+
+        //using swappable padding although swapping through parameter is not yet enabled (use interface IPadding)
+        SymetricPadding padding(data, length);
         for(int i = 0; i < resultLength + filter.length - 2; i++)
         {
             int actualIndex = i - (filter.length - 2);
-            if(actualIndex >= 0 && actualIndex < (int)length){
-                preparedData[i] = data[actualIndex];
-            }
-            else if(actualIndex >= (int)length)
-            {
-                preparedData[i] = data[2 * length - actualIndex - 1];
-            }
-            else if(actualIndex < 0)
-            {
-                preparedData[i] = data[abs(actualIndex) - 1];
-            }
+            preparedData[i] = padding.get(actualIndex);
         }
+
         double* result = new double[resultLength];
         size_t half = resultLength >> 1;
 

@@ -32,13 +32,13 @@ int main(int argc, char **argv)
     //Alternatively you can always specify a filter (Filter.hpp) by yourself and call the transformator with both a high and a low-pass filter
     //The allowed predefined filters are haar, db1-db15, sym2-sym15 und coif2-coif5
     double data[] = {345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6,345,564,3,234,56,576,324,6};
-    WaveletReturn* transformedData = transformator.waveletDecomposition(data, 23, 3, "sym14");
+    WaveletReturn* transformedData = transformator.waveletDecomposition(data, 23, 3, "sym4");
 
     //print out the result
     printWaveletReturn(transformedData);
 
     //reconstruct the original signal from the transformed data, the information about the levels (-> In Matlab this is the L returned from [C, L] = wavedec(...)).
-    double *reconstructedData = transformator.waveletReconstruction(transformedData->data, transformedData->levelLengths, "sym14");
+    double *reconstructedData = transformator.waveletReconstruction(transformedData->data, transformedData->levelLengths, "sym4");
 
 
     //print out if the reconstructed signal equals (difference < 0.00001) the original signal

@@ -20,40 +20,43 @@ xMatrixUnit: xMatrixUnit.cpp
 	make -C ../ml
 
 cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	./cuMatrixUnit
 
 annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nANNUNIT"
 	./annUnit
 
-kmeansUnit: kmeansUnit.cpp ../lib/cudaMatrix.o 
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+kmeansUnit: kmeansUnit.cpp ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nKMEANSUNIT"
 	./kmeansUnit
 
-svmUnit: svmUnit.cpp ../lib/cudaMatrix.o 
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+svmUnit: svmUnit.cpp ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nSVMUNIT"
 	./svmUnit
 
 powerANN: powerANN.cpp ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nANN"
 	./powerANN
 
 gradientUnit: gradientUnit.cpp ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nGradient"
 	./gradientUnit
 
 featureNormalizeUnit: featureNormalizeUnit.cpp ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nFeatureNormalize"
 	./featureNormalizeUnit
 
 dbUnitTest: dbUnit.cpp ../db/xMatrixFileAdapter.o ../db/xMatrixRedisBinaryAdapter.o
+	$(CXX) $(OPTION) $(DBLIBOPTION) -o $@ $+
+
+wtUnitTest: wtUnitTest.cpp ../wt/WaveletTransformator.o ../wt/Filter.o ../wt/SymetricPadding.o
 	$(CXX) $(OPTION) $(DBLIBOPTION) -o $@ $+
 
 clean:
@@ -61,6 +64,6 @@ clean:
 
 run:
 	@echo "\n\nCUMATRIX"
-	./cuMatrixUnit 
+	./cuMatrixUnit
 	@echo "\n\nXMATRIX"
 	./xMatrixUnit
