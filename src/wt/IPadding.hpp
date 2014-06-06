@@ -5,11 +5,11 @@
 namespace curoy{
 class IPadding
 {
-    protected:
+    public:
         const double* data;
         size_t length;
 
-    public:
+        IPadding(){}
         IPadding(const double* p_data, size_t p_length)
         {
             data = p_data;

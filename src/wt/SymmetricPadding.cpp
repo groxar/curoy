@@ -1,8 +1,8 @@
-#include "SymetricPadding.hpp"
+#include "SymmetricPadding.hpp"
 #include <iostream>
 
 namespace curoy{
-    double SymetricPadding::get(int i){
+    double SymmetricPadding::get(int i){
         if(i < 0 && -i - 1< length)
         {
             return data[-i - 1];
