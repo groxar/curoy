@@ -16,7 +16,7 @@ namespace curoy{
             return data[length - (i - length + 1)];
         }
         else{
-            std::cout << "i: " << i << " length: " << length << std::endl;
+            std::cout << "Error: filter longer than signal" << "i: " << i << " length: " << length << std::endl;
             throw "invalid";
         }
     }
