@@ -4,3 +4,4 @@ cuMatrixUnit
 xMatrixUnit
 src/ml/gradientData/*
 src/ml/annData/*
+src/teco/*
