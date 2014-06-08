@@ -1,9 +1,7 @@
 CC = clang
 CXX = clang++
 NVCC = nvcc
-CUDACNFG= -arch=sm_35
-LIBDIR = lib/
-OBJDIR = obj/
+CUDACNFG= -arch=sm_35 -l curand
 OPTION = -std=c++0x -g
 
 
@@ -17,6 +15,7 @@ xMatrixUnit: xMatrixUnit.cpp
 
 cuMatrixMul: cuMatrixMul.cpp  ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+ 
+	./cuMatrixMul
 
 clean:
 	rm cuMatrixMul

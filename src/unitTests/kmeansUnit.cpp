@@ -19,11 +19,6 @@ TEST_CASE("[ann]", "cuda artifical neural network"){
 		cuMatrix<double> centroids({{6.4,2.8,5.6,2.2},{6.2,2.9,4.3,1.3},{7.7,3.0,6.1,2.3}});
 		kmeans myKmeans(centroids);
 		myKmeans.train(X);
-		cout <<myKmeans.predict(X)<<endl;
-		cout << (cuMatrix<double>({5,5},fillMode::rnd)|cuMatrix<double>({5,5},fillMode::identity))<<endl;
-		cout << cuMatrix<double>({33,17},fillMode::identity)<<endl;
-		cout << inv(cuMatrix<double>({{1,2,3},{4,5,6},{7,8,9}}))<<endl;
-		cout << inv(cuMatrix<double>({3,3},fillMode::identity))<<endl;
-		cout << inv(cuMatrix<double>({3,3},fillMode::identity)==0)<<endl;
+	//	cout <<myKmeans.predict(X)<<endl;
 	}
 }

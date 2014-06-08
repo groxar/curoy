@@ -31,7 +31,7 @@ annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
 kmeansUnit: kmeansUnit.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nKMEANSUNIT"
-	./kmeansUnit
+	time ./kmeansUnit
 
 svmUnit: svmUnit.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
