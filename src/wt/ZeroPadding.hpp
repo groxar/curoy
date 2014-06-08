@@ -4,10 +4,11 @@
 #include "IPadding.hpp"
 
 namespace curoy{
-class SymetricPadding: public IPadding
+class ZeroPadding: public IPadding
 {
     public:
-        SymetricPadding(const double* data, size_t length): IPadding(data, length) {}
+        ZeroPadding(){}
+        ZeroPadding(const double* data, size_t length): IPadding(data, length) {}
         virtual double get(int);
 };
 }

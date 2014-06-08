@@ -56,7 +56,7 @@ featureNormalizeUnit: featureNormalizeUnit.cpp ../lib/cudaMatrix.o
 dbUnitTest: dbUnit.cpp ../db/xMatrixFileAdapter.o ../db/xMatrixRedisBinaryAdapter.o
 	$(CXX) $(OPTION) $(DBLIBOPTION) -o $@ $+
 
-wtUnitTest: wtUnitTest.cpp ../wt/WaveletTransformator.o ../wt/Filter.o ../wt/SymetricPadding.o
+wtUnitTest: wtUnitTest.cpp ../wt/WaveletTransformator.o ../wt/Filter.o ../wt/SymmetricPadding.o
 	$(CXX) $(OPTION) $(DBLIBOPTION) -o $@ $+
 
 clean:

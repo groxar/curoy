@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <string>
 
-#include "SymetricPadding.hpp"
+#include "SymmetricPadding.hpp"
 
 using namespace std;
 namespace curoy{
@@ -17,7 +17,22 @@ namespace curoy{
         return waveletDecomposition(data, length, level, filter);
     }
 
+    WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, string waveletName, IPadding *padding)
+    {
+        Filter filter(waveletName);
+
+        return waveletDecomposition(data, length, level, filter, padding);
+    }
+
     WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, Filter filter)
+    {
+        SymmetricPadding *padding = new SymmetricPadding();
+        WaveletReturn *wReturn = waveletDecomposition(data, length, level, filter, padding);
+        delete padding;
+        return wReturn;
+    }
+
+    WaveletReturn* WaveletTransformator::waveletDecomposition(const double* data, size_t length, size_t level, Filter filter, IPadding *padding)
     {
         size_t totalLength = 0;
         vector<WaveletReturn*> waveletReturns;
@@ -31,7 +46,7 @@ namespace curoy{
         size_t currentLength = length;
         for(size_t curLevel = 0; curLevel < level; curLevel++)
         {
-            WaveletReturn *waveletReturn = oneLevelWaveletDecomposition(temp, currentLength, filter);
+            WaveletReturn *waveletReturn = oneLevelWaveletDecomposition(temp, currentLength, filter, padding);
             waveletReturns.insert(waveletReturns.begin(), waveletReturn);
 
             temp = waveletReturn->data;
@@ -77,7 +92,7 @@ namespace curoy{
         return toReturn;
     }
 
-    WaveletReturn* WaveletTransformator::oneLevelWaveletDecomposition(const double* data, size_t length, Filter filter)
+    WaveletReturn* WaveletTransformator::oneLevelWaveletDecomposition(const double* data, size_t length, Filter filter, IPadding *padding)
     {
         //length of the resulting transformed signal
         size_t resultLength = ((length + length % 2) / 2 + filter.length / 2 - 1) * 2;
@@ -86,11 +101,12 @@ namespace curoy{
         //prepare Data
 
         //using swappable padding although swapping through parameter is not yet enabled (use interface IPadding)
-        SymetricPadding padding(data, length);
+        padding->data = data;
+        padding->length = length;
         for(int i = 0; i < resultLength + filter.length - 2; i++)
         {
             int actualIndex = i - (filter.length - 2);
-            preparedData[i] = padding.get(actualIndex);
+            preparedData[i] = padding->get(actualIndex);
         }
 
         double* result = new double[resultLength];

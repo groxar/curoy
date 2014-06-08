@@ -5,11 +5,20 @@ phony: example
 Filter.o: Filter.cpp
 	clang++ $(OPTION) -o $@ -c $+
 
-SymetricPadding.o: SymetricPadding.cpp
+SymmetricPadding.o: SymmetricPadding.cpp
 	clang++ $(OPTION) -o $@ -c $+
 
-WaveletTransformator.o: WaveletTransformator.cpp Filter.o SymetricPadding.o
+PeriodicPadding.o: PeriodicPadding.cpp
 	clang++ $(OPTION) -o $@ -c $+
 
-example: example.cpp WaveletTransformator.o Filter.o SymetricPadding.o
+ZeroPadding.o: ZeroPadding.cpp
+	clang++ $(OPTION) -o $@ -c $+
+
+ConstantPadding.o: ConstantPadding.cpp
+	clang++ $(OPTION) -o $@ -c $+
+
+WaveletTransformator.o: WaveletTransformator.cpp Filter.o SymmetricPadding.o
+	clang++ $(OPTION) -o $@ -c $+
+
+example: example.cpp WaveletTransformator.o Filter.o SymmetricPadding.o
 	clang++ $(OPTION) -o $@ $+
