@@ -22,3 +22,6 @@ WaveletTransformator.o: WaveletTransformator.cpp Filter.o SymmetricPadding.o
 
 example: example.cpp WaveletTransformator.o Filter.o SymmetricPadding.o
 	clang++ $(OPTION) -o $@ $+
+
+benchmark: benchmark.cpp WaveletTransformator.o Filter.o SymmetricPadding.o
+	clang++ $(OPTION) -o $@ $+
