@@ -31,9 +31,10 @@ void costFunctionKernel(const double* X, size_t numXRows, size_t numYCols,
 
 __global__ void sigmoidKernel(const double* X, double* result,size_t numElements){
 	int pos = B_SIZE*blockIdx.x+threadIdx.x;
-	double x = X[pos];
-	if(pos < numElements)
+	if(pos < numElements){
+		double x = X[pos];
 		result[pos] = 1/(1+exp(-1*x));
+	}
 }
 
 void sigmoidDev2(double* X, size_t numRows, size_t numCols){
