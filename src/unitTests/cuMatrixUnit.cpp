@@ -111,7 +111,7 @@ TEST_CASE("[cuMatrix]", "cuda matrix unit test"){
 	}
 	
 	SECTION("cuda device reset"){
-		cudaDeviceReset();
+		//cudaDeviceReset();
 	}
 
 

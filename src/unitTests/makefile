@@ -1,7 +1,7 @@
 CC = gcc
 CXX = g++
 NVCC = nvcc
-CUDACNFG= -arch=sm_20 -lcurand
+CUDACNFG= -arch=sm_20 -lcurand -ccbin=/usr/bin/g++
 LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -O3
@@ -25,6 +25,11 @@ cuMatrixUnit: cuMatrixUnit.cpp  ../lib/cudaMatrix.o
 
 annUnit: annUnit.cpp ../lib/cudaMatrix.o ../ml/ann.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
+	@echo "\n\nANNUNIT"
+	./annUnit
+
+annUnit2: annUnit.cpp ../lib/cudaMatrix.o
+	$(NVCC) $(CUDACNFG) -l../ml/libann.so -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nANNUNIT"
 	./annUnit
 
