@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -13,14 +14,14 @@ using namespace curoy;
 xMatrix<double> readFile(string filename){
 	ifstream is(filename);
 	double* data_ptr;
-	int number_of_rows = 0; 
-	int number_of_cols = 0; 
+	int number_of_rows = 0;
+	int number_of_cols = 0;
 	size_t position = 0;
     string line;
 	stringstream lineStream;
 	string cell;
 	vector<double> vf;
-    
+
 	while (std::getline(is, line)){
 		lineStream << line;
 

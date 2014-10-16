@@ -11,7 +11,7 @@
 #include <iostream>
 
 namespace curoy{
-	//find a beatiful way for that BS
+	//find a beautiful way for that BS
 
 template<typename N>
 void pseudoWorkAroundFunctionToInitiallizeAddDev(){
@@ -21,10 +21,10 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	divDev<N>(NULL,NULL,NULL,0);
 	eqDev<N>(NULL,NULL,NULL,0);
 	neqDev<N>(NULL,NULL,NULL,0);
-	addSkalarDev<N>(NULL,0,NULL,0);
-	subSkalarDev<N>(NULL,0,NULL,0);
-	mulSkalarDev<N>(NULL,0,NULL,0);
-	divSkalarDev<N>(NULL,0,NULL,0);
+	addSkalarDev<N>(NULL,(N)0,NULL,0);
+	subSkalarDev<N>(NULL,(N)0,NULL,0);
+	mulSkalarDev<N>(NULL,(N)0,NULL,0);
+	divSkalarDev<N>(NULL,(N)0,NULL,0);
 	divReverseSkalarDev<N>(NULL,0,NULL,0);
 	eqSkalarDev<N>(NULL,0,NULL,0);
 	neqSkalarDev<N>(NULL,0,NULL,0);
@@ -40,7 +40,6 @@ void pseudoWorkAroundFunctionToInitiallizeAddDev(){
 	transposeDev<N>(NULL, NULL, 0, 0);
 	fillDev<N>(NULL,0,0);
 	fillIdentityDev<N>(NULL,0,0);
-
 	castDev<N,double>(NULL,NULL,0);
 	castDev<N,float>(NULL,NULL,0);
 	castDev<N,size_t>(NULL,NULL,0);
@@ -67,9 +66,10 @@ void pseudoPseudoFoo(){
 
 	pseudoUndefinedNonFloatingPoint<double>();
 	pseudoUndefinedNonFloatingPoint<float>();
+	mulSkalarDev<double>((double const*)NULL,(double)0.0, (double*)NULL, (size_t)0);
 }
 
-	
+
 /**
  * MATRIX MULTIPLICATION
  */
@@ -85,7 +85,7 @@ __global__ void matrixMultiplyKernel(const N* lhs,const N* rhs, N* result,
     size_t bx = blockIdx.y;
     size_t ty = threadIdx.x;
     size_t tx = threadIdx.y;
-    
+
     size_t row = bx * B_WIDTH + tx;
     size_t col = by * B_WIDTH + ty;
     N pValue = 0;
@@ -128,7 +128,7 @@ __global__ void isDiagonalElementZero(const N* input, char* result, size_t nWidt
 
 template<typename N>
 void invertRow(const N* input, N* result, size_t nWidth){
-	
+
 }
 
 template<typename N>
@@ -148,8 +148,8 @@ __device__ inline N addFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void addReduce(const N* input, N* output,N neutralValue, size_t len) {
-	reduceFuncKernel(&addFuncKernel<N>,input, output,neutralValue,len);	
-}	
+	reduceFuncKernel(&addFuncKernel<N>,input, output,neutralValue,len);
+}
 
 template<typename N>
 inline void sumColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
@@ -171,8 +171,8 @@ __device__ inline N mulFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void prodReduce(const N* input, N* output,N neutralValue, size_t len) {
-	reduceFuncKernel(&mulFuncKernel<N>,input, output,neutralValue,len);	
-}	
+	reduceFuncKernel(&mulFuncKernel<N>,input, output,neutralValue,len);
+}
 
 template<typename N>
 inline void prodColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
@@ -194,8 +194,8 @@ __device__ inline N maxFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void maxReduce(const N* input, N* output,N neutralValue, size_t len) {
-	reduceFuncKernel(&maxFuncKernel<N>,input, output,neutralValue, len);	
-}	
+	reduceFuncKernel(&maxFuncKernel<N>,input, output,neutralValue, len);
+}
 
 template<typename N>
 void maxColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
@@ -217,8 +217,8 @@ __device__ inline N minFuncKernel(const N lhs, const N rhs){
 
 template<typename N>
 __global__ void minReduce(const N* input, N* output,N neutralValue, size_t len) {
-	reduceFuncKernel(&minFuncKernel<N>,input, output,neutralValue, len);	
-}	
+	reduceFuncKernel(&minFuncKernel<N>,input, output,neutralValue, len);
+}
 
 template<typename N>
 void minColumneDev(const N* X, N* result, size_t nRows, size_t nCols){
@@ -314,7 +314,7 @@ void fillIdentityDev(N* X, size_t nRows, size_t nCols){
  */
 template<typename M, typename N>
 __device__ N castFuncKernel(M value){
-	return (N) value; 
+	return (N) value;
 }
 
 template<typename M, typename N>
@@ -334,9 +334,9 @@ __global__ void addKernel(const N* lhs, const N* rhs, N* result, size_t numEleme
 	zipFunc(&addFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void addDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	addKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	addKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -344,9 +344,9 @@ __global__ void addSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 	zipFuncSkalar(&addFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void addSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	addSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	addSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 /**
@@ -362,9 +362,9 @@ __global__ void subKernel(const N* lhs, const N* rhs, N* result, size_t numEleme
 	zipFunc(&subFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void subDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	subKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	subKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -372,9 +372,9 @@ __global__ void subSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 	zipFuncSkalar(&subFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void subSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	subSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	subSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 
@@ -386,9 +386,9 @@ __global__ void mulKernel(const N* lhs, const N* rhs, N* result, size_t numEleme
 	zipFunc(&mulFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void mulDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	mulKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	mulKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -396,9 +396,9 @@ __global__ void mulSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 	zipFuncSkalar(&mulFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void mulSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	mulSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	mulSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 
@@ -420,9 +420,9 @@ __global__ void divKernel(const N* lhs, const N* rhs, N* result, size_t numEleme
 	zipFunc(&divFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void divDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	divKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	divKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -430,9 +430,9 @@ __global__ void divSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 	zipFuncSkalar(&divFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void divSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	divSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	divSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -440,9 +440,9 @@ __global__ void divReverseSkalarKernel(const N* lhs, const N rhs, N* result, siz
 	zipFuncSkalar(&divReverseFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void divReverseSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	divReverseSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	divReverseSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 /**
@@ -458,9 +458,9 @@ __global__ void eqKernel(const N* lhs, const N* rhs, N* result, size_t numElemen
 	zipFunc(&eqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void eqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	eqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	eqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -468,9 +468,9 @@ __global__ void eqSkalarKernel(const N* lhs, const N rhs, N* result, size_t numE
 	zipFuncSkalar(&eqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void eqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	eqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	eqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 /**
@@ -486,9 +486,9 @@ __global__ void neqKernel(const N* lhs, const N* rhs, N* result, size_t numEleme
 	zipFunc(&neqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void neqDev(const N* lhs, const N* rhs, N* result, size_t numElements){
-	neqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	neqKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 template<typename N>
@@ -496,9 +496,9 @@ __global__ void neqSkalarKernel(const N* lhs, const N rhs, N* result, size_t num
 	zipFuncSkalar(&neqFuncKernel<N>,lhs,rhs,result,numElements);
 }
 
-template<typename N> 
+template<typename N>
 void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
-	neqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);		
+	neqSkalarKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(lhs,rhs,result,numElements);
 }
 
 /**
@@ -509,52 +509,48 @@ void neqSkalarDev(const N* lhs, const N rhs, N* result, size_t numElements){
 template<typename N>
 __global__ void powKernel(const N* input,const N exponent, N* result, size_t numElements){
 	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
-	if(pos < numElements)	
+	if(pos < numElements)
 		result[pos]=pow(input[pos],exponent);
 }
 
 template<typename N>
 void powDev(const N* input, const N exponent,  N* result, size_t numElements){
-	powKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,exponent,result,numElements);		
+	powKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,exponent,result,numElements);
 }
 
 template<typename N>
 __global__ void expKernel(const N* input, N* result, size_t numElements){
 	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
-	if(pos < numElements)	
+	if(pos < numElements)
 		result[pos]=exp(input[pos]);
 }
 
 template<typename N>
 void expDev(const N* input, N* result, size_t numElements){
-	expKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
+	expKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);
 }
 
 template<typename N>
 __global__ void logKernel(const N* input, N* result, size_t numElements){
 	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
-	if(pos < numElements)	
+	if(pos < numElements)
 		result[pos]=log(input[pos]);
 }
 
 template<typename N>
 void logDev(const N* input, N* result, size_t numElements){
-	logKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
+	logKernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);
 }
 
 template<typename N>
 __global__ void log10Kernel(const N* input, N* result, size_t numElements){
 	size_t pos = B_SIZE * blockIdx.x + threadIdx.x;
-	if(pos < numElements)	
+	if(pos < numElements)
 		result[pos]=log10(input[pos]);
 }
 
 template<typename N>
 void log10Dev(const N* input, N* result, size_t numElements){
-	log10Kernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);		
+	log10Kernel<<<CEIL_DIV(numElements,B_SIZE),B_SIZE>>>(input,result,numElements);
 }
 }
-
-
-
-

@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <exception>
-#include <type_traits> 
+#include <type_traits>
 #include <tgmath.h>
 #include <functional>
 #include "matrixException.hpp"
@@ -35,14 +35,14 @@ class xMatrix{
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 		}
 
-		xMatrix(initializer_list<N> data){ 
+		xMatrix(initializer_list<N> data){
 			m_vecDim.push_back(data.size());
 			m_perm = memPermission::user;
 			rebase(data.size());
 
 			int pos = 0;
 			for(auto it : data){
-				m_data[pos] = it; 
+				m_data[pos] = it;
 				++pos;
 			}
 		}
@@ -50,7 +50,7 @@ class xMatrix{
 		xMatrix(initializer_list<xMatrix<N>> matrixList){
 			// determine vector dimension
 			for(auto matrix : matrixList){
-				for(int depth = 0; depth < matrix.nDim();++depth ){
+				for(size_t depth = 0; depth < matrix.nDim();++depth ){
 					if(depth == m_vecDim.size())
 						m_vecDim.push_back(matrix.dim(depth));
 					else if ( depth < matrix.nDim() && matrix.dim(depth) > m_vecDim[depth])
@@ -62,7 +62,7 @@ class xMatrix{
 			// put data
 			m_perm = memPermission::user;
 			rebase(size());
-			
+
 			fill(*this,0);
 			size_t matrixPos = 0;
 			for(auto matrix : matrixList){
@@ -71,7 +71,7 @@ class xMatrix{
 			}
 		}
 
-		~xMatrix(){ 
+		~xMatrix(){
 			if(m_perm == memPermission::owner)
 				free(m_data);
 		}
@@ -111,7 +111,7 @@ class xMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			
+
 			vector<size_t> tempV(++m_vecDim.begin(),end);
 			if(tempV.size()==0 && size() > 1  )
 				tempV.push_back(1);
@@ -139,7 +139,7 @@ class xMatrix{
 			}
 			return move(matrix);
 		}
-		
+
 		friend inline xMatrix<N>&& operator! (xMatrix<N>&& matrix){
 			return move(matrix);
 		}
@@ -155,7 +155,7 @@ class xMatrix{
 			rhs.m_data = nullptr;
 			return *this;
 		}
-		
+
 		xMatrix<N>& operator= (const xMatrix<N>& rhs){
 			if(m_data != rhs.m_data){
 				if(m_perm == memPermission::diver){
@@ -165,7 +165,7 @@ class xMatrix{
 					}
 				}
 				else
-					rebase(rhs.size());	
+					rebase(rhs.size());
 				m_vecDim = rhs.m_vecDim;
 				memcpy(m_data,rhs.m_data, rhs.size()*sizeof(N));
 			}
@@ -178,24 +178,24 @@ class xMatrix{
 				m_data[i] =value;
 			return *this;
 		}
-		
+
 		/**
 		 * MATRIX FILL
 		 */
-		friend xMatrix<N> fill(xMatrix<N>& matrix, const N number){	
-			matrix.rebase(matrix.size());	
+		friend xMatrix<N> fill(xMatrix<N>& matrix, const N number){
+			matrix.rebase(matrix.size());
 
-			for(size_t i= 0; i < matrix.size();++i ) 
+			for(size_t i= 0; i < matrix.size();++i )
 				matrix.m_data[i] = number;
 			return matrix;
 		}
 
 		friend xMatrix<N>&& fill(xMatrix<N>&& matrix, const N number){
-			for(size_t i = 0; i < matrix.size();++i ) 
+			for(size_t i = 0; i < matrix.size();++i )
 				matrix.m_data[i] = number;
 			return move(matrix);
 		}
-		
+
 		/**
 		 * ADDITION
 		 */
@@ -209,13 +209,13 @@ class xMatrix{
 
 		//double rvalue
 		friend inline xMatrix<N>&& operator+ (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
-			return move(!lhs + rhs); 
+			return move(!lhs + rhs);
 		}
 
 		friend inline xMatrix<N>&& operator+ (xMatrix<N>& lhs, xMatrix<N>&& rhs){
-			return move(!rhs + lhs); 
+			return move(!rhs + lhs);
 		}
-				
+
 		friend xMatrix<N>&& operator+ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
@@ -241,7 +241,7 @@ class xMatrix{
 				lhs.m_data[i] = lhs.m_data[i] + rhs;
 			return move(lhs);
 		}
-		
+
 		/**
 		 * SUBSTRACTION
 		 */
@@ -251,24 +251,24 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
 			return result;
-		}	
+		}
 
 		//double rvalue
 		friend inline xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
-			return move(!lhs - rhs); 
+			return move(!lhs - rhs);
 		}
 
 		friend inline xMatrix<N>&& operator- (xMatrix<N>& lhs, xMatrix<N>&& rhs){
 			return move((!rhs) * -1 + lhs); //fix after implementing scalar
 		}
-	
+
 		friend xMatrix<N>&& operator- (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] - rhs.m_data[i];
 			return move(lhs);
 		}
-		
+
 		/**
 		 * SUBTRACTION SKALAR
 		 */
@@ -305,7 +305,7 @@ class xMatrix{
 
 			N* temp = (N*) malloc(numX*numY*sizeof(N));
 			N tempN=0;
-			
+
 			for(size_t y = 0; y < numY; ++y){
 				for(size_t x = 0; x < numX; ++x){
 					for(size_t i = 0; i < numK; ++i)
@@ -315,10 +315,10 @@ class xMatrix{
 					tempN=0;
 				}
 			}
-			
+
 			return xMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
 		}
-	
+
 		/**
 		 * ELEMENTWISE MULTIPLICATION
 		 */
@@ -328,23 +328,23 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = lhs.m_data[i] * rhs.m_data[i];
 			return result;
-		}	
+		}
 
 		//double rvalue
 		friend inline xMatrix<N>&& operator* (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
-			return move(!lhs * rhs); 
+			return move(!lhs * rhs);
 		}
 
 		friend inline xMatrix<N>&& operator* (xMatrix<N>& lhs, xMatrix<N>&& rhs){
 			return move(!rhs * lhs); //fix after implementing scalar
 		}
-	
+
 		friend xMatrix<N>&& operator* (xMatrix<N>&& lhs, xMatrix<N>& rhs){
 			size_t numElements = lhs.size();
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] * rhs.m_data[i];
 			return move(lhs);
-		}	
+		}
 
 		/**
 		 * MULTIPLICATION SKALAR
@@ -364,8 +364,8 @@ class xMatrix{
 				lhs.m_data[i] = lhs.m_data[i] * rhs;
 			return move(lhs);
 		}
-		
-	
+
+
 		/**
 		 * ELEMENTWISE MULTIPLICATION
 		 */
@@ -375,11 +375,11 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				result.m_data[i] = lhs.m_data[i] / rhs.m_data[i];
 			return result;
-		}	
+		}
 
 		//double rvalue
 		friend inline xMatrix<N>&& operator/ (xMatrix<N>&& lhs, xMatrix<N>&& rhs){
-			return move(!lhs / rhs); 
+			return move(!lhs / rhs);
 		}
 
 		friend xMatrix<N>&& operator/ (xMatrix<N>&& lhs, xMatrix<N>& rhs){
@@ -387,7 +387,7 @@ class xMatrix{
 			for(int i = 0; i < numElements; ++i)
 				lhs.m_data[i] = lhs.m_data[i] / rhs.m_data[i];
 		}
-			
+
 		/**
 		 * DIVISION SKALAR
 		 */
@@ -405,7 +405,7 @@ class xMatrix{
 				lhs.m_data[i] = lhs.m_data[i] / rhs;
 			return move(lhs);
 		}
-		
+
 
 
 		/**
@@ -418,7 +418,7 @@ class xMatrix{
 				result.m_data[i] = log(matrix.m_data[i]);
 			return result;
 		}
-		
+
 		friend xMatrix<N>&& log(xMatrix<N>&& matrix) {
 			size_t numElements = matrix.size();
 			for(int i = 0; i < numElements; ++i)
@@ -426,7 +426,7 @@ class xMatrix{
 			return move(matrix);
 		}
 
-		
+
 		friend xMatrix<N> log10(const xMatrix<N>& matrix){
 			size_t numElements = matrix.size();
 			xMatrix<N> result((N*)malloc(numElements*sizeof(N)),matrix.m_vecDim,memPermission::owner);
@@ -434,7 +434,7 @@ class xMatrix{
 				result.m_data[i] = log10(matrix.m_data[i]);
 			return result;
 		}
-		
+
 		friend xMatrix<N>&& log10(xMatrix<N>&& matrix) {
 			size_t numElements = matrix.size();
 			for(int i = 0; i < numElements; ++i)
@@ -497,11 +497,11 @@ class xMatrix{
 			if(transVec.size() < 2)
 				transVec.push_back(1);
 			swap(transVec[0],transVec[1]);
-			
+
 			size_t numX = matrix.dim(0);
 			size_t numY = matrix.dim(1);
 			N* temp = (N*) malloc(numX*numY*sizeof(N));
-			
+
 			for(size_t x = 0; x < numX; x++){
 				for(size_t y = 0; y < numY; y++){
 					temp[numX*y+x]=matrix.m_data[numY*x+y];
@@ -511,10 +511,10 @@ class xMatrix{
 		}
 
 		/**
-		 * CAST 
+		 * CAST
 		 */
 		//operator N () const{ return *m_data;}//needed ?
-		
+
 		friend bool operator== (const xMatrix<N>& matrix,const N value){
 			return *(matrix.m_data) ==value;
 		}
@@ -543,10 +543,12 @@ class xMatrix{
 			return os;
 		}
 
-		N* m_data;//-> to private after tests
-	private:
-		enum memPermission m_perm;
+		N* m_data;
 		vector<size_t> m_vecDim;
+		enum memPermission m_perm;
+	private:
+
+
 
 		void rebase(size_t numElements){
 			if(m_perm == memPermission::user){
@@ -558,7 +560,7 @@ class xMatrix{
 			}
 
 			if(this->m_data == NULL)
-				cout << "allocation error";	
+				cout << "allocation error";
 		}
 };
 }

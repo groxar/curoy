@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <exception>
-#include <type_traits> 
+#include <type_traits>
 #include <tgmath.h>
 #include <functional>
 #include <tuple>
@@ -58,12 +58,12 @@ class cuMatrix{
 				cout << cudaGetErrorString(err)<<endl;
 		}
 
-		~cuMatrix(){ 
+		~cuMatrix(){
 			cudaError_t err = cudaSuccess;
 			if(m_perm == memPermission::owner){
 				err = cudaFree(m_data);
 				if(err!=cudaSuccess)
-					cout << cudaGetErrorString(err)<<" "<< size()<<endl;	
+					cout << cudaGetErrorString(err)<<" "<< size()<<endl;
 			}
 		}
 
@@ -100,7 +100,7 @@ class cuMatrix{
 				cout << cudaGetErrorString(err)<<endl;
 			return rhs;
 		}
-		
+
 		friend xMatrix<N>& operator<< (xMatrix<N>& lhs, const cuMatrix<N>& rhs){
 			lhs.resize(rhs.dim());
 			cudaError_t err = cudaMemcpy(lhs.m_data,rhs.m_data,rhs.size()*sizeof(N),cudaMemcpyDeviceToHost);
@@ -123,7 +123,7 @@ class cuMatrix{
 			auto end = m_vecDim.end();
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
-			
+
 			vector<size_t> tempV(++m_vecDim.begin(),end);
 			if(tempV.size()==0 && size() > 1  )
 				tempV.push_back(1);
@@ -139,14 +139,14 @@ class cuMatrix{
 		}
 
 		//2D only
+		//TODO:rework this funciton sucks
 		cuMatrix<N> operator()(vector<size_t> firstRange,vector<size_t> secondRange){
-			if(firstRange.size() == nDim() == secondRange.size()==2){
+			if(firstRange.size() == nDim() == secondRange.size() == 2){
 				cout << "Range error in ()"<< endl;
 				return cuMatrix<N>();
 			}
 			vector<size_t> newDimension;
 			size_t size = 1;
-			size_t end = nDim();
 
 			if(firstRange[0]>firstRange[1] && dim(0)>=firstRange[1]){
 				cout <<"ranges have to be ascending, invalid Input: {"<< firstRange[0]<<","<< firstRange[1]<<"}"<<endl;
@@ -164,12 +164,12 @@ class cuMatrix{
 
 			cuMatrix<N> result(newDimension,fillMode::none);
 
-			for(int i = firstRange[0]; i <= firstRange[1]; ++i){
+			for(size_t i = firstRange[0]; i <= firstRange[1]; ++i){
 				cudaMemcpy(&(result.m_data[newDimension[1]*i]),&(m_data[dim(1)*i+secondRange[0]]),sizeof(N)*(newDimension[1]),cudaMemcpyDeviceToDevice);
 			}
 			return result;
 		}
-		
+
 		// TODO decide if this is a workaround, fix or a stupid idea. Most likely it's the last one
 		N operator~(){
 			N result = 0;
@@ -193,7 +193,7 @@ class cuMatrix{
 			}
 			return move(matrix);
 		}
-		
+
 		friend inline cuMatrix<N>&& operator! (cuMatrix<N>&& matrix){
 			return move(matrix);
 		}
@@ -223,7 +223,7 @@ class cuMatrix{
 			}
 			return *this;
 		}
-		
+
 		//rework
 		cuMatrix<N>& operator= (const cuMatrix<N>& rhs){
 			if( m_perm == memPermission::diver){
@@ -253,7 +253,7 @@ class cuMatrix{
 		/**
 		 * CAST
 		 */
-		
+
 		template<typename M>
 		operator cuMatrix<M>(){
 			cuMatrix<M> result(this->m_vecDim,fillMode::none);
@@ -263,8 +263,8 @@ class cuMatrix{
 		/**
 		 * MATRIX FILL
 		 */
-		friend cuMatrix<N> fill(cuMatrix<N>& matrix,const N value){	
-			matrix.rebase(matrix.size());	
+		friend cuMatrix<N> fill(cuMatrix<N>& matrix,const N value){
+			matrix.rebase(matrix.size());
 			fillDev(matrix.m_data, value, matrix.size());
 			return matrix;
 		}
@@ -274,8 +274,8 @@ class cuMatrix{
 			return move(matrix);
 		}
 
-		friend cuMatrix<N>&& fillRnd(cuMatrix<N>& matrix){	
-			matrix.rebase(matrix.size());	
+		friend cuMatrix<N>&& fillRnd(cuMatrix<N>& matrix){
+			matrix.rebase(matrix.size());
 			return move(fillRnd(!matrix));
 		}
 
@@ -286,7 +286,7 @@ class cuMatrix{
 			curandGenerateUniformDouble(gen, (double*) matrix.m_data, matrix.size()); // TODO FIX (double*)
 			return move(matrix);
 		}
-		
+
 		friend cuMatrix<N>&& fillIdentity(cuMatrix<N>& matrix){
 			return move(fillIdentity(!matrix));
 		}
@@ -298,13 +298,13 @@ class cuMatrix{
 
 		/**
 		 * MATRIX Concatination
-		 */	
+		 */
 		friend cuMatrix<N> operator& (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
 			if(!((dimCompare(lhs.dim(),rhs.dim())==1&&lhs.dim(0)!=rhs.dim(0) )||dimCompare(lhs.dim(),rhs.dim())==0)){
 				cout << "concatination dimension error"<<endl;
 				return lhs;
 			}
-			vector<size_t>  vecDim = lhs.dim(); 
+			vector<size_t>  vecDim = lhs.dim();
 			vecDim[0] = lhs.dim(0) + rhs.dim(0);
 			cuMatrix<N> result(vecDim,fillMode::none);
 			cudaMemcpy(result.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
@@ -313,19 +313,19 @@ class cuMatrix{
 			return result;
 		}
 		friend cuMatrix<N> operator& (const cuMatrix<N>& lhs,const N value){
-			vector<size_t>  vecDim = lhs.dim(); 
+			vector<size_t>  vecDim = lhs.dim();
 			vecDim[0] = lhs.dim(0) + 1;
 			cuMatrix<N> result(vecDim,value);
 			cudaMemcpy(result.m_data,lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
-			
+
 			return result;
 		}
 		friend cuMatrix<N> operator& (const N value, const cuMatrix<N>& lhs){
-			vector<size_t>  vecDim = lhs.dim(); 
+			vector<size_t>  vecDim = lhs.dim();
 			vecDim[0] = lhs.dim(0) + 1;
 			cuMatrix<N> result(vecDim,value);
 			cudaMemcpy(&(result.m_data[lhs.dim(1)]),lhs.m_data,lhs.size()*sizeof(N),cudaMemcpyDeviceToDevice);
-			
+
 			return result;
 		}
 		friend cuMatrix<N> operator| (const cuMatrix<N>& lhs,const cuMatrix<N>& rhs){
@@ -337,8 +337,8 @@ class cuMatrix{
 		friend cuMatrix<N> operator| (const N value, const cuMatrix<N>& lhs){
 			return T(value&T(lhs));
 		}
-	
-	
+
+
 		/**
 		 * Matrix operator Map
 		 */
@@ -351,7 +351,7 @@ class cuMatrix{
 			size_t numElements = lhs.size();
 			cuMatrix<N> result;
 			result.resize(lhs.dim());
-			f(lhs.m_data,rhs.m_data,result.m_data,numElements);	
+			f(lhs.m_data,rhs.m_data,result.m_data,numElements);
 			return result;
 		}
 
@@ -362,7 +362,7 @@ class cuMatrix{
 				return move(lhs);
 			}
 			size_t numElements = lhs.size();
-			f(lhs.m_data,rhs.m_data,lhs.m_data,numElements);	
+			f(lhs.m_data,rhs.m_data,lhs.m_data,numElements);
 			return move(lhs);
 		}
 
@@ -375,14 +375,14 @@ class cuMatrix{
 			size_t numElements = lhs.size();
 			cuMatrix<N> result;
 			result.resize(lhs.dim());
-			f(lhs.m_data,values...,result.m_data,numElements);	
+			f(lhs.m_data,values...,result.m_data,numElements);
 			return result;
 		}
 
 		template<typename FUNC,typename... M>
 		friend cuMatrix<N>&& mapFunc(FUNC f, cuMatrix<N>&& lhs, M... values){
 			size_t numElements = lhs.size();
-			f(lhs.m_data,values...,lhs.m_data,numElements);	
+			f(lhs.m_data,values...,lhs.m_data,numElements);
 			return move(lhs);
 		}
 
@@ -391,7 +391,7 @@ class cuMatrix{
 		 */
 		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs + rhs); }
 		friend inline cuMatrix<N>&& operator+ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs + lhs); }
-		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::addDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::addDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator+ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::addDev<N>,lhs,rhs)); }
 
 		/**
@@ -401,15 +401,15 @@ class cuMatrix{
 		friend cuMatrix<N>&& operator+ (const N lhs, cuMatrix<N>&& rhs) 		{ return move(!rhs + lhs); }
 		friend cuMatrix<N>   operator+ (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::addSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator+ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::addSkalarDev<N>,!lhs,rhs)); }
-		
+
 		/**
 		 * SUBSTRACTION
 		 */
 		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs - rhs); }
 		friend inline cuMatrix<N>&& operator- (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move((!rhs*-1) + lhs); }
-		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::subDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::subDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator- (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::subDev<N>,lhs,rhs)); }
-		
+
 		/**
 		 * SUBTRACTION SKALAR
 		 */
@@ -417,13 +417,13 @@ class cuMatrix{
 		friend cuMatrix<N>&& operator- (const N lhs, cuMatrix<N>&& rhs) 		{ return move(-!rhs + lhs); }
 		friend cuMatrix<N>   operator- (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::subSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator- (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::subSkalarDev<N>,!lhs,rhs)); }
-		
+
 		/**
-		 * Elementwise Multiplcation 
+		 * Elementwise Multiplcation
 		 */
 		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs * rhs); }
 		friend inline cuMatrix<N>&& operator* (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs * lhs); }
-		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::mulDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::mulDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator* (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::mulDev<N>,lhs,rhs)); }
 
 		/**
@@ -433,13 +433,13 @@ class cuMatrix{
 		friend cuMatrix<N>&& operator* (const N lhs, cuMatrix<N>&& rhs) 		{ return move(!rhs * lhs); }
 		friend cuMatrix<N>   operator* (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::mulSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator* (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::mulSkalarDev<N>,!lhs,rhs)); }
-	
+
 		/**
-		 * Divison 
+		 * Divison
 		 */
 		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs / rhs); }
 		friend inline cuMatrix<N>&& operator/ (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(pow(!rhs,-1) * lhs); }
-		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::divDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::divDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator/ (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::divDev<N>,lhs,rhs)); }
 
 		/**
@@ -449,13 +449,13 @@ class cuMatrix{
 		friend cuMatrix<N>&& operator/ (const N lhs, cuMatrix<N>&& rhs) 		{ return mapFunc(&divReverseSkalarDev<N>,!rhs,lhs); }
 		friend cuMatrix<N>   operator/ (const cuMatrix<N>& lhs, const N rhs) 	{ return move(mapFunc(&curoy::divSkalarDev<N>,lhs,rhs)); }
 		friend cuMatrix<N>&& operator/ (cuMatrix<N>&& lhs, const N rhs) 		{ return move(mapFunc(&curoy::divSkalarDev<N>,!lhs,rhs)); }
-	
+
 		/**
 		 * Equal
 		 */
 		friend inline cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs == rhs); }
 		friend inline cuMatrix<N>&& operator== (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs == lhs); }
-		friend inline cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::eqDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator== (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::eqDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator== (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs) 	{ return move(mapFunc(&curoy::eqDev<N>,lhs,rhs)); }
 
 		/**
@@ -471,7 +471,7 @@ class cuMatrix{
 		 */
 		friend inline cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, cuMatrix<N>&& rhs)			{ return move(!lhs != rhs); }
 		friend inline cuMatrix<N>&& operator!= (const cuMatrix<N>& lhs, cuMatrix<N>&& rhs)		{ return move(!rhs != lhs); }
-		friend inline cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::neqDev<N>,!lhs,rhs)); }	
+		friend inline cuMatrix<N>&& operator!= (cuMatrix<N>&& lhs, const cuMatrix<N>& rhs)		{ return move(mapFunc(&curoy::neqDev<N>,!lhs,rhs)); }
 		friend inline cuMatrix<N>   operator!= (const cuMatrix<N>& lhs, const cuMatrix<N>& rhs)	{ return move(mapFunc(&curoy::neqDev<N>,lhs,rhs)); }
 
 		/**
@@ -494,13 +494,13 @@ class cuMatrix{
 
 		friend cuMatrix<N>   pow (const cuMatrix<N>& lhs, const N exponent) { return move(mapFunc(&curoy::powDev<N>,lhs,exponent)); }
 		friend cuMatrix<N>&& pow (cuMatrix<N>&& lhs, const N exponent) 		{ return move(mapFunc(&curoy::powDev<N>,!lhs,exponent)); }
-	
+
 		friend cuMatrix<N>   exp (const cuMatrix<N>& lhs)	{ return move(mapFunc(&curoy::expDev<N>,lhs)); }
 		friend cuMatrix<N>&& exp (cuMatrix<N>&& lhs) 		{ return move(mapFunc(&curoy::expDev<N>,!lhs)); }
 
 		friend cuMatrix<N>   log (const cuMatrix<N>& lhs) 	{ return move(mapFunc(&curoy::logDev<N>,lhs)); }
 		friend cuMatrix<N>&& log (cuMatrix<N>&& lhs) 		{ return move(mapFunc(&curoy::logDev<N>,!lhs)); }
-		
+
 		friend cuMatrix<N>   log10 (const cuMatrix<N>& lhs) { return move(mapFunc(&curoy::log10Dev<N>,lhs)); }
 		friend cuMatrix<N>&& log10 (cuMatrix<N>&& lhs) 		{ return move(mapFunc(&curoy::log10Dev<N>,!lhs)); }
 
@@ -519,8 +519,8 @@ class cuMatrix{
 			N* temp;
 			cudaMalloc((void**)&temp,numX*numY*sizeof(N));
 
-			multDev(lhs.m_data,rhs.m_data,temp,numX,lhs.dim(1),numY);		
-			
+			multDev(lhs.m_data,rhs.m_data,temp,numX,lhs.dim(1),numY);
+
 			return cuMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
 		}
 
@@ -567,7 +567,6 @@ class cuMatrix{
 		friend tuple<cuMatrix<N>,cuMatrix<size_t>> maxPos(const cuMatrix<N>& matrix, size_t dimension){
 			N* temp;
 			size_t* posTemp;
-			size_t position;
 			cudaMalloc((void**) &temp,matrix.dim((dimension+1)%2)*sizeof(N));
 			cudaMalloc((void**) &posTemp,matrix.dim((dimension+1)%2)*sizeof(N));
 			vector<size_t> tempV(matrix.m_vecDim);
@@ -581,7 +580,7 @@ class cuMatrix{
 			return make_tuple(cuMatrix<N>(temp,tempV,memPermission::owner),
 							  cuMatrix<size_t>(posTemp,tempV,memPermission::owner));
 		}
-		
+
 		/*
 		 * MIN
 		 */
@@ -671,7 +670,7 @@ class cuMatrix{
 			}
 
 			cout <<"diagonal"<< dia<<endl;
-			
+
 			//invDev(result.m_data,result.m_data,matrix.dim(0));
 			return result;
 		}
@@ -682,11 +681,11 @@ class cuMatrix{
 			if(transVec.size() < 2)
 				transVec.push_back(1);
 			swap(transVec[0],transVec[1]);
-			
+
 			size_t numX = matrix.dim(0);
 			size_t numY = matrix.dim(1);
 			cuMatrix<N> result(transVec,fillMode::none);
-			
+
 			transposeDev(matrix.m_data,result.m_data,numX,numY);
 			return result;
 		}
@@ -700,12 +699,12 @@ class cuMatrix{
 			tempMatrix << matrix;
 			return os << tempMatrix;
 		}
-
-		N* m_data;//-> to private after tests
+		N* m_data;
+		vector<size_t> m_vecDim;
 		enum memPermission m_perm;
 	private:
-		vector<size_t> m_vecDim;
-		
+
+
 		void rebase(size_t numElements){
 			cudaError_t err = cudaSuccess;
 			if(m_perm != memPermission::owner){
@@ -718,7 +717,7 @@ class cuMatrix{
 			}
 
 			if(m_data == NULL || err != cudaSuccess){
-				cout << "GPU allocation error"<< endl;	
+				cout << "GPU allocation error"<< endl;
 				if(m_data == NULL)
 					cout << "M Data is NULL"<<endl;
 				if(err != cudaSuccess)

@@ -5,8 +5,10 @@
 #include <stdio.h>
 #include <cfloat>
 
-namespace curoy{
 
+
+
+namespace curoy{
 
 __global__ void projectMatrixKernel(const double* yVector, double* yMatrix, size_t numDataSets, size_t maxValue){
 	int pos = B_SIZE*blockIdx.x+threadIdx.x;
@@ -18,7 +20,7 @@ __global__ void projectMatrixKernel(const double* yVector, double* yMatrix, size
 }
 
 void projectMatrix(const double* yVector, double* yMatrix, size_t numDataSets, size_t maxValue){
-	projectMatrixKernel<<<CEIL_DIV(numDataSets,B_SIZE),B_SIZE>>>(yVector,yMatrix,numDataSets,maxValue);		
+	projectMatrixKernel<<<CEIL_DIV(numDataSets,B_SIZE),B_SIZE>>>(yVector,yMatrix,numDataSets,maxValue);
 }
 
 //stub
@@ -26,7 +28,7 @@ void costFunctionKernel(const double* X, size_t numXRows, size_t numYCols,
 						const double* Y, size_t numY,
 						double theta1, double theta2, //output
 						size_t numHLayer){
-	
+
 }
 
 __global__ void sigmoidKernel(const double* X, double* result,size_t numElements){
@@ -38,7 +40,7 @@ __global__ void sigmoidKernel(const double* X, double* result,size_t numElements
 }
 
 void sigmoidDev2(double* X, size_t numRows, size_t numCols){
-	sigmoidKernel<<<CEIL_DIV(numRows*numCols,B_SIZE),B_SIZE>>>(X,X,numRows*numCols);		
+	sigmoidKernel<<<CEIL_DIV(numRows*numCols,B_SIZE),B_SIZE>>>(X,X,numRows*numCols);
 }
 
 __global__ void sigmoidGradientKernel(){
@@ -51,4 +53,5 @@ void sigmoidDev(double* X, size_t numRows, size_t numCols){
 	addSkalarDev(X,1.0,X,numRows*numCols);
 	powDev(X,-1.0,X,numRows*numCols);
 }
+
 }

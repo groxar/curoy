@@ -1,4 +1,4 @@
-OPTION = -g -std=c++0x
+OPTION = -fPIC -std=c++0x
 
 phony: example
 

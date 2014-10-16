@@ -43,11 +43,6 @@ svmUnit: svmUnit.cpp ../lib/cudaMatrix.o
 	@echo "\n\nSVMUNIT"
 	./svmUnit
 
-powerANN: powerANN.cpp ../lib/cudaMatrix.o
-	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
-	@echo "\n\nANN"
-	./powerANN
-
 gradientUnit: gradientUnit.cpp ../lib/cudaMatrix.o
 	$(NVCC) $(CUDACNFG) -Xcompiler '$(OPTION)' -o $@ $+
 	@echo "\n\nGradient"

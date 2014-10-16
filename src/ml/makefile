@@ -6,15 +6,16 @@ LIBDIR = lib/
 OBJDIR = obj/
 OPTION = -std=c++0x -g
 
-phony: ann.o 
+phony: ann.o
 
 ../lib/cuMatrix.o:
 	make ../lib/makefile
 
+ann.o: ann.cu
+	$(NVCC) $(CUDACNFG) -o $@ -Xcompiler '-fPIC' -c $+
 
 libann.so: ann.cu
 	$(NVCC) $(CUDACNFG) -o $@ -Xcompiler '-fPIC' --shared $+
 
 clean:
-	rm -rf $(OBJDIR) $(LIBDIR)	
-
+	rm -rf $(OBJDIR) $(LIBDIR)
