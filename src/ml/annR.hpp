@@ -1,6 +1,6 @@
 #pragma once
 #include "../lib/cuMatrix.hpp"
-//#include "util.hpp"
+//#include "../ml/util.hpp"
 #include "ann.hu"
 #include "deque"
 #include "tgmath.h"
@@ -18,16 +18,15 @@ namespace curoy{
 		sigmoidDev2(X.m_data,X.dim(0),X.dim(1));
 		return move(X);
 	}
-	/*static cuMatrix<double> sigmoidGradient(const cuMatrix<double>& X){
+	static cuMatrix<double> sigmoidGradient(const cuMatrix<double>& X){
 		cuMatrix<double> result(X);
 		sigmoid(result);
 		return result*(1-result);
-	}*/
+	}
 	static cuMatrix<double>&& sigmoidGradient(cuMatrix<double>&& X){
 		sigmoid(!X);
 		return move(!X*(1-!X));
 	}
-
 	class ann{
 	private:
 	public:
@@ -54,12 +53,13 @@ namespace curoy{
 		/**
 		 * Predict
 		 */
-		cuMatrix<size_t> predict(const cuMatrix<double>& X){
+		cuMatrix<double> predict(const cuMatrix<double>& X){
 			cuMatrix<double> tempResult(X);
-			for(cuMatrix<double> layer : hiddenLayerVec){
-				tempResult = sigmoid(mult(1 | tempResult,layer));
+			for(size_t i = 0; i < hiddenLayerVec.size()-1; ++i){
+				tempResult = sigmoid(mult(1 | tempResult,hiddenLayerVec[i]));
 			}
-			return get<1>(maxPos(tempResult,1));
+			tempResult = mult(1|tempResult,hiddenLayerVec[hiddenLayerVec.size()-1]);
+			return tempResult;
 		}
 
 		/**
@@ -67,22 +67,18 @@ namespace curoy{
 		 */
 		tuple<deque<cuMatrix<double>>,double> gradientFunction(const cuMatrix<double>& X, vector<cuMatrix<double>> hl, const cuMatrix<double>& y, const double lambda, size_t layerPos = 0){
 
+
 			size_t m = X.dim(0);
 			// forward propogation
 			cuMatrix<double> a = 1 | X;
 			cuMatrix<double> z = mult(a, hl[layerPos]);
 			cuMatrix<double> an = sigmoid(z);
 			tuple<deque<cuMatrix<double>>,double> result;
-			cout << "1"<<endl;
 
 			if(layerPos+1 == hl.size()){
 				// cost calculation
-				size_t k = max(y)+1;
-				cuMatrix<double> yP({m,k},0);
-				projectMatrix(y.m_data,yP.m_data,m,k);
-				double j=(1.0/m)*sum((-yP*log(an))-((1.0-yP)*log(1.0-an)));
+				double j=sum(z-y);//regression
 
-				cout << "2"<<endl;
 				// cost regulization
 				cuMatrix<double> thetaTemp;
 				for(auto layer : hl){
@@ -90,30 +86,27 @@ namespace curoy{
 					thetaTemp[0] = 0;
 					j+=(lambda/(2.0*m)) * sum(thetaTemp^2);
 				}
-				cout << "3"<<endl;
 				// back propogation
 				deque<cuMatrix<double>> gradientVector;
-				cuMatrix<double> dn = an-yP;
+				cuMatrix<double> dn = z-y;
 				//cout <<"dn: "<< sum(dn,1)<<endl;
 
-				cout << "4"<<endl;
 				// regulization
 				cuMatrix<double> regulizedLayer = hl[layerPos];
 				regulizedLayer[0] = 0;
-				gradientVector.push_front((1.0/m)*mult(T(a),dn)+(lambda/m)*regulizedLayer);
+				gradientVector.push_front((1.0/m)*mult(T(a), dn)+(lambda/m)*regulizedLayer);
 				gradientVector.push_front(dn);
 				result = make_tuple(gradientVector,j);
 				//cout <<"last gradient: "<< sum(gradientVector[1],1)<<endl;
 			}
 			else{
 				result = gradientFunction(an,hl,y,lambda, layerPos+1);
-				cout << "5"<<endl;
 				// back propogation
 				cuMatrix<double> dnn = get<0>(result)[0];
-				cuMatrix<double> dn = mult(dnn,T(hl[layerPos+1]))*sigmoidGradient(1 | z);
+				cuMatrix<double> dn;
+				dn = mult(dnn,T(hl[layerPos+1]))*sigmoidGradient(1 | z);
 				dn = dn({0,dn.dim(0)-1},{1,dn.dim(1)-1});
 
-				cout << "6"<<endl;
 				// regulization
 				cuMatrix<double> regulizedLayer = hl[layerPos];
 				regulizedLayer[0] = 0;
@@ -124,7 +117,8 @@ namespace curoy{
 			return result;
 		}
 
-		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, double const learnFactor, const double lambda,  size_t numIterations){
+		void gradientDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, const double learnFactor, const double lambda,  size_t numIterations){
+			//size_t numDataSets= X.dim(0);
 			tuple<deque<cuMatrix<double>>,double> gj;
 
 			for(size_t n = 0; n<numIterations;++n){
@@ -132,11 +126,11 @@ namespace curoy{
 				for(size_t i = 0; i < hiddenLayerVec.size();++i){
 					hiddenLayerVec[i] = hiddenLayerVec[i] - (learnFactor * get<0>(gj)[i]);
 				}
-				cout << get<1>(gj)<<endl;
 			}
 		}
 
 		void conjugateDescent(const cuMatrix<double>& X, const cuMatrix<double>& y, const double lambda, const size_t numIterations){
+			//size_t numDataSets = X.dim(0);
 			size_t numHL = hiddenLayerVec.size();
 
 			auto gj = gradientFunction(X,hiddenLayerVec,y,lambda);

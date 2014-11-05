@@ -14,14 +14,14 @@
           'action_name': 'build library cuda part',
           'inputs': ['../lib/cuMatrix.cu'],
           'outputs': ['/home/estamm/Gits/curoy/src/lib/cudaMatrix.o'],
-          'action': ['make', '-C../lib'],
+          'action': ['make', '-C../lib', '-B'],
           'process_outputs_as_sources': 1
         },
         {
           'action_name': 'build library cuda part',
           'inputs': ['../wt/WaveletTransformator.cpp'],
           'outputs': ['/home/estamm/Gits/curoy/src/wt/WaveletTransformator.o','/home/estamm/Gits/curoy/src/wt/Filter.o','/home/estamm/Gits/curoy/src/wt/SymmetricPadding.o'],
-          'action': ['make', '-C../wt'],
+          'action': ['make', '-C../wt', '-B'],
           'process_outputs_as_sources': 1
         }
       ],
