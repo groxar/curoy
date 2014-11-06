@@ -13,8 +13,6 @@
 #include "matrixException.hpp"
 #include "dimIterator.hpp"
 
-using namespace std;
-
 namespace curoy{
 template<typename N>
 class xMatrix{
@@ -23,10 +21,10 @@ class xMatrix{
 		 * CONSTRUCTOR
 		 */
 		xMatrix():m_data(nullptr),m_perm(memPermission::user){};
-		xMatrix(N* data, initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
-		xMatrix(N* data, vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
-		xMatrix(vector<size_t> dim, enum fillMode):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
-		xMatrix(vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
+		xMatrix(N* data, std::initializer_list<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm) {}
+		xMatrix(N* data, std::vector<size_t> dim, enum memPermission mPerm = memPermission::user) : m_data(data), m_vecDim(dim), m_perm(mPerm){}
+		xMatrix(std::vector<size_t> dim, enum fillMode):m_data(nullptr){m_perm=memPermission::user;resize(dim);}
+		xMatrix(std::vector<size_t> dim, N value):m_data(nullptr){m_perm=memPermission::user;resize(dim);fill(*this,value);}
 		xMatrix(xMatrix<N>&& matrix) : m_data(matrix.m_data), m_vecDim(move(matrix.m_vecDim)), m_perm(matrix.m_perm) { matrix.m_data = nullptr;}
 
 		xMatrix(const xMatrix<N>& matrix){
@@ -35,7 +33,7 @@ class xMatrix{
 			memcpy(m_data, matrix.m_data, matrix.size()*sizeof(N));
 		}
 
-		xMatrix(initializer_list<N> data){
+		xMatrix(std::initializer_list<N> data){
 			m_vecDim.push_back(data.size());
 			m_perm = memPermission::user;
 			rebase(data.size());
@@ -47,8 +45,8 @@ class xMatrix{
 			}
 		}
 
-		xMatrix(initializer_list<xMatrix<N>> matrixList){
-			// determine vector dimension
+		xMatrix(std::initializer_list<xMatrix<N>> matrixList){
+			// determine std::vector dimension
 			for(auto matrix : matrixList){
 				for(size_t depth = 0; depth < matrix.nDim();++depth ){
 					if(depth == m_vecDim.size())
@@ -90,10 +88,10 @@ class xMatrix{
 				numElements*= *i;
 			return numElements;
 		}
-		vector<size_t> dim() const{return m_vecDim;}
+		std::vector<size_t> dim() const{return m_vecDim;}
 		size_t dim(size_t index) const{return index < m_vecDim.size()?m_vecDim[index]:1;}
 
-		void resize(vector<size_t> vecDim){
+		void resize(std::vector<size_t> vecDim){
 			m_vecDim=vecDim;
 			rebase(size());
 		}
@@ -103,7 +101,7 @@ class xMatrix{
 		 */
 		xMatrix<N> operator[](size_t n) const { //access on none const
 			if(nDim() == 0 || n >= dim(0)){
-				cout << "[] overflow error"<<endl;
+				std::cout << "[] overflow error"<<std::endl;
 				return xMatrix<N>();
 			}
 			size_t memJump = 1;
@@ -112,13 +110,13 @@ class xMatrix{
 			for(auto i = (++m_vecDim.begin()); i != end; ++i)
 				memJump*= *i;
 
-			vector<size_t> tempV(++m_vecDim.begin(),end);
+			std::vector<size_t> tempV(++m_vecDim.begin(),end);
 			if(tempV.size()==0 && size() > 1  )
 				tempV.push_back(1);
 			return xMatrix<N>(m_data+n*memJump, tempV,memPermission::diver);
 		}
 
-		xMatrix<N> operator[](vector<size_t> nVec) const {
+		xMatrix<N> operator[](std::vector<size_t> nVec) const {
 			xMatrix<N> result(this->m_data,this->m_vecDim,memPermission::diver);
 			for(auto n: nVec)
 				result = result[n];
@@ -160,7 +158,7 @@ class xMatrix{
 			if(m_data != rhs.m_data){
 				if(m_perm == memPermission::diver){
 					if(dimCompare(this->dim(),rhs.dim()) != 0){
-						cout << "cant assign that to diver" << endl;
+						std::cout << "cant assign that to diver" << std::endl;
 						return *this;
 					}
 				}
@@ -295,7 +293,7 @@ class xMatrix{
 		//simple R^2 matrix multiplikation (1,2)
 	 	friend xMatrix<N> mult (const xMatrix<N>& lhs,const xMatrix<N>& rhs){
 			if(lhs.dim(1)!=rhs.dim(0) || lhs.nDim()!=2 || rhs.nDim()!=2){
-				cout<< "DIMENSIONS DONT FIT"<< endl;
+				std::cout<< "DIMENSIONS DONT FIT"<< std::endl;
 				return lhs;
 			}
 
@@ -316,7 +314,7 @@ class xMatrix{
 				}
 			}
 
-			return xMatrix<N>(temp,vector<size_t>({numX,numY}),memPermission::owner);
+			return xMatrix<N>(temp,std::vector<size_t>({numX,numY}),memPermission::owner);
 		}
 
 		/**
@@ -487,16 +485,16 @@ class xMatrix{
 
 		// TODO IMPLEMENT
 		friend xMatrix<N> pinv(const xMatrix<N>& matrix){
-			cout << "pinv() is unimplemented"<<endl;
+			std::cout << "pinv() is unimplemented"<<std::endl;
 			return matrix;
 		}
 
 		//simple Transpose only for 2D Matrix tested
 		friend xMatrix<N> T(const xMatrix<N>& matrix){
-			vector<size_t> transVec(matrix.m_vecDim);
+			std::vector<size_t> transVec(matrix.m_vecDim);
 			if(transVec.size() < 2)
 				transVec.push_back(1);
-			swap(transVec[0],transVec[1]);
+			std::swap(transVec[0],transVec[1]);
 
 			size_t numX = matrix.dim(0);
 			size_t numY = matrix.dim(1);
@@ -522,7 +520,7 @@ class xMatrix{
 		/**
 		 * OUTPUT
 		 */
-		friend ostream& operator<< (ostream& os, const xMatrix<N>& matrix){
+		friend std::ostream& operator<< (std::ostream& os, const xMatrix<N>& matrix){
 			os << "{";
 			auto end = matrix.m_vecDim.end();
 			for(auto it = matrix.m_vecDim.begin();it!=end;){
@@ -544,7 +542,7 @@ class xMatrix{
 		}
 
 		N* m_data;
-		vector<size_t> m_vecDim;
+		std::vector<size_t> m_vecDim;
 		enum memPermission m_perm;
 	private:
 
@@ -560,7 +558,7 @@ class xMatrix{
 			}
 
 			if(this->m_data == NULL)
-				cout << "allocation error";
+				std::cout << "allocation error";
 		}
 };
 }
