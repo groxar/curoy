@@ -2,9 +2,10 @@
 #include "../lib/cuMatrix.hpp"
 #include "../ml/util.hpp"
 
-using namespace std;
 
 namespace curoy{
+	using namespace std;
+	
 	class svm{
 		void trainSVM(){
 

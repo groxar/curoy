@@ -20,9 +20,10 @@
 #include <cuda_runtime.h>
 #include <curand.h>
 
-using namespace std;
 
 namespace curoy{
+using namespace std;
+
 template<typename N>
 class cuMatrix{
 	public:

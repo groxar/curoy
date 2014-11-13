@@ -6,9 +6,10 @@
 #include "tgmath.h"
 
 
-using namespace std;
 
 namespace curoy{
+	using namespace std;
+
 	static cuMatrix<double> sigmoid(const cuMatrix<double>& X){
 		cuMatrix<double> result(X);
 		sigmoidDev2(result.m_data,result.dim(0),result.dim(1));

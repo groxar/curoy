@@ -6,166 +6,167 @@
 #include<limits>
 
 namespace curoy{
-template<typename N>
-void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
+  using namespace std;
+  template<typename N>
+  void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols);
 
-/**
- * Reduce with position
- */
-template<typename FUNC, typename N>
-__device__ void funcFirstPosReduce(FUNC f, const N* input, N* output, size_t* position, N neutralValue, size_t len){
-	__shared__ N partialSum[2*B_SIZE];
-	__shared__ N posArray[2*B_SIZE];
-	size_t t = threadIdx.x;
-	size_t start = 2*blockIdx.x*blockDim.x;
-	bool compareResult;
+  /**
+   * Reduce with position
+   */
+  template<typename FUNC, typename N>
+  __device__ void funcFirstPosReduce(FUNC f, const N* input, N* output, size_t* position, N neutralValue, size_t len){
+  	__shared__ N partialSum[2*B_SIZE];
+  	__shared__ N posArray[2*B_SIZE];
+  	size_t t = threadIdx.x;
+  	size_t start = 2*blockIdx.x*blockDim.x;
+  	bool compareResult;
 
-	//load Segments into shared memory
-	start+t<len?
-		partialSum[t]=input[start+t],posArray[t]= blockIdx.x*B_SIZE*2+threadIdx.x:
-		partialSum[t]=neutralValue;
-	start+blockDim.x+t<len?
-		partialSum[blockDim.x+t]=input[start+blockDim.x+t], posArray[t]=blockIdx.x*B_SIZE*2+B_SIZE+threadIdx.x:
-		partialSum[blockDim.x+t]=neutralValue;
+  	//load Segments into shared memory
+  	start+t<len?
+  		partialSum[t]=input[start+t],posArray[t]= blockIdx.x*B_SIZE*2+threadIdx.x:
+  		partialSum[t]=neutralValue;
+  	start+blockDim.x+t<len?
+  		partialSum[blockDim.x+t]=input[start+blockDim.x+t], posArray[t]=blockIdx.x*B_SIZE*2+B_SIZE+threadIdx.x:
+  		partialSum[blockDim.x+t]=neutralValue;
 
-	//binary tree reduce
-	for(size_t stride = blockDim.x; stride>=1; stride >>=1)
-	{
-		__syncthreads();
-		if(t < stride){
-			compareResult = f(partialSum[t], partialSum[t+stride]);
-			partialSum[t] = compareResult?partialSum[t]:partialSum[t+stride];
-			posArray[t] = compareResult?posArray[t]:posArray[t+stride];
-		}
-	}
+  	//binary tree reduce
+  	for(size_t stride = blockDim.x; stride>=1; stride >>=1)
+  	{
+  		__syncthreads();
+  		if(t < stride){
+  			compareResult = f(partialSum[t], partialSum[t+stride]);
+  			partialSum[t] = compareResult?partialSum[t]:partialSum[t+stride];
+  			posArray[t] = compareResult?posArray[t]:posArray[t+stride];
+  		}
+  	}
 
-	if(t==0){
-		output[blockIdx.x]=partialSum[0];
-		position[blockIdx.x]=posArray[0];
-	}
-}
-template<typename FUNC, typename N>
-__device__ void funcPosReduce(FUNC f, const N* input, N* output, size_t* position, N neutralValue, size_t len){
-	__shared__ N partialSum[2*B_SIZE];
-	__shared__ N posArray[2*B_SIZE];
-	size_t t = threadIdx.x;
-	size_t start = 2*blockIdx.x*blockDim.x;
-	bool compareResult;
+  	if(t==0){
+  		output[blockIdx.x]=partialSum[0];
+  		position[blockIdx.x]=posArray[0];
+  	}
+  }
+  template<typename FUNC, typename N>
+  __device__ void funcPosReduce(FUNC f, const N* input, N* output, size_t* position, N neutralValue, size_t len){
+  	__shared__ N partialSum[2*B_SIZE];
+  	__shared__ N posArray[2*B_SIZE];
+  	size_t t = threadIdx.x;
+  	size_t start = 2*blockIdx.x*blockDim.x;
+  	bool compareResult;
 
-	//load Segments into shared memory
-	start+t<len?
-		partialSum[t]=input[start+t],posArray[t]= position[start+t]:
-		partialSum[t]=neutralValue;
-	start+blockDim.x+t<len?
-		partialSum[blockDim.x+t]=input[start+blockDim.x+t], position[start+blockDim.x+t]:
-		partialSum[blockDim.x+t]=neutralValue;
+  	//load Segments into shared memory
+  	start+t<len?
+  		partialSum[t]=input[start+t],posArray[t]= position[start+t]:
+  		partialSum[t]=neutralValue;
+  	start+blockDim.x+t<len?
+  		partialSum[blockDim.x+t]=input[start+blockDim.x+t], position[start+blockDim.x+t]:
+  		partialSum[blockDim.x+t]=neutralValue;
 
-	//binary tree reduce
-	for(size_t stride = blockDim.x; stride>=1; stride >>=1)
-	{
-		__syncthreads();
-		if(t < stride){
-			compareResult = f(partialSum[t], partialSum[t+stride]);
-			partialSum[t] = compareResult?partialSum[t]:partialSum[t+stride];
-			posArray[t] = compareResult?posArray[t]:posArray[t+stride];
-		}
-	}
+  	//binary tree reduce
+  	for(size_t stride = blockDim.x; stride>=1; stride >>=1)
+  	{
+  		__syncthreads();
+  		if(t < stride){
+  			compareResult = f(partialSum[t], partialSum[t+stride]);
+  			partialSum[t] = compareResult?partialSum[t]:partialSum[t+stride];
+  			posArray[t] = compareResult?posArray[t]:posArray[t+stride];
+  		}
+  	}
 
-	if(t==0){
-		output[blockIdx.x]=partialSum[0];
-		position[blockIdx.x]=posArray[0];
-	}
-}
-template<typename FUNC, typename FUNC2,typename N>
-void funcPosReduceDev(FUNC firstReduce, FUNC2 commonReduce,const N* X, N* result, size_t* posResult, size_t length){
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
-	size_t numElements;
-	N* sumX;
-	size_t* pos;
+  	if(t==0){
+  		output[blockIdx.x]=partialSum[0];
+  		position[blockIdx.x]=posArray[0];
+  	}
+  }
+  template<typename FUNC, typename FUNC2,typename N>
+  void funcPosReduceDev(FUNC firstReduce, FUNC2 commonReduce,const N* X, N* result, size_t* posResult, size_t length){
+  	size_t dimSize = B_SIZE;
+  	size_t gridSize = CEIL_DIV(length,B_SIZE*2);
+  	size_t numElements;
+  	N* sumX;
+  	size_t* pos;
 
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
-	cudaMalloc((void**) &pos,sizeof(size_t)* CEIL_DIV(length,B_SIZE*2));
+  	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(length,B_SIZE*2));
+  	cudaMalloc((void**) &pos,sizeof(size_t)* CEIL_DIV(length,B_SIZE*2));
 
-	firstReduce<<<gridSize,dimSize>>>(X,sumX,pos,length);
+  	firstReduce<<<gridSize,dimSize>>>(X,sumX,pos,length);
 
-	while(gridSize>1){
-		numElements = gridSize;
-		gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-		commonReduce<<<gridSize,dimSize>>>(sumX,sumX,pos,numElements);
-	}
-	cudaMemcpy(result,sumX,sizeof(N),cudaMemcpyDeviceToDevice);
-	cudaMemcpy(posResult,pos,sizeof(size_t),cudaMemcpyDeviceToDevice);
+  	while(gridSize>1){
+  		numElements = gridSize;
+  		gridSize = CEIL_DIV(gridSize,B_SIZE*2);
+  		commonReduce<<<gridSize,dimSize>>>(sumX,sumX,pos,numElements);
+  	}
+  	cudaMemcpy(result,sumX,sizeof(N),cudaMemcpyDeviceToDevice);
+  	cudaMemcpy(posResult,pos,sizeof(size_t),cudaMemcpyDeviceToDevice);
 
-	cudaFree(sumX);
-	cudaFree(pos);
-}
+  	cudaFree(sumX);
+  	cudaFree(pos);
+  }
 
-template<typename FUNC, typename FUNC2, typename N>
-void funcPosColReduceDev(FUNC firstReduce, FUNC2 commonReduce,const N* X, N* result, size_t* posResult, N neutralValue, size_t nRows, size_t nCols){
-	size_t dimSize = B_SIZE;
-	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	size_t numElements;
-	N* sumX;
-	size_t* pos;
+  template<typename FUNC, typename FUNC2, typename N>
+  void funcPosColReduceDev(FUNC firstReduce, FUNC2 commonReduce,const N* X, N* result, size_t* posResult, N neutralValue, size_t nRows, size_t nCols){
+  	size_t dimSize = B_SIZE;
+  	size_t gridSize = CEIL_DIV(nCols,B_SIZE*2);
+  	size_t numElements;
+  	N* sumX;
+  	size_t* pos;
 
-	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
-	cudaMalloc((void**) &pos,sizeof(size_t)* CEIL_DIV(nCols,B_SIZE*2));
+  	cudaMalloc((void**) &sumX,sizeof(N)* CEIL_DIV(nCols,B_SIZE*2));
+  	cudaMalloc((void**) &pos,sizeof(size_t)* CEIL_DIV(nCols,B_SIZE*2));
 
-	for(size_t i = 0; i < nRows;++i){
-		firstReduce<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,pos,neutralValue,nCols);
+  	for(size_t i = 0; i < nRows;++i){
+  		firstReduce<<<gridSize,dimSize>>>(&(X[nCols*i]),sumX,pos,neutralValue,nCols);
 
-		while(gridSize>1){
-			numElements = gridSize;
-			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
-			commonReduce<<<gridSize,dimSize>>>(sumX,sumX,pos,neutralValue,numElements);
-		}
-		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
-		cudaMemcpy(&(posResult[i]),pos,sizeof(size_t),cudaMemcpyDeviceToDevice);
-		gridSize = CEIL_DIV(nCols,B_SIZE*2);
-	}
-	cudaFree(sumX);
-	cudaFree(pos);
-}
-/**
- * MAX REDUCE
- */
-template<typename N>
-__device__ inline bool gtFuncKernel(const N lhs, const N rhs){
-	return lhs>rhs;
-}
+  		while(gridSize>1){
+  			numElements = gridSize;
+  			gridSize = CEIL_DIV(gridSize,B_SIZE*2);
+  			commonReduce<<<gridSize,dimSize>>>(sumX,sumX,pos,neutralValue,numElements);
+  		}
+  		cudaMemcpy(&(result[i]),sumX,sizeof(N),cudaMemcpyDeviceToDevice);
+  		cudaMemcpy(&(posResult[i]),pos,sizeof(size_t),cudaMemcpyDeviceToDevice);
+  		gridSize = CEIL_DIV(nCols,B_SIZE*2);
+  	}
+  	cudaFree(sumX);
+  	cudaFree(pos);
+  }
+  /**
+   * MAX REDUCE
+   */
+  template<typename N>
+  __device__ inline bool gtFuncKernel(const N lhs, const N rhs){
+  	return lhs>rhs;
+  }
 
-template<typename N>
-__global__ void maxFirstPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
-	funcFirstPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);	
-}	
-template<typename N>
-__global__ void maxPosReduce(const N* input, N* output,size_t* position, N neutralValue , size_t len) {
-	funcPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);	
-}	
+  template<typename N>
+  __global__ void maxFirstPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
+  	funcFirstPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);
+  }
+  template<typename N>
+  __global__ void maxPosReduce(const N* input, N* output,size_t* position, N neutralValue , size_t len) {
+  	funcPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);
+  }
 
-template<typename N>
-void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
-	funcPosColReduceDev(&maxFirstPosReduce<N>,&maxPosReduce<N>,X,result,position, std::numeric_limits<N>::min(),nRows, nCols);
-}
-/**
- * MIN REDUCE
- */
-template<typename N>
-__device__ inline bool stFuncKernel(const N lhs, const N rhs){
-	return lhs<rhs;
-}
-template<typename N>
-__global__ void minFirstPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
-	funcFirstPosReduce(&stFuncKernel<N>,input, output,position, neutralValue, len);	
-}	
-template<typename N>
-__global__ void minPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
-	funcPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);	
-}	
+  template<typename N>
+  void maxPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
+  	funcPosColReduceDev(&maxFirstPosReduce<N>,&maxPosReduce<N>,X,result,position, std::numeric_limits<N>::min(),nRows, nCols);
+  }
+  /**
+   * MIN REDUCE
+   */
+  template<typename N>
+  __device__ inline bool stFuncKernel(const N lhs, const N rhs){
+  	return lhs<rhs;
+  }
+  template<typename N>
+  __global__ void minFirstPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
+  	funcFirstPosReduce(&stFuncKernel<N>,input, output,position, neutralValue, len);
+  }
+  template<typename N>
+  __global__ void minPosReduce(const N* input, N* output,size_t* position, N neutralValue, size_t len) {
+  	funcPosReduce(&gtFuncKernel<N>,input, output,position, neutralValue, len);
+  }
 
-template<typename N>
-void minPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
-	funcPosColReduceDev(&minFirstPosReduce<N>,&maxPosReduce<N>,X,result,position, std::numeric_limits<N>::max(),nRows, nCols);
-}
+  template<typename N>
+  void minPosColumneDev(const N* X, N* result,size_t* position, size_t nRows, size_t nCols){
+  	funcPosColReduceDev(&minFirstPosReduce<N>,&maxPosReduce<N>,X,result,position, std::numeric_limits<N>::max(),nRows, nCols);
+  }
 }

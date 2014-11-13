@@ -3,11 +3,12 @@
 #include "../ml/util.hpp"
 #include "tgmath.h"
 
-using namespace std;
 
 namespace curoy{
+	using namespace std;
+
 	class kmeans{
-		private: 
+		private:
 			cuMatrix<double> centroids; // colwise centroids (centroid:= mean of cluster)
 		public:
 		kmeans(size_t numFeatures, size_t numClusters):centroids({numClusters,numFeatures},fillMode::none){}
@@ -16,18 +17,18 @@ namespace curoy{
 		cuMatrix<size_t> predict(const cuMatrix<double>& X){
 			size_t m = X.dim(0);
 			size_t numCentroids = centroids.dim(0);
-			cuMatrix<double> y({numCentroids,m},fillMode::none); 
+			cuMatrix<double> y({numCentroids,m},fillMode::none);
 
 			for(size_t j = 0; j < numCentroids;++j)
 					y[j]= T(sum((X-mult(cuMatrix<double>({m,1},1),T(centroids[j])))^2,1));
 			return get<1>(minPos(y,0));
 		}
-		void train(const cuMatrix<double>& X, size_t maxNumIteration = 0){	
+		void train(const cuMatrix<double>& X, size_t maxNumIteration = 0){
 			size_t m = X.dim(0);
 			size_t numCentroids = centroids.dim(0);
 			cuMatrix<size_t> cX;
-			cuMatrix<double> y({numCentroids,m},fillMode::none); 
-			cuMatrix<double> c(centroids); 
+			cuMatrix<double> y({numCentroids,m},fillMode::none);
+			cuMatrix<double> c(centroids);
 			cuMatrix<double> cn(centroids.dim(),fillMode::none);
 
 			for(size_t i = 0; !maxNumIteration || i < maxNumIteration; ++i){
