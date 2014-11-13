@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ml/ann.hpp"
+#include "../ml/annR.hpp"
 #include "../lib/cuMatrix.hpp"
 #include <nan.h>
 #include <v8.h>
@@ -18,6 +18,8 @@ class AnnWrapper : public node::ObjectWrap {
   static NAN_METHOD(New);
   static NAN_METHOD(Predict);
   static NAN_METHOD(Train);
+  static NAN_METHOD(NextValue);
+  static NAN_METHOD(GetNeuronLayer);
   static v8::Persistent<v8::Function> constructor;
   size_t position;
   double value_;

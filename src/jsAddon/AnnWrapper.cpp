@@ -52,8 +52,10 @@ void AnnWrapper::Init(Handle<Object> exports) {
   tpl->InstanceTemplate()->SetInternalFieldCount(4);
 
   // Prototype
-  NODE_SET_PROTOTYPE_METHOD(tpl, "train", Train);
   NODE_SET_PROTOTYPE_METHOD(tpl, "predict", Predict);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "train", Train);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "nextValue", NextValue);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "getNeuronLayer", GetNeuronLayer);
 
   NanAssignPersistent(constructor, tpl->GetFunction());
   exports->Set(NanNew("AnnWrapper"), tpl->GetFunction());
@@ -63,24 +65,25 @@ NAN_METHOD(AnnWrapper::New) {
   NanScope();
 
   if (args.IsConstructCall()) {
-    // Invoked as constructor: `new AnnWrapper(...)`
     AnnWrapper* obj = new AnnWrapper( args[0]->IntegerValue(),
                                       args[1]->IntegerValue(),
                                       args[2]->IntegerValue(),
                                       args[3]->NumberValue());
     obj->Wrap(args.This());
-
+    cout << "#Inputs"<< (obj->net.hiddenLayerVec[0]).dim(0)-1<<endl;
     //get Data
-    nanodbc::connection connection("hana", "");
+    nanodbc::connection connection( string(*v8::String::Utf8Value(args[4]->ToString())),
+                                    string(*v8::String::Utf8Value(args[5]->ToString())),
+                                    string(*v8::String::Utf8Value(args[6]->ToString()))
+                                  );
     cout << "Connected with driver " << connection.driver_name() << endl;
     nanodbc::result results;
-    results = execute(connection, "select * from \"DING_TECO\".\"nobel2\" where deviceid = 12486 order by time");
+    results = execute(connection, "select * from \"nobel2\" where deviceid = 15789 order by time");
     auto x = getColumn(results,2);
     x >> obj->x;
     obj->position = 0;
     NanReturnValue(args.This());
   } else {
-    // Invoked as plain function `AnnWrapper(...)`, turn into construct call.
     const int argc = 4;
     Local<Value> argv[4] = {  args[0],
                               args[1],
@@ -94,13 +97,36 @@ NAN_METHOD(AnnWrapper::New) {
 
 NAN_METHOD(AnnWrapper::Predict) {
   NanScope();
+  xMatrix<double> XTrain;
+  cuMatrix<double> cuXTrain;
+
+  WaveletReturn* transformedData;
+  WaveletTransformator transformator;
 
   AnnWrapper* obj = ObjectWrap::Unwrap<AnnWrapper>(args.Holder());
 
-  cout <<"Prediction Input: "<< cuMatrix<double>((obj->x.m_data)+obj->position,{1,24},memPermission::user) << endl;
-  cout <<"Prediction Output: "<< obj->net.predict(cuMatrix<double>((obj->x.m_data)+obj->position,{1,24},memPermission::user)) << endl;
+  XTrain << cuMatrix<double>((obj->x.m_data)+obj->position,{1,((obj->net.hiddenLayerVec[0]).dim(0)-1)},memPermission::user);
 
-  NanReturnValue(NanNew(obj->value_));
+  transformedData = transformator.waveletDecomposition(XTrain.m_data, (((obj->net.hiddenLayerVec)[0].dim(0))-1), 3, "sym4");
+  XTrain = xMatrix<double>(transformedData->data,{1,((obj->net.hiddenLayerVec[0]).dim(0)-1)},memPermission::owner);
+  XTrain >> cuXTrain;
+
+  double prediction = ~(obj->net.predict(cuXTrain));
+  cout <<"Prediction Input: "<< cuMatrix<double>((obj->x.m_data)+obj->position,{1,((obj->net.hiddenLayerVec[0]).dim(0)-1)},memPermission::user) << endl;
+  cout <<"Prediction Output: "<< prediction << endl;
+  cout <<"Real       Output: "<< cuMatrix<double>((obj->x.m_data)+obj->position+((obj->net.hiddenLayerVec[0]).dim(0)-1),{1,1},memPermission::user)<<endl;
+
+  NanReturnValue(NanNew(prediction));
+}
+
+NAN_METHOD(AnnWrapper::NextValue) {
+  NanScope();
+
+  AnnWrapper* obj = ObjectWrap::Unwrap<AnnWrapper>(args.Holder());
+  double result = ~(cuMatrix<double>((obj->x.m_data)+obj->position+((obj->net.hiddenLayerVec[0]).dim(0)-1),{1,1},memPermission::user));
+  obj->position = (obj->position + 1 ) % (obj->x.dim(1)-(((obj->net.hiddenLayerVec[0]).dim(0)-1)+1));
+
+  NanReturnValue(NanNew(result));
 }
 
 NAN_METHOD(AnnWrapper::Train) {
@@ -115,19 +141,35 @@ NAN_METHOD(AnnWrapper::Train) {
   WaveletReturn* transformedData;
   WaveletTransformator transformator;
 
-  XTrain << cuMatrix<double>((obj->x.m_data)+obj->position,{1,24},memPermission::user);
-  cuYTrain = cuMatrix<double>((obj->x.m_data)+obj->position+24,{1,1},memPermission::user);
+  XTrain << cuMatrix<double>((obj->x.m_data)+obj->position,{1,((obj->net.hiddenLayerVec[0]).dim(0)-1)},memPermission::user);
+  cuYTrain = cuMatrix<double>((obj->x.m_data)+obj->position+((obj->net.hiddenLayerVec[0]).dim(0)-1),{1,1},memPermission::user);
 
-  transformedData = transformator.waveletDecomposition(XTrain.m_data, 23, 3, "sym4");
-  XTrain = xMatrix<double>(transformedData->data,{1,24},memPermission::owner);
+  transformedData = transformator.waveletDecomposition(XTrain.m_data, ((obj->net.hiddenLayerVec)[0].dim(0)-1), 3, "sym4");
+  XTrain = xMatrix<double>(transformedData->data,{1,((obj->net.hiddenLayerVec[0]).dim(0)-1)},memPermission::owner);
   XTrain >> cuXTrain;
 
-  cout <<"cuXTrain: "<< cuXTrain << endl;
-  cout <<"cuYTrain: "<< cuYTrain << endl;
+  obj->net.gradientDescent(cuXTrain,cuYTrain,args[0]->NumberValue(),args[1]->NumberValue(),args[2]->IntegerValue());
 
-  obj->net.gradientDescent(cuXTrain,cuYTrain,0.2,0,3);
-
-  obj->position = (obj->position + 1 ) % (obj->x.dim(1)-25);
 
   NanReturnValue(NanNew(obj->value_));
+}
+
+NAN_METHOD(AnnWrapper::GetNeuronLayer) {
+  NanScope();
+
+  AnnWrapper* obj = ObjectWrap::Unwrap<AnnWrapper>(args.Holder());
+  xMatrix<double> layer;
+  layer << obj->net.hiddenLayerVec[0];
+  const double* data = layer.m_data;
+  cout << layer.m_data[0]<<endl;
+  cout << layer.m_data[1]<<endl;
+  cout <<"size: "<< layer.size() << endl;
+  cout << layer.m_data[layer.size()-1]<<endl;
+
+  size_t length = sizeof(double) * layer.size();
+
+  node::Buffer *buffer = node::Buffer::New(length);
+
+  memcpy(node::Buffer::Data(buffer), data, length);
+  NanReturnValue(buffer->handle_);
 }
